@@ -1,180 +1,473 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bio Link - ScoobyDoo Style</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body, html {
-            height: 100%;
-            overflow: hidden; /* Empêche le scroll */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #000;
-        }
+<title>RadarMoto</title>
 
-        /* Arrière-plan Vidéo */
-        #bg-video {
-            position: fixed;
-            right: 0;
-            bottom: 0;
-            min-width: 100%;
-            min-height: 100%;
-            z-index: -1;
-            object-fit: cover;
-            filter: brightness(0.6); /* Assombrit un peu pour lire le texte */
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-        /* Overlay Flou (Optionnel, pour un look plus doux) */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.2);
-            z-index: 0;
-        }
-
-        /* La Carte Glassmorphism */
-        .glass-card {
-            position: relative;
-            z-index: 1;
-            width: 90%;
-            max-width: 450px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.1); /* Transparence blanche */
-            backdrop-filter: blur(15px); /* L'effet de flou crucial */
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            text-align: center;
-            color: white;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-
-        /* Avatar */
-        .avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 3px solid rgba(255, 255, 255, 0.5);
-            margin-bottom: 20px;
-            object-fit: cover;
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-            text-transform: lowercase;
-        }
-
-        .subtitle {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 25px;
-        }
-
-        /* Réseaux Sociaux */
-        .socials {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .socials a {
-            color: white;
-            font-size: 1.5rem;
-            transition: transform 0.3s ease;
-            text-decoration: none;
-        }
-
-        .socials a:hover {
-            transform: scale(1.2);
-            color: #ddd;
-        }
-
-        /* Bouton d'entrée (Nécessaire pour le son) */
-        #enter-btn {
-            background: white;
-            color: black;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background 0.3s;
-        }
-
-        #enter-btn:hover {
-            background: #ccc;
-        }
-
-        /* Masquer le contenu au début pour forcer le clic */
-        #main-content {
-            display: none;
-        }
-
-        #landing-screen {
-            position: absolute;
-            z-index: 10;
-            color: white;
-            text-align: center;
-        }
-    </style>
+<style>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Analyseur LeBonCoin</title>
 </head>
 <body>
+  <h1>Analyseur d'annonces LeBonCoin</h1>
+  
+  <input type="text" id="urlInput" placeholder="Coller le lien LeBonCoin..." style="width: 300px;">
+  <button onclick="analyserAnnonce()">Analyser avec l'IA</button>
 
-    <video autoplay muted loop id="bg-video">
-        <source src="bg.mp4" type="video/mp4">
-    </video>
+  <div id="resultat" style="margin-top: 20px; white-space: pre-wrap;"></div>
 
-    <div id="landing-screen">
-        <button id="enter-btn" onclick="startSite()">CLIQUEZ POUR ENTRER</button>
-    </div>
+  <script>
+    async function analyserAnnonce() {
+      const url = document.getElementById('urlInput').value;
+      const divResultat = document.getElementById('resultat');
+      
+      divResultat.innerText = "Analyse en cours...";
 
-    <div class="glass-card" id="main-content">
-        <img src="https://via.placeholder.com/150" alt="Avatar" class="avatar">
-        <h1>itsjustscoobydoo</h1>
-        <p class="subtitle">UEFN Creator and Streamer</p>
+      try {
+        const res = await fetch('/api/analyser', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ urlAnnonce: url })
+        });
+
+        const data = await res.json();
         
-        <p><i class="fas fa-map-marker-alt"></i> Deutsachland</p>
-
-        <div class="socials">
-            <a href="#"><i class="fab fa-twitch"></i></a>
-            <a href="#"><i class="fab fa-youtube"></i></a>
-            <a href="#"><i class="fab fa-discord"></i></a>
-        </div>
-    </div>
-
-    <script>
-        function startSite() {
-            const video = document.getElementById('bg-video');
-            const landing = document.getElementById('landing-screen');
-            const content = document.getElementById('main-content');
-
-            // 1. On affiche le contenu
-            content.style.display = 'block';
-            // 2. On cache le bouton d'entrée
-            landing.style.display = 'none';
-            // 3. On réactive le son de la vidéo et on la redémarre
-            video.muted = false;
-            video.play();
+        if (data.error) {
+          divResultat.innerText = "Erreur : " + data.error;
+        } else {
+          divResultat.innerText = data.analyse;
         }
-    </script>
+      } catch (err) {
+        divResultat.innerText = "Une erreur est survenue lors de la connexion.";
+      }
+    }
+  </script>
+</body>
+</html>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+
+height:100vh;
+
+background:
+radial-gradient(circle at top,#4f46e5 0%,#15172a 40%,#090b13 100%);
+
+overflow:hidden;
+
+color:white;
+
+}
+
+body::before{
+
+content:"";
+
+position:absolute;
+
+width:600px;
+height:600px;
+
+background:#6d5dfc;
+
+filter:blur(180px);
+
+opacity:.25;
+
+top:-250px;
+left:-200px;
+
+}
+
+body::after{
+
+content:"";
+
+position:absolute;
+
+width:500px;
+height:500px;
+
+background:#00d4ff;
+
+filter:blur(170px);
+
+opacity:.15;
+
+bottom:-180px;
+right:-150px;
+
+}
+
+nav{
+
+position:absolute;
+
+top:30px;
+
+left:60px;
+
+right:60px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+z-index:10;
+
+}
+
+.logo{
+
+font-size:30px;
+
+font-weight:800;
+
+letter-spacing:1px;
+
+}
+
+.logo span{
+
+color:#7c6cff;
+
+}
+
+.menu{
+
+display:flex;
+
+gap:35px;
+
+}
+
+.menu a{
+
+color:white;
+
+text-decoration:none;
+
+opacity:.75;
+
+transition:.3s;
+
+}
+
+.menu a:hover{
+
+opacity:1;
+
+}
+
+.hero{
+
+height:100vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+flex-direction:column;
+
+position:relative;
+
+z-index:5;
+
+padding:20px;
+
+}
+
+.badge{
+
+padding:10px 18px;
+
+background:rgba(255,255,255,.08);
+
+border:1px solid rgba(255,255,255,.08);
+
+border-radius:999px;
+
+font-size:14px;
+
+margin-bottom:30px;
+
+backdrop-filter:blur(12px);
+
+}
+
+h1{
+
+font-size:72px;
+
+font-weight:800;
+
+text-align:center;
+
+line-height:1.1;
+
+max-width:1000px;
+
+}
+
+h1 span{
+
+color:#8b7dff;
+
+}
+
+.subtitle{
+
+margin-top:25px;
+
+font-size:21px;
+
+opacity:.75;
+
+text-align:center;
+
+max-width:700px;
+
+line-height:1.6;
+
+}
+
+.search{
+
+margin-top:55px;
+
+width:100%;
+
+max-width:900px;
+
+background:white;
+
+padding:15px;
+
+border-radius:25px;
+
+display:flex;
+
+box-shadow:0 25px 70px rgba(0,0,0,.35);
+
+}
+
+.search input{
+
+flex:1;
+
+border:none;
+
+outline:none;
+
+font-size:19px;
+
+padding:20px;
+
+}
+
+.search button{
+
+border:none;
+
+background:linear-gradient(135deg,#6c63ff,#8d7bff);
+
+color:white;
+
+padding:20px 45px;
+
+font-size:18px;
+
+font-weight:700;
+
+border-radius:18px;
+
+cursor:pointer;
+
+transition:.25s;
+
+}
+
+.search button:hover{
+
+transform:translateY(-3px);
+
+box-shadow:0 15px 35px rgba(108,99,255,.45);
+
+}
+
+.stats{
+
+display:flex;
+
+gap:50px;
+
+margin-top:60px;
+
+}
+
+.card{
+
+text-align:center;
+
+}
+
+.card h2{
+
+font-size:34px;
+
+}
+
+.card p{
+
+opacity:.7;
+
+margin-top:8px;
+
+}
+
+@media(max-width:900px){
+
+h1{
+
+font-size:45px;
+
+}
+
+.search{
+
+flex-direction:column;
+
+}
+
+.search button{
+
+width:100%;
+
+margin-top:15px;
+
+}
+
+.stats{
+
+flex-direction:column;
+
+gap:20px;
+
+}
+
+.menu{
+
+display:none;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<nav>
+
+<div class="logo">
+Radar<span>Moto</span>
+</div>
+
+<div class="menu">
+
+<a href="#">Accueil</a>
+<a href="#">Fonctionnement</a>
+<a href="#">Tarifs</a>
+<a href="#">Contact</a>
+
+</div>
+
+</nav>
+
+<section class="hero">
+
+<div class="badge">
+🏍 Analyse intelligente des annonces motos
+</div>
+
+<h1>
+
+Détecte une <span>bonne affaire</span><br>
+
+en quelques secondes.
+
+</h1>
+
+<p class="subtitle">
+
+Collez simplement l'URL d'une annonce et RadarMoto analysera automatiquement le prix,
+les informations importantes et les éventuels points de vigilance.
+
+</p>
+
+<div class="search">
+
+<input
+type="text"
+placeholder="Collez ici l'URL de votre annonce...">
+
+<button>
+
+Analyser →
+
+</button>
+
+</div>
+
+<div class="stats">
+
+<div class="card">
+
+<h2>10 000+</h2>
+
+<p>Analyses réalisées</p>
+
+</div>
+
+<div class="card">
+
+<h2>98%</h2>
+
+<p>Détection fiable</p>
+
+</div>
+
+<div class="card">
+
+<h2>10 sec</h2>
+
+<p>Temps moyen</p>
+
+</div>
+
+</div>
+
+</section>
+
 </body>
 </html>
