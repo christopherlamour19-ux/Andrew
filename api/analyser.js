@@ -4,21 +4,28 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Méthode non autorisée' });
   }
 
-  const { url } = req.body;
+  const { url } = req.body || {};
 
-  if (!url || !url.includes('leboncoin.fr')) {
+  // 2. Validation stricte et nettoyage de l'URL
+  if (!url || typeof url !== 'string') {
+    return res.status(400).json({ error: 'Veuillez fournir un lien Leboncoin valide.' });
+  }
+
+  const cleanUrl = url.trim();
+  const leboncoinRegex = /^https?:\/\/(www\.|mobile\.)?leboncoin\.fr\/.+/i;
+
+  if (!leboncoinRegex.test(cleanUrl)) {
     return res.status(400).json({ error: 'Veuillez fournir un lien Leboncoin valide.' });
   }
 
   try {
-    // 2. Extraire les données de l'annonce
-    // Note: Leboncoin bloque souvent les requêtes directes. Pour un projet simple,
-    // on peut passer l'URL à un service comme Firecrawl/ScrapingBee, ou demander à l'utilisateur d'en coller le texte.
-    
-    // Exemple d'appel à l'API OpenAI (GPT-4o mini)
     const apiKey = process.env.OPENAI_API_KEY;
 
-    const prompt = `Analyse cette annonce Leboncoin accessible ici : ${url}. 
+    if (!apiKey) {
+      return res.status(500).json({ error: 'Clé API OpenAI non configurée.' });
+    }
+
+    const prompt = `Analyse cette annonce Leboncoin accessible ici : ${cleanUrl}. 
     Évalue si c'est une bonne affaire. Donne :
     1. Un résumé de l'offre
     2. Une estimation de la valeur par rapport au prix affiché
@@ -38,7 +45,12 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    const resultText = data.choices[0].message.content;
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: data.error?.message || 'Erreur OpenAI' });
+    }
+
+    const resultText = data.choices[0]?.message?.content;
 
     return res.status(200).json({ result: resultText });
 
