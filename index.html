@@ -296,6 +296,38 @@
       }
     }
   </script>
+ 
+async function analyserAnnonce() {
+  const urlInput = document.getElementById('urlInput');
+  const divResultat = document.getElementById('resultat');
+  const contenu = urlInput.value.trim();
+
+  if (!contenu) {
+    alert("Veuillez coller le texte ou le lien de l'annonce.");
+    return;
+  }
+  
+  divResultat.style.display = "block";
+  divResultat.innerText = "⏳ Analyse en cours par l'IA...";
+
+  try {
+    const res = await fetch('/api/analyser', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ texteAnnonce: contenu })
+    });
+
+    const data = await res.json();
+    
+    if (data.error) {
+      divResultat.innerText = "❌ Erreur : " + data.error;
+    } else {
+      divResultat.innerText = data.analyse;
+    }
+  } catch (err) {
+    divResultat.innerText = "❌ Impossible de joindre le serveur. Vérifiez vos variables sur Vercel.";
+  }
+}
 
 </body>
 </html>
