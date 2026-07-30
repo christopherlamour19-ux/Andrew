@@ -1,20 +1,19 @@
 export default async function handler(req, res) {
-  // 1. Autoriser uniquement la méthode POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Méthode non autorisée' });
   }
 
+  // Récupère l'URL du corps de la requête
   const { url } = req.body || {};
 
-  // 2. Validation stricte et nettoyage de l'URL
   if (!url || typeof url !== 'string') {
     return res.status(400).json({ error: 'Veuillez fournir un lien Leboncoin valide.' });
   }
 
   const cleanUrl = url.trim();
-  const leboncoinRegex = /^https?:\/\/(www\.|mobile\.)?leboncoin\.fr\/.+/i;
 
-  if (!leboncoinRegex.test(cleanUrl)) {
+  // Accepte www.leboncoin.fr, mobile.leboncoin.fr, leboncoin.fr, etc.
+  if (!cleanUrl.includes('leboncoin.fr')) {
     return res.status(400).json({ error: 'Veuillez fournir un lien Leboncoin valide.' });
   }
 
@@ -51,10 +50,9 @@ export default async function handler(req, res) {
     }
 
     const resultText = data.choices[0]?.message?.content;
-
     return res.status(200).json({ result: resultText });
 
   } catch (error) {
-    return res.status(500).json({ error: 'Erreur lors de l\'analyse de l\'annonce.' });
+    return res.status(500).json({ error: "Erreur lors de l'analyse de l'annonce." });
   }
 }
