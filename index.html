@@ -233,15 +233,15 @@
     </h1>
 
     <p class="subtitle">
-      Collez simplement l'URL d'une annonce et RadarMoto analysera automatiquement le prix,
+      Collez simplement l'URL d'une annonce Leboncoin et RadarMoto analysera automatiquement le prix,
       les informations importantes et les éventuels points de vigilance.
     </p>
 
-    <!-- Formulaire de recherche lié au script JS -->
-    <div class="search">
-      <input type="text" id="urlInput" placeholder="Collez ici l'URL de votre annonce...">
-      <button onclick="analyserAnnonce()">Analyser →</button>
-    </div>
+    <!-- Formulaire de recherche -->
+    <form class="search" id="searchForm">
+      <input type="text" id="urlInput" placeholder="Collez ici l'URL Leboncoin de votre annonce..." required>
+      <button type="submit">Analyser →</button>
+    </form>
 
     <!-- Zone d'affichage du résultat -->
     <div id="resultat" class="resultat-box"></div>
@@ -262,72 +262,42 @@
     </div>
   </section>
 
-  <!-- Script JavaScript propre et à sa place -->
+  <!-- Script JavaScript nettoyé -->
   <script>
-    async function analyserAnnonce() {
+    document.getElementById('searchForm').addEventListener('submit', async function(e) {
+      e.preventDefault(); // Empêche le rechargement de la page
+
       const urlInput = document.getElementById('urlInput');
       const divResultat = document.getElementById('resultat');
-      const url = urlInput.value.trim();
+      const contenu = urlInput.value.trim();
 
-      if (!url) {
-        alert("Veuillez coller le lien d'une annonce.");
+      if (!contenu) {
+        alert("Veuillez coller le lien de l'annonce.");
         return;
       }
-      
+
       divResultat.style.display = "block";
-      divResultat.innerText = "⏳ Analyse de l'annonce en cours par l'IA...";
+      divResultat.innerText = "⏳ Analyse en cours par l'IA...";
 
       try {
-        const res = await fetch('/api/analyser', {
+        const res = await fetch('/api/analyze', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ urlAnnonce: url })
+          body: JSON.stringify({ url: contenu, texteAnnonce: contenu })
         });
 
         const data = await res.json();
-        
-        if (data.error) {
-          divResultat.innerText = "❌ Erreur : " + data.error;
+
+        if (!res.ok || data.error) {
+          divResultat.innerText = "❌ Erreur : " + (data.error || "Une erreur est survenue.");
         } else {
-          divResultat.innerText = data.analyse;
+          divResultat.innerText = data.result || data.analyse;
         }
       } catch (err) {
-        divResultat.innerText = "❌ Une erreur est survenue lors de la connexion au serveur.";
+        divResultat.innerText = "❌ Impossible de joindre le serveur. Vérifiez la connexion ou les variables sur Vercel.";
       }
-    }
-  </script>
- 
-async function analyserAnnonce() {
-  const urlInput = document.getElementById('urlInput');
-  const divResultat = document.getElementById('resultat');
-  const contenu = urlInput.value.trim();
-
-  if (!contenu) {
-    alert("Veuillez coller le texte ou le lien de l'annonce.");
-    return;
-  }
-  
-  divResultat.style.display = "block";
-  divResultat.innerText = "⏳ Analyse en cours par l'IA...";
-
-  try {
-    const res = await fetch('/api/analyser', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ texteAnnonce: contenu })
     });
-
-    const data = await res.json();
-    
-    if (data.error) {
-      divResultat.innerText = "❌ Erreur : " + data.error;
-    } else {
-      divResultat.innerText = data.analyse;
-    }
-  } catch (err) {
-    divResultat.innerText = "❌ Impossible de joindre le serveur. Vérifiez vos variables sur Vercel.";
-  }
-}
+  </script>
 
 </body>
 </html>
