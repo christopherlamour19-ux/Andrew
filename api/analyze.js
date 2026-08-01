@@ -14,7 +14,7 @@ export default async function handler(req, res) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     // CAS 1 : Analyseur d'annonces (ton code d'origine inchangé)
     if (mode === 'ad' || !mode) {
@@ -54,25 +54,22 @@ Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce f
       return res.status(200).json({ result: result.response.text() });
     }
 
-    // CAS 2 : Simulateur "Idéal Moto" (Le nouveau mode)
+    // CAS 2 : Simulateur "Idéal Moto" avec choix par menus
     if (mode === 'simulator') {
-      const { age, height, budget, license, experience, usage, insurance, consumption } = profile;
+      const { ageRange, height, style, license, budget } = profile;
 
-      const simPrompt = `Tu es un conseiller expert en choix de moto. Un utilisateur recherche sa moto idéale selon son profil :
-      - Âge : ${age} ans
-      - Taille : ${height} cm
+      const simPrompt = `Tu es un conseiller expert en choix de moto. Un utilisateur recherche sa moto idéale selon son profil précis :
+      - Tranche d'âge : ${ageRange}
+      - Taille : ${height}
+      - Style de moto recherché : ${style}
       - Permis : ${license}
-      - Expérience : ${experience}
-      - Utilisation / Style : ${usage}
-      - Budget maximum : ${budget} €
-      - Contrainte d'assurance : ${insurance}
-      - Attente en consommation : ${consumption}
+      - Budget maximum : ${budget}
 
-      Fournis une recommandation claire structurée ainsi :
+      Fournis une recommandation claire et structurée ainsi :
       ---MOTO_IDEALE---
       - 🏍️ Modèle conseillé : (Nom exact de la moto, année, cylindrée)
-      - 💡 Pourquoi ce choix : (Explique en quelques lignes pourquoi elle correspond à sa taille de ${height}cm, son permis et son budget)
-      - 🛡️ Assurance & Conso : (Analyse de l'assurance pour son profil et la consommation réelle)
+      - 💡 Pourquoi ce choix : (Explique en quelques lignes pourquoi elle correspond à son style ${style}, sa taille, son permis ${license} et son budget)
+      - 🛡️ Assurance & Conso : (Analyse rapide de l'assurance pour son profil et la consommation réelle)
       - ⚠️ Points de vigilance : (Les pièges ou défauts connus de ce modèle à surveiller)
       - 🔍 Recherche photo : Donne un terme de recherche précis en anglais pour trouver une belle photo de cette moto (ex: "Yamaha MT-07 2022 studio shot") sur une ligne commençant par PHOTO_QUERY: [ton terme ici].`;
 
