@@ -3,195 +3,423 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MotoCheck IA - Analyseur d'annonces</title>
+    <title>RadarMoto | L'expert IA pour vos achats moto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        /* === RESET & BASE === */
+        :root {
+            --bg-dark: #0B0F19;
+            --bg-card: #151C2C;
+            --accent: #FFB300;
+            --accent-hover: #FFA000;
+            --text-main: #FFFFFF;
+            --text-muted: #94A3B8;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #0f172a; /* Bleu nuit très sombre */
-            color: #f8fafc; /* Texte presque blanc */
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(15px);
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i { color: var(--accent); }
+        .logo span { color: var(--accent); }
+
+        .nav-badge {
+            background: rgba(255, 179, 0, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(255, 179, 0, 0.3);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
+            text-align: center;
+            padding: 130px 5% 60px 5%;
+            background: radial-gradient(circle at 50% 25%, rgba(255, 179, 0, 0.06), transparent 60%);
         }
 
-        /* === CONTENEUR PRINCIPAL === */
-        .container {
-            background-color: #1e293b; /* Bleu gris pour le bloc central */
-            width: 100%;
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .hero h1 span { color: var(--accent); }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
             max-width: 650px;
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
-            border: 1px solid #334155;
         }
 
-        /* === EN-TÊTE === */
-        h1 {
-            text-align: center;
-            color: #38bdf8; /* Bleu clair dynamique */
-            margin-top: 0;
-            margin-bottom: 0.5rem;
-            font-size: 2rem;
-        }
-        
-        .subtitle {
-            text-align: center;
-            color: #94a3b8;
-            font-size: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        /* === FORMULAIRE === */
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #e2e8f0;
-        }
-
-        textarea {
+        /* --- BARRE DE RECHERCHE --- */
+        .search-container {
             width: 100%;
-            background-color: #0b1120;
-            color: #f8fafc;
-            border: 1px solid #475569;
-            border-radius: 8px;
-            padding: 1rem;
-            font-size: 1rem;
-            min-height: 120px;
-            resize: vertical;
-            box-sizing: border-box;
-            margin-bottom: 1.5rem;
+            max-width: 750px;
+            margin-bottom: 15px;
+        }
+
+        .search-box {
+            display: flex;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(20px);
+            padding: 8px;
+            border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
             transition: border-color 0.3s;
         }
 
-        textarea:focus {
-            outline: none;
-            border-color: #38bdf8;
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
-        }
+        .search-box:focus-within { border-color: var(--accent); }
 
-        /* === BOUTON === */
-        button {
-            width: 100%;
-            background-color: #0ea5e9;
-            color: white;
+        .search-box input {
+            flex: 1;
+            background: transparent;
             border: none;
-            padding: 1rem;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 8px;
+            padding: 15px 20px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-box input::placeholder { color: var(--text-muted); }
+
+        .search-box button {
+            background: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            padding: 0 35px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        button:hover {
-            background-color: #0284c7;
+        .search-box button:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
         }
 
-        button:active {
-            transform: scale(0.98);
-        }
-
-        button:disabled {
-            background-color: #475569;
+        .search-box button:disabled {
+            background: #334155;
+            color: var(--text-muted);
             cursor: not-allowed;
+            transform: none;
         }
 
-        /* === ÉTATS & RÉSULTATS === */
-        #loader {
-            display: none;
-            text-align: center;
-            margin-top: 1.5rem;
-            color: #38bdf8;
+        .sample-hint {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
+
+        .sample-hint span {
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: underline;
             font-weight: 500;
-            font-size: 1.1rem;
         }
 
-        #result-box {
+        .sample-hint span:hover { color: var(--accent-hover); }
+
+        /* --- ZONE DE RÉSULTAT AVEC ONGLETS --- */
+        .result-container {
+            width: 100%;
+            max-width: 750px;
             display: none;
-            margin-top: 2rem;
-            background-color: #1e293b;
-            border-left: 5px solid #10b981; /* Ligne verte pour le succès */
-            padding: 1.5rem;
-            border-radius: 0 8px 8px 0;
-            white-space: pre-wrap; /* Permet de garder les retours à la ligne de l'IA */
-            line-height: 1.6;
-            color: #e2e8f0;
-            background: linear-gradient(to right, #0f172a, #1e293b);
+            text-align: left;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.4s ease;
+            margin-bottom: 40px;
+            overflow: hidden;
         }
 
-        .error-box {
-            border-left: 5px solid #ef4444 !important; /* Ligne rouge pour les erreurs */
-            color: #fca5a5 !important;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* En-tête des onglets */
+        .tabs-header {
+            display: flex;
+            background: rgba(11, 15, 25, 0.6);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+            background: rgba(255, 179, 0, 0.03);
+        }
+
+        /* Contenu des onglets */
+        .tab-content {
+            display: none;
+            padding: 25px;
+            color: #E2E8F0;
+            line-height: 1.8;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .error-box { border-color: rgba(239, 68, 68, 0.4) !important; }
+
+        /* Spinner */
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(11, 15, 25, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--bg-dark);
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            background: rgba(11, 15, 25, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .search-box { flex-direction: column; background: transparent; border: none; box-shadow: none; }
+            .search-box input { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; padding: 15px; }
+            .search-box button { width: 100%; padding: 15px; justify-content: center; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>🏍️ MotoCheck IA</h1>
-        <p class="subtitle">L'expert virtuel pour tes achats de motos d'occasion.</p>
+    <nav>
+        <div class="logo">
+            <i class="fa-solid fa-motorcycle"></i> Radar<span>Moto</span>
+        </div>
+        <div class="nav-badge">Version Pro IA</div>
+    </nav>
 
-        <form id="analyze-form">
-            <label for="prompt">Lien LeBonCoin ou description de l'annonce :</label>
-            <textarea id="prompt" placeholder="https://www.leboncoin.fr/ad/motos/123456789..." required></textarea>
-            <button type="submit" id="submit-btn">Lancer l'analyse IA</button>
-        </form>
+    <section class="hero">
+        <h1>Analysez n'importe quelle annonce <span>LeBonCoin</span></h1>
+        <p>Collez le lien de la moto ci-dessous pour obtenir instantanément un résumé rapide ou un rapport technique complet.</p>
 
-        <div id="loader">⚙️ Démontage du moteur en cours... Analyse de l'annonce...</div>
-        
-        <div id="result-box"></div>
-    </div>
+        <div class="search-container">
+            <form id="analyze-form" class="search-box">
+                <input type="url" id="prompt" placeholder="https://www.leboncoin.fr/ad/motos/..." required>
+                <button type="submit" id="submit-btn">
+                    <span id="btn-text">Lancer l'audit</span>
+                    <div class="spinner" id="spinner"></div>
+                </button>
+            </form>
+        </div>
+
+        <div class="sample-hint">
+            Besoin d'un test rapide ? <span id="fill-sample">Cliquez ici pour insérer un lien exemple</span>
+        </div>
+
+        <!-- Conteneur des résultats par onglets -->
+        <div class="result-container" id="result-container">
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab('summary')">
+                    <i class="fa-solid fa-bolt"></i> Résumé Rapide
+                </button>
+                <button class="tab-btn" onclick="switchTab('detailed')">
+                    <i class="fa-solid fa-file-lines"></i> Rapport Technique Détaillé
+                </button>
+            </div>
+
+            <div id="tab-summary" class="tab-content active"></div>
+            <div id="tab-detailed" class="tab-content"></div>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2026 RadarMoto. Outil d'aide à l'achat de motos d'occasion.
+    </footer>
 
     <script>
+        // Gestion des onglets
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            if (tabName === 'summary') {
+                document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+                document.getElementById('tab-summary').classList.add('active');
+            } else {
+                document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+                document.getElementById('tab-detailed').classList.add('active');
+            }
+        }
+
+        document.getElementById('fill-sample').addEventListener('click', function() {
+            document.getElementById('prompt').value = "https://www.leboncoin.fr/ad/motos/3229286512";
+        });
+
         document.getElementById('analyze-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const promptInput = document.getElementById('prompt').value;
             const submitBtn = document.getElementById('submit-btn');
-            const loader = document.getElementById('loader');
-            const resultBox = document.getElementById('result-box');
+            const btnText = document.getElementById('btn-text');
+            const spinner = document.getElementById('spinner');
+            const resultContainer = document.getElementById('result-container');
+            const summaryBox = document.getElementById('tab-summary');
+            const detailedBox = document.getElementById('tab-detailed');
 
-            // Mise à jour de l'interface pour l'attente
             submitBtn.disabled = true;
-            submitBtn.textContent = "Analyse en cours...";
-            loader.style.display = 'block';
-            resultBox.style.display = 'none';
-            resultBox.classList.remove('error-box');
+            spinner.style.display = 'inline-block';
+            resultContainer.style.display = 'none';
+            resultContainer.classList.remove('error-box');
+
+            const steps = [
+                "Connexion à l'annonce...",
+                "Extraction des données...",
+                "Génération des rapports..."
+            ];
+            
+            let stepIdx = 0;
+            btnText.textContent = steps[0];
+            
+            const interval = setInterval(() => {
+                stepIdx++;
+                if (stepIdx < steps.length) {
+                    btnText.textContent = steps[stepIdx];
+                }
+            }, 1200);
 
             try {
-                // Appel vers ton backend Vercel
+                // On demande à l'API de structurer sa réponse avec un séparateur pour alimenter les 2 onglets
+                const modifiedPrompt = `Analyse cette annonce moto (${promptInput}). 
+                Réponds obligatoirement sous ce format exact :
+                ---RESUME_RAPIDE---
+                (Donne ici 4 puces maximum ultra courtes : 💰 Prix, 🛣️ Kilométrage, ⚠️ Piège majeur, 🎯 Verdict final en un mot).
+                ---RAPPORT_DETAILLE---
+                (Donne ici une analyse complète et technique de la moto, points forts, historique, vérifications à faire lors de l'achat, estimation de l'entretien futur).`;
+
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: promptInput })
+                    body: JSON.stringify({ prompt: modifiedPrompt })
                 });
 
+                clearInterval(interval);
                 const data = await response.json();
 
                 if (!response.ok) {
                     throw new Error(data.error || 'Erreur lors de la communication avec le serveur.');
                 }
 
-                // Affichage du résultat
-                resultBox.textContent = data.result;
-                resultBox.style.display = 'block';
+                // Découpage de la réponse de l'IA pour séparer les deux onglets
+                const fullText = data.result;
+                let summaryPart = fullText;
+                let detailedPart = "Rapport détaillé non disponible.";
+
+                if (fullText.includes("---RESUME_RAPIDE---") && fullText.includes("---RAPPORT_DETAILLE---")) {
+                    const parts = fullText.split("---RAPPORT_DETAILLE---");
+                    summaryPart = parts[0].replace("---RESUME_RAPIDE---", "").trim();
+                    detailedPart = parts[1].trim();
+                }
+
+                summaryBox.textContent = summaryPart;
+                detailedBox.textContent = detailedPart;
+                
+                resultContainer.style.display = 'block';
+                switchTab('summary'); // Ouvre directement sur le résumé rapide
 
             } catch (error) {
-                // Affichage de l'erreur
-                resultBox.textContent = "⚠️ Erreur : " + error.message;
-                resultBox.classList.add('error-box');
-                resultBox.style.display = 'block';
+                clearInterval(interval);
+                resultContainer.classList.add('error-box');
+                summaryBox.textContent = "Erreur : " + error.message;
+                detailedBox.textContent = "Impossible de charger le rapport détaillé.";
+                resultContainer.style.display = 'block';
             } finally {
-                // Remise à zéro de l'interface
                 submitBtn.disabled = false;
-                submitBtn.textContent = "Lancer l'analyse IA";
-                loader.style.display = 'none';
+                btnText.textContent = "Lancer l'audit";
+                spinner.style.display = 'none';
             }
         });
     </script>
