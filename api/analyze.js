@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   try {
     let adContent = prompt;
 
-    // Extraction du contenu si c'est une URL LeBonCoin
+    // Si l'utilisateur colle une URL LeBonCoin, extraction via Jina AI
     if (prompt && (prompt.startsWith('http://') || prompt.startsWith('https://'))) {
       try {
         const jinaResponse = await fetch(`https://r.jina.ai/${prompt}`);
@@ -23,12 +23,15 @@ export default async function handler(req, res) {
           adContent = await jinaResponse.text();
         }
       } catch (e) {
-        console.log("Erreur lors de la lecture de l'URL");
+        console.log("Erreur lors de la lecture du lien URL.");
       }
     }
 
-    // Initialisation du SDK officiel Google AI
-    const ai = new GoogleGenAI({ apiKey });
+    // Initialisation avec la clé d'API
+    const genAI = new GoogleGenerativeAI(apiKey);
+    
+    // Le SDK gère automatiquement les endpoints et versions du modèle
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const systemInstructions = `Tu es un expert mécanicien et acheteur de motos d'occasion.
 Analyse l'annonce suivante et réponds clairement :
@@ -37,15 +40,12 @@ Analyse l'annonce suivante et réponds clairement :
 3. ⚠️ Points d'attention : Quels problèmes mécaniques connus surveiller pour ce modèle/année ?
 4. ❓ Questions à poser au vendeur lors de la visite.`;
 
-    // Le SDK s'occupe de router vers la bonne version active du modèle
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: `${systemInstructions}\n\nVoici l'annonce :\n${adContent}`,
-    });
+    const result = await model.generateContent(`${systemInstructions}\n\nVoici l'annonce :\n${adContent}`);
+    const responseText = result.response.text();
 
-    return res.status(200).json({ result: response.text });
+    return res.status(200).json({ result: responseText });
 
   } catch (error) {
-    return res.status(500).json({ error: error.message || "Erreur lors de l'analyse." });
+    return res.status(500).json({ error: error.message || "Erreur lors de l'analyse de l'annonce." });
   }
 }
