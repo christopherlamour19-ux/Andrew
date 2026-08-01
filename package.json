@@ -1,5 +1,8 @@
 {
+  "name": "motocheck-ia",
+  "version": "1.0.0",
+  "type": "module",
   "dependencies": {
-    "@google/genai": "^0.1.1"
+    "@google/generative-ai": "^0.21.0"
   }
 }
