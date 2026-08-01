@@ -590,10 +590,10 @@
             if (!session) return;
 
             const { data, error } = await supabaseClient
-                .from('analyses') 
+                .from('historique de recherche') 
                 .select('*')
-                .eq('userId', session.user.id)
-                .order('created_at', { ascending: false });
+                .eq("ID de l'utilisateur", session.user.id)
+                .order('créé_à', { ascending: false });
 
             if (error) {
                 historyList.innerHTML = '<p style="color: #EF4444; text-align: center;">Erreur lors du chargement de l\'historique.</p>';
@@ -608,8 +608,8 @@
 
             historyList.innerHTML = data.map(item => `
                 <div class="history-item">
-                    <div class="history-date"><i class="fa-regular fa-calendar"></i> ${new Date(item.created_at).toLocaleDateString('fr-FR')}</div>
-                    <div class="history-prompt">${item.prompt || 'Analyse sans titre'}</div>
+                    <div class="history-date"><i class="fa-regular fa-calendar"></i> ${new Date(item.créé_à).toLocaleDateString('fr-FR')}</div>
+                    <div class="history-prompt">${item.moto_title || 'Analyse sans titre'}</div>
                 </div>
             `).join('');
         });
@@ -697,11 +697,11 @@
 
                 const { data: { session } } = await supabaseClient.auth.getSession();
                 if (session) {
-                    await supabaseClient.from('analyses').insert([
+                    await supabaseClient.from('historique de recherche').insert([
                         { 
-                            userId: session.user.id, 
-                            prompt: promptInput, 
-                            result: fullText 
+                            "ID de l'utilisateur": session.user.id, 
+                            "moto_title": promptInput, 
+                            "résultat complet": fullText 
                         }
                     ]);
                 }
