@@ -14,9 +14,11 @@ export default async function handler(req, res) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
+    
+    // CORRECTION : On force explicitement 'gemini-1.5-flash' pour éviter les erreurs de quota ou de modèle inconnu
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-    // CAS 1 : Analyseur d'annonces (ton code d'origine inchangé)
+    // CAS 1 : Analyseur d'annonces
     if (mode === 'ad' || !mode) {
       let adContent = prompt;
 
@@ -54,7 +56,7 @@ Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce f
       return res.status(200).json({ result: result.response.text() });
     }
 
-    // CAS 2 : Simulateur "Idéal Moto" avec choix par menus
+    // CAS 2 : Simulateur "Idéal Moto"
     if (mode === 'simulator') {
       const { ageRange, height, style, license, budget } = profile;
 
@@ -87,7 +89,7 @@ Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce f
 
       return res.status(200).json({ 
         result: text, 
-        imageUrl: motoImageUrl 
+        imageUrl: motoImageUrl .
       });
     }
 
