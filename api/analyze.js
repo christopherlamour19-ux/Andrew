@@ -15,10 +15,10 @@ export default async function handler(req, res) {
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     
-    // On utilise le nom standard validé par le SDK Google
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
+    // MODÈLE MIS À JOUR SUR LE NOUVEAU STANDARD ACTIF
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-    // CAS 1 : ANNONCE (Ton code d'origine intact et fonctionnel)
+    // CAS 1 : ANNONCE (Ton code d'origine inchangé et 100% intact)
     if (mode === 'ad' || !mode) {
       let adContent = prompt;
 
