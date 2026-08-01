@@ -1,77 +1,199 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Analyseur d'Annonce Moto AI</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-    .card { background: #1e293b; border-radius: 16px; padding: 32px; width: 100%; max-width: 650px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3); border: 1px solid #334155; }
-    h1 { font-size: 1.8rem; margin-bottom: 8px; color: #38bdf8; text-align: center; }
-    p.subtitle { color: #94a3b8; text-align: center; margin-bottom: 24px; font-size: 0.95rem; }
-    .form-group { margin-bottom: 20px; }
-    label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; color: #cbd5e1; }
-    textarea, input { width: 100%; padding: 12px 16px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 0.95rem; outline: none; transition: border 0.2s; }
-    textarea:focus, input:focus { border-color: #38bdf8; }
-    textarea { resize: vertical; height: 100px; }
-    button { width: 100%; padding: 14px; background: #38bdf8; color: #0f172a; font-weight: 700; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
-    button:hover { background: #0284c7; color: #fff; }
-    button:disabled { background: #475569; cursor: not-allowed; }
-    #result { margin-top: 24px; padding: 20px; background: #0f172a; border-radius: 8px; border: 1px solid #334155; display: none; line-height: 1.6; font-size: 0.95rem; white-space: pre-wrap; }
-    .loader { text-align: center; color: #38bdf8; margin-top: 16px; display: none; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoCheck IA - Analyseur d'annonces</title>
+    <style>
+        /* === RESET & BASE === */
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0f172a; /* Bleu nuit très sombre */
+            color: #f8fafc; /* Texte presque blanc */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* === CONTENEUR PRINCIPAL === */
+        .container {
+            background-color: #1e293b; /* Bleu gris pour le bloc central */
+            width: 100%;
+            max-width: 650px;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        /* === EN-TÊTE === */
+        h1 {
+            text-align: center;
+            color: #38bdf8; /* Bleu clair dynamique */
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* === FORMULAIRE === */
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        textarea {
+            width: 100%;
+            background-color: #0b1120;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 1rem;
+            min-height: 120px;
+            resize: vertical;
+            box-sizing: border-box;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+        }
+
+        /* === BOUTON === */
+        button {
+            width: 100%;
+            background-color: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #0284c7;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            background-color: #475569;
+            cursor: not-allowed;
+        }
+
+        /* === ÉTATS & RÉSULTATS === */
+        #loader {
+            display: none;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #38bdf8;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        #result-box {
+            display: none;
+            margin-top: 2rem;
+            background-color: #1e293b;
+            border-left: 5px solid #10b981; /* Ligne verte pour le succès */
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            white-space: pre-wrap; /* Permet de garder les retours à la ligne de l'IA */
+            line-height: 1.6;
+            color: #e2e8f0;
+            background: linear-gradient(to right, #0f172a, #1e293b);
+        }
+
+        .error-box {
+            border-left: 5px solid #ef4444 !important; /* Ligne rouge pour les erreurs */
+            color: #fca5a5 !important;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="card">
-    <h1>🏍️ MotoCheck AI</h1>
-    <p class="subtitle">Colle le texte ou les détails de l'annonce LeBonCoin pour lancer l'analyse.</p>
-    
-    <div class="form-group">
-      <label for="adData">Texte de l'annonce (Titre, Prix, Année, km, Description) :</label>
-      <textarea id="adData" placeholder="Ex: Yamaha MT-07 2018 - 4500€ - 25000 km. Vends moto en bon état, révision faite..."></textarea>
+    <div class="container">
+        <h1>🏍️ MotoCheck IA</h1>
+        <p class="subtitle">L'expert virtuel pour tes achats de motos d'occasion.</p>
+
+        <form id="analyze-form">
+            <label for="prompt">Lien LeBonCoin ou description de l'annonce :</label>
+            <textarea id="prompt" placeholder="https://www.leboncoin.fr/ad/motos/123456789..." required></textarea>
+            <button type="submit" id="submit-btn">Lancer l'analyse IA</button>
+        </form>
+
+        <div id="loader">⚙️ Démontage du moteur en cours... Analyse de l'annonce...</div>
+        
+        <div id="result-box"></div>
     </div>
 
-    <button id="btn" onclick="analyserAnnonce()">Lancer l'analyse IA</button>
-    <div id="loader" class="loader">Analyse en cours par l'IA...</div>
-    <div id="result"></div>
-  </div>
+    <script>
+        document.getElementById('analyze-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const promptInput = document.getElementById('prompt').value;
+            const submitBtn = document.getElementById('submit-btn');
+            const loader = document.getElementById('loader');
+            const resultBox = document.getElementById('result-box');
 
-  <script>
-    async function analyserAnnonce() {
-      const text = document.getElementById('adData').value;
-      const resultDiv = document.getElementById('result');
-      const loader = document.getElementById('loader');
-      const btn = document.getElementById('btn');
+            // Mise à jour de l'interface pour l'attente
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Analyse en cours...";
+            loader.style.display = 'block';
+            resultBox.style.display = 'none';
+            resultBox.classList.remove('error-box');
 
-      if (!text.trim()) {
-        alert("Pense à coller le texte de l'annonce !");
-        return;
-      }
+            try {
+                // Appel vers ton backend Vercel
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: promptInput })
+                });
 
-      btn.disabled = true;
-      loader.style.display = 'block';
-      resultDiv.style.display = 'none';
+                const data = await response.json();
 
-      try {
-        const response = await fetch('/api/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt: text })
+                if (!response.ok) {
+                    throw new Error(data.error || 'Erreur lors de la communication avec le serveur.');
+                }
+
+                // Affichage du résultat
+                resultBox.textContent = data.result;
+                resultBox.style.display = 'block';
+
+            } catch (error) {
+                // Affichage de l'erreur
+                resultBox.textContent = "⚠️ Erreur : " + error.message;
+                resultBox.classList.add('error-box');
+                resultBox.style.display = 'block';
+            } finally {
+                // Remise à zéro de l'interface
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Lancer l'analyse IA";
+                loader.style.display = 'none';
+            }
         });
-
-        const data = await response.json();
-        resultDiv.textContent = data.result || data.error;
-        resultDiv.style.display = 'block';
-      } catch (err) {
-        resultDiv.textContent = "Erreur lors de l'analyse.";
-        resultDiv.style.display = 'block';
-      } finally {
-        btn.disabled = false;
-        loader.style.display = 'none';
-      }
-    }
-  </script>
+    </script>
 </body>
 </html>
