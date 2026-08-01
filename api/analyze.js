@@ -31,7 +31,7 @@ export default async function handler(req, res) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    // Utilisation d'un modèle valide et stable
+    // Correction ici avec le nom de modèle standard géré par l'API v1beta
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     const systemInstructions = `Tu es un expert mécanicien et acheteur de motos d'occasion.
