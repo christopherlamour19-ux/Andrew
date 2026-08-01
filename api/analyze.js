@@ -5,56 +5,59 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Méthode non autorisée' });
   }
 
-  const { type, content, profile } = req.body;
+  const { prompt } = req.body;
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({ error: 'Clé API non configurée.' });
+    return res.status(500).json({ error: 'Clé API non configurée sur Vercel.' });
   }
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    // Correction ici : on remet le vrai nom de modèle officiel validé par l'API
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    let adContent = prompt;
 
-    let prompt = "";
-
-    if (type === 'ad') {
-      prompt = `Tu es un expert en inspection et cotation de motos d'occasion. Analyse cette annonce : "${content}".
-      Fournis une analyse claire, détaillée mais présentée sous un format simple et lisible avec ces sections exactes :
-
-      📊 1. COHÉRENCE DU PRIX DU MARCHÉ
-      - Le prix demandé est-il cohérent, surcoté ou une bonne affaire par rapport à la cote actuelle de ce modèle et de son année ? Donne une estimation de la fourchette de prix réelle.
-
-      🛣️ 2. ANALYSE DU KILOMÉTRAGE
-      - Le kilométrage est-il cohérent par rapport à l'âge de la moto (moyenne standard d'environ 6000 km/an) ? Est-ce un point de vigilance ?
-
-      🛠️ 3. RÉVISIONS ET FRAIS À PRÉVOIR
-      - Quels sont les entretiens imminents ou l'historique critique à vérifier (kits chaîne, pneus, vidange, purge des freins, soupapes, jeu de direction, embrayage) selon le kilométrage et l'âge de cette moto ?
-
-      🎯 4. MON AVIS D'EXPERT
-      - Donne ton point de vue tranché et direct sur cette annonce en format court (faut-il foncer, négocier fermement ou fuir, et pourquoi en quelques mots).`;
-
-    } else {
-      prompt = `Tu es un conseiller moto expert. Trouve la moto idéale pour ce profil :
-      - Âge : ${profile.age} ans
-      - Taille : ${profile.height} cm
-      - Permis : ${profile.license}
-      - Expérience : ${profile.experience}
-      - Style : ${profile.style}
-      - Budget : ${profile.budget}
-
-      Structure ta réponse clairement :
-      - 🏍️ Le top choix (Modèle et année)
-      - 💡 Pourquoi ce choix par rapport à sa taille (${profile.height}cm) et son permis (${profile.license})
-      - 🥈 2 alternatives solides
-      - ⚠️ Les pièges à éviter pour son profil.`;
+    // Extraction automatique de l'URL LeBonCoin même si du texte (partage mobile) est écrit devant
+    if (prompt) {
+      const urlMatch = prompt.match(/(https?:\/\/[^\s]+)/);
+      
+      if (urlMatch) {
+        const extractedUrl = urlMatch[0];
+        try {
+          const jinaResponse = await fetch(`https://r.jina.ai/${extractedUrl}`);
+          if (jinaResponse.ok) {
+            adContent = await jinaResponse.text();
+          }
+        } catch (e) {
+          console.log("Erreur lors de la lecture du lien URL.");
+        }
+      }
     }
 
-    const result = await model.generateContent(prompt);
-    return res.status(200).json({ result: result.response.text() });
+    // Initialisation du SDK Google AI avec le modèle officiel Gemini Flash
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+    // Tes instructions personnalisées
+    const systemInstructions = `Tu es un expert mécanicien et acheteur de motos d'occasion.
+Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce format pour séparer les onglets :
+
+---RESUME_RAPIDE---
+- 💰 Prix : (Analyse rapide du prix et donne moi un prix)
+- 🛣️ Kilométrage : (si les kilometrage pose problème a l'avenir ou les grosses revisions bientot a faire, y'a t il des choses a changer prochainement ect)
+- ⚠️ Piège majeur : (Le point noir sur la moto, moteur parti cycle le kilometrage grosse revision ou pas prochainement)
+- 🎯 Verdict final : (Fonce / Négocie / Fuis)
+
+---RAPPORT_DETAILLE---
+1. 💰 Prix & Argus : Est-ce un bon prix en détail ?
+2. 🛣️ Kilométrage : Normal ou trop élevé pour l'année ?
+3. ⚠️ Points d'attention : Quels problèmes mécaniques connus surveiller pour ce modèle/année ?
+4. ❓ Questions à poser au vendeur lors de la visite.`;
+
+    const result = await model.generateContent(`${systemInstructions}\n\nVoici l'annonce :\n${adContent}`);
+    const responseText = result.response.text();
+
+    return res.status(200).json({ result: responseText });
 
   } catch (error) {
-    return res.status(500).json({ error: error.message || "Erreur serveur." });
+    return res.status(500).json({ error: error.message || "Erreur lors de l'analyse de l'annonce." });
   }
 }
