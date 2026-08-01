@@ -435,7 +435,6 @@
         const authBtnText = document.getElementById('auth-btn-text');
 
         document.getElementById('open-auth-modal').addEventListener('click', async () => {
-            // Si l'utilisateur est déjà connecté, un clic peut servir à se déconnecter
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
                 if (confirm("Voulez-vous vous déconnecter ?")) {
@@ -456,7 +455,6 @@
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
                 const emailUser = session.user.email;
-                // Affiche le pseudo ou l'email abrégé sur le bouton
                 authBtnText.textContent = emailUser.split('@')[0];
             }
         }
@@ -554,10 +552,14 @@
             }, 1200);
 
             try {
+                // Récupération de l'utilisateur connecté pour l'historique
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                const userId = session ? session.user.id : null;
+
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: promptInput })
+                    body: JSON.stringify({ prompt: promptInput, userId: userId })
                 });
 
                 clearInterval(interval);
