@@ -18,7 +18,8 @@ Analyse l'annonce LeBonCoin suivante et réponds clairement :
 4. ❓ Questions à poser au vendeur lors de la visite.`;
 
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    // Utilisation du endpoint 'gemini-1.5-flash-latest' ou 'gemini-2.5-flash'
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
