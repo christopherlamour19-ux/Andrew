@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     // Initialisation avec la clé d'API
     const genAI = new GoogleGenerativeAI(apiKey);
     
-    // Le SDK gère automatiquement les endpoints et versions du modèle
+    // Nom exact du modèle de production
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const systemInstructions = `Tu es un expert mécanicien et acheteur de motos d'occasion.
