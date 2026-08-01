@@ -1,9 +1,10 @@
 export default async function handler(req, res) {
+  // 1. Autoriser uniquement les requêtes POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Méthode non autorisée' });
   }
 
-  const { prompt } = req.body; // URL ou texte collé par l'utilisateur
+  const { prompt } = req.body;
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
@@ -13,8 +14,8 @@ export default async function handler(req, res) {
   try {
     let adContent = prompt;
 
-    // Si l'utilisateur a collé une URL (LeBonCoin, etc.)
-    if (prompt.startsWith('http://') || prompt.startsWith('https://')) {
+    // 2. Si l'utilisateur colle un lien (http/https), on extrait le texte avec Jina AI
+    if (prompt && (prompt.startsWith('http://') || prompt.startsWith('https://'))) {
       const jinaResponse = await fetch(`https://r.jina.ai/${prompt}`);
       if (jinaResponse.ok) {
         adContent = await jinaResponse.text();
@@ -30,8 +31,8 @@ Analyse l'annonce suivante et réponds clairement :
 3. ⚠️ Points d'attention : Quels problèmes mécaniques connus surveiller pour ce modèle/année ?
 4. ❓ Questions à poser au vendeur lors de la visite.`;
 
-    // Endpoint officiel v1 avec le modèle gemini-1.5-flash
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    // 3. Appel à l'API Gemini 2.5 Flash
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -43,6 +44,7 @@ Analyse l'annonce suivante et réponds clairement :
 
     const data = await response.json();
     
+    // Si l'API renvoie une erreur (clé invalide, modèle non disponible, etc.)
     if (data.error) {
       return res.status(500).json({ error: data.error.message });
     }
@@ -51,6 +53,6 @@ Analyse l'annonce suivante et réponds clairement :
     return res.status(200).json({ result });
 
   } catch (error) {
-    return res.status(500).json({ error: "Erreur lors du traitement de l'annonce." });
+    return res.status(500).json({ error: "Erreur lors du traitement de la requête." });
   }
 }
