@@ -6,6 +6,7 @@
     <title>RadarMoto | L'expert pour vos achats moto</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- SDK Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
@@ -77,28 +78,32 @@
             font-weight: 600;
         }
 
-        /* --- BOUTON AUTH ET MODAL --- */
         .auth-btn {
-            background: rgba(255, 255, 255, 0.05);
+            background: transparent;
             color: var(--text-main);
             border: 1px solid var(--border-color);
             padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s;
+            font-weight: 600;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             gap: 8px;
+            transition: all 0.3s;
         }
-        .auth-btn:hover { border-color: var(--accent); color: var(--accent); }
 
+        .auth-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* --- MODALS --- */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(11, 15, 25, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -113,14 +118,14 @@
             width: 100%;
             max-width: 400px;
             position: relative;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
         }
 
         .close-btn {
             position: absolute;
             top: 15px; right: 20px;
             background: none; border: none;
-            color: var(--text-muted); font-size: 1.5rem;
+            color: var(--text-muted); font-size: 24px;
             cursor: pointer;
         }
         .close-btn:hover { color: var(--text-main); }
@@ -140,13 +145,62 @@
         }
         .auth-input:focus { border-color: var(--accent); }
 
-        .auth-actions { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-primary { flex: 1; background: var(--accent); color: var(--bg-dark); border: none; padding: 12px; font-weight: 700; border-radius: 8px; cursor: pointer; }
-        .btn-primary:hover { background: var(--accent-hover); }
-        .btn-secondary { flex: 1; background: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 12px; font-weight: 600; border-radius: 8px; cursor: pointer; }
-        .btn-secondary:hover { background: rgba(255,255,255,0.05); }
+        .auth-submit-btn {
+            width: 100%;
+            background: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            padding: 12px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .auth-submit-btn:hover { background: var(--accent-hover); }
 
-        .auth-message { margin-top: 15px; font-size: 0.85rem; text-align: center; }
+        .auth-switch {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .auth-switch span { color: var(--accent); cursor: pointer; font-weight: 600; text-decoration: underline; }
+
+        #auth-message { margin-top: 10px; font-size: 0.85rem; text-align: center; }
+
+        /* --- MODAL HISTORIQUE --- */
+        #history-modal .modal-content {
+            max-width: 600px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        #history-list {
+            overflow-y: auto;
+            margin-top: 15px;
+            padding-right: 5px;
+        }
+        .history-item {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .history-date {
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .history-prompt {
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-main);
+        }
 
         /* --- HERO SECTION --- */
         .hero {
@@ -271,7 +325,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* En-tête des onglets */
         .tabs-header {
             display: flex;
             background: rgba(11, 15, 25, 0.6);
@@ -305,7 +358,6 @@
             background: rgba(255, 179, 0, 0.03);
         }
 
-        /* Contenu des onglets */
         .tab-content {
             display: none;
             padding: 25px;
@@ -315,13 +367,9 @@
             white-space: pre-wrap;
         }
 
-        .tab-content.active {
-            display: block;
-        }
-
+        .tab-content.active { display: block; }
         .error-box { border-color: rgba(239, 68, 68, 0.4) !important; }
 
-        /* Spinner */
         .spinner {
             display: none;
             width: 18px;
@@ -334,10 +382,14 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* --- FOOTER --- */
-        <footer>
-            &copy; 2026 RadarMoto. Outil d'aide à l'achat de motos d'occasion.
-        </footer>
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            background: rgba(11, 15, 25, 0.5);
+        }
 
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.2rem; }
@@ -354,30 +406,42 @@
             <i class="fa-solid fa-motorcycle"></i> Radar<span>Moto</span>
         </div>
         <div class="nav-right">
-            <div class="nav-badge" id="user-status-badge">christo.r7 le best</div>
+            <button id="open-history-btn" class="auth-btn" style="display: none;">
+                <i class="fa-solid fa-clock-rotate-left"></i> <span>Historique</span>
+            </button>
             <button id="open-auth-modal" class="auth-btn">
                 <i class="fa-solid fa-user"></i> <span id="auth-btn-text">Connexion</span>
             </button>
         </div>
     </nav>
 
-    <!-- Modal d'authentification -->
+    <!-- Modal Authentification -->
     <div id="auth-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <button id="close-auth-modal" class="close-btn">&times;</button>
-            <h2>Mon Compte RadarMoto</h2>
-            <p>Connectez-vous pour sauvegarder vos historiques de recherche.</p>
+            <h2 id="auth-modal-title">Connexion</h2>
+            <p id="auth-modal-desc">Accédez à votre compte RadarMoto.</p>
             
             <form id="auth-form">
-                <input type="email" id="auth-email" placeholder="Votre email" required class="auth-input">
-                <input type="password" id="auth-password" placeholder="Votre mot de passe" required class="auth-input">
-                
-                <div class="auth-actions">
-                    <button type="submit" id="login-btn" class="btn-primary">Se connecter</button>
-                    <button type="button" id="signup-btn" class="btn-secondary">S'inscrire</button>
-                </div>
+                <input type="email" id="auth-email" placeholder="Votre email" class="auth-input" required>
+                <input type="password" id="auth-password" placeholder="Votre mot de passe" class="auth-input" required>
+                <button type="submit" id="auth-submit-action" class="auth-submit-btn">Se connecter</button>
             </form>
-            <div id="auth-message" class="auth-message"></div>
+            
+            <div id="auth-message"></div>
+            <div class="auth-switch">
+                <span id="switch-to-signup">Pas encore de compte ? S'inscrire</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Historique -->
+    <div id="history-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <button id="close-history-modal" class="close-btn">&times;</button>
+            <h2>Mon Historique</h2>
+            <p>Retrouvez vos précédentes analyses ci-dessous.</p>
+            <div id="history-list"></div>
         </div>
     </div>
 
@@ -420,83 +484,148 @@
     </footer>
 
     <script>
-        // Initialisation de Supabase côté Front
-        const SUPABASE_URL = 'https://pznorvhjczmhaybneesk.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6bm9ydmhqY3ptaGF5Ym5lZXNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1OTcxODQsImV4cCI6MjEwMTE3MzE4NH0.E5SzQyklK9pfzb__vZBwPB6ItyLSOSnoaUB0moHhUh4';
+        // --- CONFIGURATION SUPABASE ---
+        // Remplaces par tes propres clés si besoin
+        const SUPABASE_URL = "https://ton-projet.supabase.co"; 
+        const SUPABASE_ANON_KEY = "ta-cle-anon";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Gestion du modal d'authentification
-        const modal = document.getElementById('auth-modal');
+        // --- GESTION DE LA SESSION & AUTH ---
+        const authModal = document.getElementById('auth-modal');
+        const openAuthBtn = document.getElementById('open-auth-modal');
+        const closeAuthBtn = document.getElementById('close-auth-modal');
         const authBtnText = document.getElementById('auth-btn-text');
-
-        document.getElementById('open-auth-modal').addEventListener('click', async () => {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) {
-                if (confirm("Voulez-vous vous déconnecter ?")) {
-                    await supabaseClient.auth.signOut();
-                    location.reload();
-                }
-            } else {
-                modal.style.display = 'flex';
-            }
-        });
-
-        document.getElementById('close-auth-modal').addEventListener('click', () => modal.style.display = 'none');
-
+        const historyBtn = document.getElementById('open-history-btn');
+        const authForm = document.getElementById('auth-form');
+        const authEmail = document.getElementById('auth-email');
+        const authPassword = document.getElementById('auth-password');
+        const authSubmitAction = document.getElementById('auth-submit-action');
+        const authModalTitle = document.getElementById('auth-modal-title');
+        const authModalDesc = document.getElementById('auth-modal-desc');
+        const switchToSignup = document.getElementById('switch-to-signup');
         const authMessage = document.getElementById('auth-message');
 
-        // Vérifier l'état de la session au chargement de la page
+        let isLoginMode = true;
+
         async function checkUserSession() {
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
-                const emailUser = session.user.email;
-                authBtnText.textContent = emailUser.split('@')[0];
+                authBtnText.textContent = session.user.email.split('@')[0];
+                historyBtn.style.display = 'flex';
+            } else {
+                authBtnText.textContent = "Connexion";
+                historyBtn.style.display = 'none';
             }
         }
         checkUserSession();
 
-        // Inscription
-        document.getElementById('signup-btn').addEventListener('click', async () => {
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-            
-            authMessage.style.color = '#94A3B8';
-            authMessage.textContent = "Inscription en cours...";
-
-            const { error } = await supabaseClient.auth.signUp({ email, password });
-            if (error) {
-                authMessage.style.color = '#EF4444';
-                authMessage.textContent = error.message;
+        openAuthBtn.addEventListener('click', async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                if (confirm("Voulez-vous vous déconnecter ?")) {
+                    await supabaseClient.auth.signOut();
+                    checkUserSession();
+                    alert("Déconnecté avec succès.");
+                }
             } else {
-                authMessage.style.color = '#10B981';
-                authMessage.textContent = "Compte créé ! Vérifie tes e-mails pour confirmer.";
+                authModal.style.display = 'flex';
             }
         });
 
-        // Connexion
-        document.getElementById('auth-form').addEventListener('submit', async (e) => {
+        closeAuthBtn.addEventListener('click', () => authModal.style.display = 'none');
+
+        switchToSignup.addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            if (isLoginMode) {
+                authModalTitle.textContent = "Connexion";
+                authModalDesc.textContent = "Accédez à votre compte RadarMoto.";
+                authSubmitAction.textContent = "Se connecter";
+                switchToSignup.textContent = "Pas encore de compte ? S'inscrire";
+            } else {
+                authModalTitle.textContent = "Inscription";
+                authModalDesc.textContent = "Créez votre compte gratuitement.";
+                authSubmitAction.textContent = "S'inscrire";
+                switchToSignup.textContent = "Déjà un compte ? Se connecter";
+            }
+        });
+
+        authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
+            authMessage.textContent = "Chargement...";
+            authMessage.style.color = "var(--text-muted)";
 
-            authMessage.style.color = '#94A3B8';
-            authMessage.textContent = "Connexion en cours...";
-
-            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            if (error) {
-                authMessage.style.color = '#EF4444';
-                authMessage.textContent = error.message;
+            if (isLoginMode) {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: authEmail.value,
+                    password: authPassword.value,
+                });
+                if (error) {
+                    authMessage.textContent = error.message;
+                    authMessage.style.color = "#EF4444";
+                } else {
+                    authMessage.textContent = "Connexion réussie !";
+                    authMessage.style.color = "#10B981";
+                    setTimeout(() => {
+                        authModal.style.display = 'none';
+                        checkUserSession();
+                        authMessage.textContent = "";
+                        authForm.reset();
+                    }, 1000);
+                }
             } else {
-                authMessage.style.color = '#10B981';
-                authMessage.textContent = "Connecté avec succès !";
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                    location.reload();
-                }, 1000);
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email: authEmail.value,
+                    password: authPassword.value,
+                });
+                if (error) {
+                    authMessage.textContent = error.message;
+                    authMessage.style.color = "#EF4444";
+                } else {
+                    authMessage.textContent = "Compte créé avec succès ! Tu peux maintenant te connecter.";
+                    authMessage.style.color = "#10B981";
+                }
             }
         });
 
-        // Gestion des onglets de résultat
+        // --- GESTION DE L'HISTORIQUE ---
+        const historyModal = document.getElementById('history-modal');
+        const historyList = document.getElementById('history-list');
+
+        document.getElementById('close-history-modal').addEventListener('click', () => historyModal.style.display = 'none');
+
+        historyBtn.addEventListener('click', async () => {
+            historyModal.style.display = 'flex';
+            historyList.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Chargement de vos analyses...</p>';
+
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) return;
+
+            const { data, error } = await supabaseClient
+                .from('analyses') 
+                .select('*')
+                .eq('userId', session.user.id)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                historyList.innerHTML = '<p style="color: #EF4444; text-align: center;">Erreur lors du chargement de l\'historique.</p>';
+                console.error(error);
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Aucune analyse trouvée.</p>';
+                return;
+            }
+
+            historyList.innerHTML = data.map(item => `
+                <div class="history-item">
+                    <div class="history-date"><i class="fa-regular fa-calendar"></i> ${new Date(item.created_at).toLocaleDateString('fr-FR')}</div>
+                    <div class="history-prompt">${item.prompt || 'Analyse sans titre'}</div>
+                </div>
+            `).join('');
+        });
+
+        // --- GESTION DES ONGLETS ---
         function switchTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -514,6 +643,7 @@
             document.getElementById('prompt').value = "Voici une annonce intéressante https://www.leboncoin.fr/ad/motos/3229286512";
         });
 
+        // --- SOUMISSION DE LA RECHERCHE ET SAUVEGARDE HISTORIQUE ---
         document.getElementById('analyze-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -547,14 +677,11 @@
             }, 1200);
 
             try {
-                // Récupération de l'utilisateur connecté pour l'historique
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                const userId = session ? session.user.id : null;
-
+                // 1. Appel de ton API Vercel (qui ne plante plus)
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: promptInput, userId: userId })
+                    body: JSON.stringify({ prompt: promptInput })
                 });
 
                 clearInterval(interval);
@@ -579,6 +706,18 @@
                 
                 resultContainer.style.display = 'block';
                 switchTab('summary');
+
+                // 2. Si l'utilisateur est connecté, on enregistre l'historique directement depuis le front
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (session) {
+                    await supabaseClient.from('analyses').insert([
+                        { 
+                            userId: session.user.id, 
+                            prompt: promptInput, 
+                            result: fullText 
+                        }
+                    ]);
+                }
 
             } catch (error) {
                 clearInterval(interval);
