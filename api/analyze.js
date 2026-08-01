@@ -17,6 +17,7 @@ export default async function handler(req, res) {
 
     if (prompt) {
       const urlMatch = prompt.match(/(https?:\/\/[^\s]+)/);
+      
       if (urlMatch) {
         const extractedUrl = urlMatch[0];
         try {
@@ -49,9 +50,11 @@ Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce f
 4. ❓ Questions à poser au vendeur lors de la visite.`;
 
     const result = await model.generateContent(`${systemInstructions}\n\nVoici l'annonce :\n${adContent}`);
-    return res.status(200).json({ result: result.response.text() });
+    const responseText = result.response.text();
+
+    return res.status(200).json({ result: responseText });
 
   } catch (error) {
-    return res.status(500).json({ error: error.message || "Erreur lors de l'analyse." });
+    return res.status(500).json({ error: error.message || "Erreur lors de l'analyse de l'annonce." });
   }
 }
