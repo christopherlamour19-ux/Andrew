@@ -14,19 +14,27 @@ export default async function handler(req, res) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     let prompt = "";
 
     if (type === 'ad') {
-      // Cas 1 : Analyse d'annonce Leboncoin / liens
-      prompt = `Tu es un expert en inspection de motos d'occasion. Analyse cette annonce : "${content}".
-      Donne un avis structuré avec :
-      1. Points forts et cohérence du prix.
-      2. Pièges potentiels ou questions à poser au vendeur.
-      3. Estimation de la cote réelle.`;
+      prompt = `Tu es un expert en inspection et cotation de motos d'occasion. Analyse cette annonce : "${content}".
+      Fournis une analyse claire, détaillée mais présentée sous un format simple et lisible avec ces sections exactes :
+
+      📊 1. COHÉRENCE DU PRIX DU MARCHÉ
+      - Le prix demandé est-il cohérent, surcoté ou une bonne affaire par rapport à la cote actuelle de ce modèle et de son année ? Donne une estimation de la fourchette de prix réelle.
+
+      🛣️ 2. ANALYSE DU KILOMÉTRAGE
+      - Le kilométrage est-il cohérent par rapport à l'âge de la moto (moyenne standard d'environ 6000 km/an) ? Est-ce un point de vigilance ?
+
+      🛠️ 3. RÉVISIONS ET FRAIS À PRÉVOIR
+      - Quels sont les entretiens imminents ou l'historique critique à vérifier (kits chaîne, pneus, vidange, purge des freins, soupapes, jeu de direction, embrayage) selon le kilométrage et l'âge de cette moto ?
+
+      🎯 4. MON AVIS D'EXPERT
+      - Donne ton point de vue tranché et direct sur cette annonce en format court (faut-il foncer, négocier fermement ou fuir, et pourquoi en quelques mots).`;
+
     } else {
-      // Cas 2 : Simulateur moto idéale
       prompt = `Tu es un conseiller moto expert. Trouve la moto idéale pour ce profil :
       - Âge : ${profile.age} ans
       - Taille : ${profile.height} cm
