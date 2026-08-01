@@ -13,12 +13,11 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Initialisation du SDK Google AI (sans forcer de nom de modèle erroné)
     const genAI = new GoogleGenerativeAI(apiKey);
-    
-    // MODÈLE MIS À JOUR SUR LE NOUVEAU STANDARD ACTIF
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
 
-    // CAS 1 : ANNONCE (Ton code d'origine inchangé et 100% intact)
+    // CAS 1 : Ton ancien système d'analyse d'annonce (inchangé et fonctionnel)
     if (mode === 'ad' || !mode) {
       let adContent = prompt;
 
@@ -53,10 +52,12 @@ Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce f
 4. ❓ Questions à poser au vendeur lors de la visite.`;
 
       const result = await model.generateContent(`${systemInstructions}\n\nVoici l'annonce :\n${adContent}`);
-      return res.status(200).json({ result: result.response.text() });
+      const responseText = result.response.text();
+
+      return res.status(200).json({ result: responseText });
     }
 
-    // CAS 2 : SIMULATEUR PROFIL
+    // CAS 2 : Le simulateur avec les sélecteurs
     if (mode === 'simulator') {
       const { ageRange, height, style, license, budget } = profile;
 
@@ -94,6 +95,6 @@ Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce f
     }
 
   } catch (error) {
-    return res.status(500).json({ error: error.message || "Erreur lors du traitement." });
+    return res.status(500).json({ error: error.message || "Erreur lors de l'analyse." });
   }
 }
