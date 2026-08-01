@@ -284,11 +284,12 @@
 
     <section class="hero">
         <h1>Analysez n'importe quelle annonce <span>LeBonCoin</span></h1>
-        <p>Collez le lien de la moto ci-dessous pour obtenir instantanément un résumé rapide ou un rapport technique complet.</p>
+        <p>Collez le lien ou le message de partage de la moto ci-dessous pour obtenir instantanément un résumé rapide ou un rapport technique complet.</p>
 
         <div class="search-container">
             <form id="analyze-form" class="search-box">
-                <input type="url" id="prompt" placeholder="https://www.leboncoin.fr/ad/motos/..." required>
+                <!-- MODIFICATION ICI : type="text" au lieu de type="url" pour accepter le texte libre avec le lien -->
+                <input type="text" id="prompt" placeholder="Collez votre message ou lien LeBonCoin ici..." required>
                 <button type="submit" id="submit-btn">
                     <span id="btn-text">Lancer l'audit</span>
                     <div class="spinner" id="spinner"></div>
@@ -336,7 +337,7 @@
         }
 
         document.getElementById('fill-sample').addEventListener('click', function() {
-            document.getElementById('prompt').value = "https://www.leboncoin.fr/ad/motos/3229286512";
+            document.getElementById('prompt').value = "Voici une annonce intéressante https://www.leboncoin.fr/ad/motos/3229286512";
         });
 
         document.getElementById('analyze-form').addEventListener('submit', async function(e) {
@@ -372,18 +373,10 @@
             }, 1200);
 
             try {
-                // On demande à l'API de structurer sa réponse avec un séparateur pour alimenter les 2 onglets
-                const modifiedPrompt = `Analyse cette annonce moto (${promptInput}). 
-                Réponds obligatoirement sous ce format exact :
-                ---RESUME_RAPIDE---
-                (Donne ici 4 puces maximum ultra courtes : 💰 Prix, 🛣️ Kilométrage, ⚠️ Piège majeur, 🎯 Verdict final en un mot).
-                ---RAPPORT_DETAILLE---
-                (Donne ici une analyse complète et technique de la moto, points forts, historique, vérifications à faire lors de l'achat, estimation de l'entretien futur).`;
-
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: modifiedPrompt })
+                    body: JSON.stringify({ prompt: promptInput })
                 });
 
                 clearInterval(interval);
@@ -408,7 +401,7 @@
                 detailedBox.textContent = detailedPart;
                 
                 resultContainer.style.display = 'block';
-                switchTab('summary'); // Ouvre directement sur le résumé rapide
+                switchTab('summary');
 
             } catch (error) {
                 clearInterval(interval);
