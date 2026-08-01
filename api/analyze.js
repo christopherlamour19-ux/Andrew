@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Méthode non autorisée' });
   }
 
-  const { prompt } = req.body;
+  const { prompt, userId } = req.body;
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
@@ -21,10 +21,9 @@ export default async function handler(req, res) {
   try {
     let adContent = prompt;
 
-    // Extraction automatique de l'URL LeBonCoin même si du texte (partage mobile) est écrit devant
+    // Extraction automatique de l'URL LeBonCoin
     if (prompt) {
       const urlMatch = prompt.match(/(https?:\/\/[^\s]+)/);
-      
       if (urlMatch) {
         const extractedUrl = urlMatch[0];
         try {
@@ -42,7 +41,6 @@ export default async function handler(req, res) {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-    // Tes instructions personnalisées
     const systemInstructions = `Tu es un expert mécanicien et acheteur de motos d'occasion.
 Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce format pour séparer les onglets :
 
@@ -60,6 +58,20 @@ Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce f
 
     const result = await model.generateContent(`${systemInstructions}\n\nVoici l'annonce :\n${adContent}`);
     const responseText = result.response.text();
+
+    // Sauvegarde dans l'historique si l'utilisateur est connecté (userId fourni)
+    if (userId) {
+      // Extraction d'un titre simple pour la moto (ex: les 50 premiers caractères ou la ligne de prompt)
+      const motoTitle = prompt.length > 50 ? prompt.substring(0, 47) + '...' : prompt;
+
+      await supabase.from('search_history').insert([
+        {
+          user_id: userId,
+          moto_title: motoTitle,
+          full_result: responseText
+        }
+      ]);
+    }
 
     return res.status(200).json({ result: responseText });
 
