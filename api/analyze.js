@@ -32,9 +32,9 @@ export default async function handler(req, res) {
       }
     }
 
-    // Initialisation du SDK Google AI avec le modèle officiel Gemini Flash
+    // Initialisation du SDK Google AI avec l'alias stable officiel
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
 
     // Tes instructions personnalisées
     const systemInstructions = `Tu es un expert mécanicien et acheteur de motos d'occasion.
