@@ -7,9 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- SDK Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <style>
         :root {
             --bg-dark: #0B0F19;
@@ -62,12 +59,6 @@
         .logo i { color: var(--accent); }
         .logo span { color: var(--accent); }
 
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
         .nav-badge {
             background: rgba(255, 179, 0, 0.1);
             color: var(--accent);
@@ -77,149 +68,6 @@
             font-size: 0.85rem;
             font-weight: 600;
         }
-
-        .auth-btn {
-            background: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 8px 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-
-        .auth-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        /* --- MODALS --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 30px;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 400px;
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px; right: 20px;
-            background: none; border: none;
-            color: var(--text-muted); font-size: 24px;
-            cursor: pointer;
-        }
-        .close-btn:hover { color: var(--text-main); }
-
-        .modal-content h2 { margin-bottom: 10px; font-size: 1.5rem; }
-        .modal-content p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
-
-        .auth-input {
-            width: 100%;
-            background: var(--bg-dark);
-            border: 1px solid var(--border-color);
-            padding: 12px 15px;
-            border-radius: 8px;
-            color: white;
-            margin-bottom: 15px;
-            outline: none;
-        }
-        .auth-input:focus { border-color: var(--accent); }
-
-        .auth-submit-btn {
-            width: 100%;
-            background: var(--accent);
-            color: var(--bg-dark);
-            border: none;
-            padding: 12px;
-            font-weight: 700;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .auth-submit-btn:hover { background: var(--accent-hover); }
-
-        .auth-switch {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-        .auth-switch span { color: var(--accent); cursor: pointer; font-weight: 600; text-decoration: underline; }
-
-        #auth-message { margin-top: 10px; font-size: 0.85rem; text-align: center; }
-
-        /* --- MODAL HISTORIQUE --- */
-        #history-modal .modal-content {
-            max-width: 650px;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-        }
-        #history-list {
-            overflow-y: auto;
-            margin-top: 15px;
-            padding-right: 5px;
-            max-height: 50vh;
-        }
-        .history-item {
-            background: var(--bg-dark);
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            text-align: left;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-        }
-        .history-info { flex: 1; overflow: hidden; }
-        .history-date {
-            font-size: 0.75rem;
-            color: var(--accent);
-            margin-bottom: 4px;
-            font-weight: 600;
-        }
-        .history-prompt {
-            font-size: 0.85rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: var(--text-muted);
-        }
-        .history-load-btn {
-            background: rgba(255, 179, 0, 0.1);
-            color: var(--accent);
-            border: 1px solid rgba(255, 179, 0, 0.3);
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 600;
-            transition: 0.3s;
-            white-space: nowrap;
-        }
-        .history-load-btn:hover { background: var(--accent); color: var(--bg-dark); }
 
         /* --- HERO SECTION --- */
         .hero {
@@ -344,6 +192,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* En-tête des onglets */
         .tabs-header {
             display: flex;
             background: rgba(11, 15, 25, 0.6);
@@ -377,6 +226,7 @@
             background: rgba(255, 179, 0, 0.03);
         }
 
+        /* Contenu des onglets */
         .tab-content {
             display: none;
             padding: 25px;
@@ -386,9 +236,13 @@
             white-space: pre-wrap;
         }
 
-        .tab-content.active { display: block; }
+        .tab-content.active {
+            display: block;
+        }
+
         .error-box { border-color: rgba(239, 68, 68, 0.4) !important; }
 
+        /* Spinner */
         .spinner {
             display: none;
             width: 18px;
@@ -401,6 +255,7 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* --- FOOTER --- */
         footer {
             text-align: center;
             padding: 20px;
@@ -415,8 +270,6 @@
             .search-box { flex-direction: column; background: transparent; border: none; box-shadow: none; }
             .search-box input { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; padding: 15px; }
             .search-box button { width: 100%; padding: 15px; justify-content: center; }
-            .nav-right { gap: 8px; }
-            .auth-btn { padding: 6px 10px; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -426,46 +279,8 @@
         <div class="logo">
             <i class="fa-solid fa-motorcycle"></i> Radar<span>Moto</span>
         </div>
-        <div class="nav-right">
-            <div class="nav-badge">christo.r7 le best</div>
-            <button id="open-history-btn" class="auth-btn" style="display: none;">
-                <i class="fa-solid fa-clock-rotate-left"></i> <span>Historique</span>
-            </button>
-            <button id="open-auth-modal" class="auth-btn">
-                <i class="fa-solid fa-user"></i> <span id="auth-btn-text">Connexion</span>
-            </button>
-        </div>
+        <div class="nav-badge">christo.r7 le best</div>
     </nav>
-
-    <!-- Modal Authentification -->
-    <div id="auth-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <button id="close-auth-modal" class="close-btn">&times;</button>
-            <h2 id="auth-modal-title">Connexion</h2>
-            <p id="auth-modal-desc">Accédez à votre compte RadarMoto.</p>
-            
-            <form id="auth-form">
-                <input type="email" id="auth-email" placeholder="Votre email" class="auth-input" required>
-                <input type="password" id="auth-password" placeholder="Votre mot de passe" class="auth-input" required>
-                <button type="submit" id="auth-submit-action" class="auth-submit-btn">Se connecter</button>
-            </form>
-            
-            <div id="auth-message"></div>
-            <div class="auth-switch">
-                <span id="switch-to-signup">Pas encore de compte ? S'inscrire</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Historique -->
-    <div id="history-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <button id="close-history-modal" class="close-btn">&times;</button>
-            <h2>Mon Historique</h2>
-            <p>Retrouvez et consultez vos précédentes analyses d'annonces.</p>
-            <div id="history-list"></div>
-        </div>
-    </div>
 
     <section class="hero">
         <h1>Analysez n'importe quelle annonce <span>LeBonCoin</span></h1>
@@ -473,6 +288,7 @@
 
         <div class="search-container">
             <form id="analyze-form" class="search-box">
+                <!-- MODIFICATION ICI : type="text" au lieu de type="url" pour accepter le texte libre avec le lien -->
                 <input type="text" id="prompt" placeholder="Collez votre message ou lien LeBonCoin ici..." required>
                 <button type="submit" id="submit-btn">
                     <span id="btn-text">Lancer l'audit</span>
@@ -506,184 +322,7 @@
     </footer>
 
     <script>
-        // --- CONFIGURATION SUPABASE ---
-        const SUPABASE_URL = "https://pznortvjczmhaybneesk.supabase.co"; 
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6bm9ydmhqY3ptaGF5Ym5lZXNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1OTcxODQsImV4cCI6MjEwMTE3MzE4NH0.E5SzQyklK9pfzb__vZBwPB6ItyLSOSnoaUB0moHhUh4";
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // --- GESTION DE LA SESSION ---
-        const authModal = document.getElementById('auth-modal');
-        const openAuthBtn = document.getElementById('open-auth-modal');
-        const authBtnText = document.getElementById('auth-btn-text');
-        const historyBtn = document.getElementById('open-history-btn');
-        const authForm = document.getElementById('auth-form');
-        const authEmail = document.getElementById('auth-email');
-        const authPassword = document.getElementById('auth-password');
-        const authSubmitAction = document.getElementById('auth-submit-action');
-        const authModalTitle = document.getElementById('auth-modal-title');
-        const authModalDesc = document.getElementById('auth-modal-desc');
-        const switchToSignup = document.getElementById('switch-to-signup');
-        const authMessage = document.getElementById('auth-message');
-
-        let isLoginMode = true;
-
-        async function checkUserSession() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) {
-                authBtnText.textContent = session.user.email.split('@')[0];
-                historyBtn.style.display = 'flex';
-            } else {
-                authBtnText.textContent = "Connexion";
-                historyBtn.style.display = 'none';
-            }
-        }
-        checkUserSession();
-
-        openAuthBtn.addEventListener('click', async () => {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) {
-                if (confirm("Voulez-vous vous déconnecter ?")) {
-                    await supabaseClient.auth.signOut();
-                    checkUserSession();
-                    alert("Déconnecté avec succès.");
-                }
-            } else {
-                authModal.style.display = 'flex';
-            }
-        });
-
-        document.getElementById('close-auth-modal').addEventListener('click', () => authModal.style.display = 'none');
-
-        switchToSignup.addEventListener('click', () => {
-            isLoginMode = !isLoginMode;
-            authMessage.textContent = "";
-            if (isLoginMode) {
-                authModalTitle.textContent = "Connexion";
-                authModalDesc.textContent = "Accédez à votre compte RadarMoto.";
-                authSubmitAction.textContent = "Se connecter";
-                switchToSignup.textContent = "Pas encore de compte ? S'inscrire";
-            } else {
-                authModalTitle.textContent = "Inscription";
-                authModalDesc.textContent = "Créez votre compte gratuitement.";
-                authSubmitAction.textContent = "S'inscrire";
-                switchToSignup.textContent = "Déjà un compte ? Se connecter";
-            }
-        });
-
-        authForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            authMessage.textContent = "Traitement en cours...";
-            authMessage.style.color = "var(--text-muted)";
-
-            const email = authEmail.value.trim();
-            const password = authPassword.value;
-
-            if (isLoginMode) {
-                const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                if (error) {
-                    authMessage.textContent = error.message;
-                    authMessage.style.color = "#EF4444";
-                } else {
-                    authMessage.textContent = "Connexion réussie !";
-                    authMessage.style.color = "#10B981";
-                    setTimeout(() => {
-                        authModal.style.display = 'none';
-                        checkUserSession();
-                        authMessage.textContent = "";
-                        authForm.reset();
-                    }, 800);
-                }
-            } else {
-                const { error } = await supabaseClient.auth.signUp({ email, password });
-                if (error) {
-                    authMessage.textContent = error.message;
-                    authMessage.style.color = "#EF4444";
-                } else {
-                    authMessage.textContent = "Compte créé ! Connectez-vous dès maintenant.";
-                    authMessage.style.color = "#10B981";
-                    setTimeout(() => {
-                        isLoginMode = true;
-                        authModalTitle.textContent = "Connexion";
-                        authModalDesc.textContent = "Accédez à votre compte RadarMoto.";
-                        authSubmitAction.textContent = "Se connecter";
-                        switchToSignup.textContent = "Pas encore de compte ? S'inscrire";
-                        authMessage.textContent = "";
-                    }, 1500);
-                }
-            }
-        });
-
-        // --- GESTION DE L'HISTORIQUE ---
-        const historyModal = document.getElementById('history-modal');
-        const historyList = document.getElementById('history-list');
-
-        document.getElementById('close-history-modal').addEventListener('click', () => historyModal.style.display = 'none');
-
-        historyBtn.addEventListener('click', async () => {
-            historyModal.style.display = 'flex';
-            historyList.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Chargement de vos analyses...</p>';
-
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) return;
-
-            const { data, error } = await supabaseClient
-                .from('historique de recherche') 
-                .select('*')
-                .eq("user_id", session.user.id)
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                historyList.innerHTML = '<p style="color: #EF4444; text-align: center;">Erreur lors du chargement.</p>';
-                console.error(error);
-                return;
-            }
-
-            if (!data || data.length === 0) {
-                historyList.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Aucune recherche enregistrée pour le moment.</p>';
-                return;
-            }
-
-            historyList.innerHTML = data.map(item => {
-                const safeResult = encodeURIComponent(item.full_resul || '');
-                const safeTitle = (item.moto_title || 'Analyse sans titre').replace(/'/g, "&apos;");
-                const dateFormatee = new Date(item.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-                return `
-                    <div class="history-item">
-                        <div class="history-info">
-                            <div class="history-date"><i class="fa-regular fa-calendar"></i> ${dateFormatee}</div>
-                            <div class="history-prompt">${safeTitle}</div>
-                        </div>
-                        <button class="history-load-btn" onclick="loadHistoryItem('${safeResult}')">Voir l'analyse</button>
-                    </div>
-                `;
-            }).join('');
-        });
-
-        // Fonction pour recharger un ancien résultat dans les onglets depuis l'historique
-        function loadHistoryItem(encodedResult) {
-            const fullText = decodeURIComponent(encodedResult);
-            let summaryPart = fullText;
-            let detailedPart = "Rapport détaillé non disponible.";
-
-            if (fullText.includes("---RESUME_RAPIDE---") && fullText.includes("---RAPPORT_DETAILLE---")) {
-                const parts = fullText.split("---RAPPORT_DETAILLE---");
-                summaryPart = parts[0].replace("---RESUME_RAPIDE---", "").trim();
-                detailedPart = parts[1].trim();
-            }
-
-            document.getElementById('tab-summary').textContent = summaryPart;
-            document.getElementById('tab-detailed').textContent = detailedPart;
-            
-            const resultContainer = document.getElementById('result-container');
-            resultContainer.style.display = 'block';
-            switchTab('summary');
-            
-            historyModal.style.display = 'none';
-            window.scrollTo({ top: resultContainer.offsetTop - 100, behavior: 'smooth' });
-        }
-
-        // --- GESTION DES ONGLETS DE RÉSULTAT ---
+        // Gestion des onglets
         function switchTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -701,7 +340,6 @@
             document.getElementById('prompt').value = "Voici une annonce intéressante https://www.leboncoin.fr/ad/motos/3229286512";
         });
 
-        // --- SOUMISSION DE LA RECHERCHE ---
         document.getElementById('analyze-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -748,6 +386,7 @@
                     throw new Error(data.error || 'Erreur lors de la communication avec le serveur.');
                 }
 
+                // Découpage de la réponse de l'IA pour séparer les deux onglets
                 const fullText = data.result;
                 let summaryPart = fullText;
                 let detailedPart = "Rapport détaillé non disponible.";
@@ -763,18 +402,6 @@
                 
                 resultContainer.style.display = 'block';
                 switchTab('summary');
-
-                // Enregistrement automatique dans Supabase si l'utilisateur est connecté
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if (session) {
-                    await supabaseClient.from('historique de recherche').insert([
-                        { 
-                            "user_id": session.user.id, 
-                            "moto_title": promptInput, 
-                            "full_resul": fullText 
-                        }
-                    ]);
-                }
 
             } catch (error) {
                 clearInterval(interval);
