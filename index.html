@@ -6,7 +6,7 @@
     <title>RadarMoto | L'expert pour vos achats moto</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- SDK Supabase intégré proprement ici -->
+    <!-- SDK Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
@@ -61,6 +61,12 @@
         .logo i { color: var(--accent); }
         .logo span { color: var(--accent); }
 
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
         .nav-badge {
             background: rgba(255, 179, 0, 0.1);
             color: var(--accent);
@@ -70,6 +76,77 @@
             font-size: 0.85rem;
             font-weight: 600;
         }
+
+        /* --- BOUTON AUTH ET MODAL --- */
+        .auth-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .auth-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(11, 15, 25, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 20px;
+            background: none; border: none;
+            color: var(--text-muted); font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .close-btn:hover { color: var(--text-main); }
+
+        .modal-content h2 { margin-bottom: 10px; font-size: 1.5rem; }
+        .modal-content p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+
+        .auth-input {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 15px;
+            outline: none;
+        }
+        .auth-input:focus { border-color: var(--accent); }
+
+        .auth-actions { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-primary { flex: 1; background: var(--accent); color: var(--bg-dark); border: none; padding: 12px; font-weight: 700; border-radius: 8px; cursor: pointer; }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-secondary { flex: 1; background: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 12px; font-weight: 600; border-radius: 8px; cursor: pointer; }
+        .btn-secondary:hover { background: rgba(255,255,255,0.05); }
+
+        .auth-message { margin-top: 15px; font-size: 0.85rem; text-align: center; }
 
         /* --- HERO SECTION --- */
         .hero {
@@ -281,8 +358,33 @@
         <div class="logo">
             <i class="fa-solid fa-motorcycle"></i> Radar<span>Moto</span>
         </div>
-        <div class="nav-badge">christo.r7 le best</div>
+        <div class="nav-right">
+            <div class="nav-badge" id="user-status-badge">christo.r7 le best</div>
+            <button id="open-auth-modal" class="auth-btn">
+                <i class="fa-solid fa-user"></i> <span id="auth-btn-text">Connexion</span>
+            </button>
+        </div>
     </nav>
+
+    <!-- Modal d'authentification -->
+    <div id="auth-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <button id="close-auth-modal" class="close-btn">&times;</button>
+            <h2>Mon Compte RadarMoto</h2>
+            <p>Connectez-vous pour sauvegarder vos historiques de recherche.</p>
+            
+            <form id="auth-form">
+                <input type="email" id="auth-email" placeholder="Votre email" required class="auth-input">
+                <input type="password" id="auth-password" placeholder="Votre mot de passe" required class="auth-input">
+                
+                <div class="auth-actions">
+                    <button type="submit" id="login-btn" class="btn-primary">Se connecter</button>
+                    <button type="button" id="signup-btn" class="btn-secondary">S'inscrire</button>
+                </div>
+            </form>
+            <div id="auth-message" class="auth-message"></div>
+        </div>
+    </div>
 
     <section class="hero">
         <h1>Analysez n'importe quelle annonce <span>LeBonCoin</span></h1>
@@ -328,7 +430,80 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6bm9ydmhqY3ptaGF5Ym5lZXNrIiqicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1OTcxODQsImV4cCI6MjEwMTE3MzE4NH0.E5SzQyklK9pfzb__vZBwPB6ItyLSOSnoaUB0moHhUh4';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Gestion des onglets
+        // Gestion du modal d'authentification
+        const modal = document.getElementById('auth-modal');
+        const authBtnText = document.getElementById('auth-btn-text');
+
+        document.getElementById('open-auth-modal').addEventListener('click', async () => {
+            // Si l'utilisateur est déjà connecté, un clic peut servir à se déconnecter
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                if (confirm("Voulez-vous vous déconnecter ?")) {
+                    await supabaseClient.auth.signOut();
+                    location.reload();
+                }
+            } else {
+                modal.style.display = 'flex';
+            }
+        });
+
+        document.getElementById('close-auth-modal').addEventListener('click', () => modal.style.display = 'none');
+
+        const authMessage = document.getElementById('auth-message');
+
+        // Vérifier l'état de la session au chargement de la page
+        async function checkUserSession() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                const emailUser = session.user.email;
+                // Affiche le pseudo ou l'email abrégé sur le bouton
+                authBtnText.textContent = emailUser.split('@')[0];
+            }
+        }
+        checkUserSession();
+
+        // Inscription
+        document.getElementById('signup-btn').addEventListener('click', async () => {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            
+            authMessage.style.color = '#94A3B8';
+            authMessage.textContent = "Inscription en cours...";
+
+            const { error } = await supabaseClient.auth.signUp({ email, password });
+            if (error) {
+                authMessage.style.color = '#EF4444';
+                authMessage.textContent = error.message;
+            } else {
+                authMessage.style.color = '#10B981';
+                authMessage.textContent = "Compte créé ! Vérifie tes e-mails pour confirmer.";
+            }
+        });
+
+        // Connexion
+        document.getElementById('auth-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+
+            authMessage.style.color = '#94A3B8';
+            authMessage.textContent = "Connexion en cours...";
+
+            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) {
+                authMessage.style.color = '#EF4444';
+                authMessage.textContent = error.message;
+            } else {
+                authMessage.style.color = '#10B981';
+                authMessage.textContent = "Connecté avec succès !";
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    location.reload();
+                }, 1000);
+            }
+        });
+
+        // Gestion des onglets de résultat
         function switchTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
