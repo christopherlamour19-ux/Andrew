@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     
-    // MODÈLE FIXÉ STRICTEMENT SUR 1.5-FLASH POUR ÉVITER TOUTE ERREUR DE QUOTA
+    // On utilise le nom standard validé par le SDK Google
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     // CAS 1 : ANNONCE (Ton code d'origine intact et fonctionnel)
