@@ -1,10 +1,10 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = 'https://pznorvhjczmhaybneesk.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6bm9ydmhqY3ptaGF5Ym5lZXNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1OTcxODQsImV4cCI6MjEwMTE3MzE4NH0.E5SzQyklK9pfzb__vZBwPB6ItyLSOSnoaUB0moHhUh4';
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Initialisation de Supabase côté serveur (avec les variables d'environnement Vercel)
+const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+const supabase = (supabaseUrl && supabaseKey) ? createClient(supabaseUrl, supabaseKey) : null;
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -24,6 +24,7 @@ export default async function handler(req, res) {
     // Extraction automatique de l'URL LeBonCoin
     if (prompt) {
       const urlMatch = prompt.match(/(https?:\/\/[^\s]+)/);
+      
       if (urlMatch) {
         const extractedUrl = urlMatch[0];
         try {
@@ -39,7 +40,7 @@ export default async function handler(req, res) {
 
     // Initialisation du SDK Google AI
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' }); // Ajusté si ton modèle posait souci, remets ton ancien nom si tu préfères
 
     const systemInstructions = `Tu es un expert mécanicien et acheteur de motos d'occasion.
 Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce format pour séparer les onglets :
@@ -59,16 +60,14 @@ Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce f
     const result = await model.generateContent(`${systemInstructions}\n\nVoici l'annonce :\n${adContent}`);
     const responseText = result.response.text();
 
-    // Sauvegarde dans l'historique si l'utilisateur est connecté (userId fourni)
-    if (userId) {
-      // Extraction d'un titre simple pour la moto (ex: les 50 premiers caractères ou la ligne de prompt)
-      const motoTitle = prompt.length > 50 ? prompt.substring(0, 47) + '...' : prompt;
-
-      await supabase.from('search_history').insert([
-        {
-          user_id: userId,
-          moto_title: motoTitle,
-          full_result: responseText
+    // Enregistrement dans Supabase si l'utilisateur est connecté et que Supabase est configuré
+    if (userId && supabase) {
+      await supabase.from('analyses').insert([
+        { 
+          userId: userId, 
+          prompt: prompt, 
+          result: responseText,
+          created_at: new Date().toISOString()
         }
       ]);
     }
