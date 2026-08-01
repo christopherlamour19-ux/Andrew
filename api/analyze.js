@@ -5,48 +5,47 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Méthode non autorisée' });
   }
 
-  const { profile } = req.body;
+  const { type, content, profile } = req.body;
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({ error: 'Clé API non configurée sur Vercel.' });
+    return res.status(500).json({ error: 'Clé API non configurée.' });
   }
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-    const systemInstructions = `Tu es un expert en motocyclisme, conseiller aguerri en choix de motos d'occasion et neuves. 
-Analyse le profil du motard suivant :
-- Âge : ${profile.age} ans
-- Taille : ${profile.height} cm
-- Permis : ${profile.license}
-- Ancienneté du permis : ${profile.experience}
-- Style préféré : ${profile.style}
-- Budget max : ${profile.budget}
-- Attente assurance : ${profile.insurance}
-- Consommation / Usage : ${profile.consumption}
+    let prompt = "";
 
-Propose la moto idéale en tenant compte de sa taille (hauteur de selle adaptée), de son permis (légalité A2 ou bridage si nécessaire), de son budget et de son assurance. 
-Réponds obligatoirement et strictement selon ce format exact avec les séparateurs :
+    if (type === 'ad') {
+      // Cas 1 : Analyse d'annonce Leboncoin / liens
+      prompt = `Tu es un expert en inspection de motos d'occasion. Analyse cette annonce : "${content}".
+      Donne un avis structuré avec :
+      1. Points forts et cohérence du prix.
+      2. Pièges potentiels ou questions à poser au vendeur.
+      3. Estimation de la cote réelle.`;
+    } else {
+      // Cas 2 : Simulateur moto idéale
+      prompt = `Tu es un conseiller moto expert. Trouve la moto idéale pour ce profil :
+      - Âge : ${profile.age} ans
+      - Taille : ${profile.height} cm
+      - Permis : ${profile.license}
+      - Expérience : ${profile.experience}
+      - Style : ${profile.style}
+      - Budget : ${profile.budget}
 
----TOP_PICK---
-- 🏍️ Modèle conseillé : (Nom exact de la moto, année type)
-- 💡 Pourquoi c'est la moto parfaite pour toi : (Analyse par rapport à sa taille, son style et son usage)
-- 📏 Accessibilité / Hauteur de selle : (Est-ce adapté à ses ${profile.height} cm ?)
-- 💰 Budget & Entretien estimé : (Prix moyen en occasion et coût d'entretien)
+      Structure ta réponse clairement :
+      - 🏍️ Le top choix (Modèle et année)
+      - 💡 Pourquoi ce choix par rapport à sa taille (${profile.height}cm) et son permis (${profile.license})
+      - 🥈 2 alternatives solides
+      - ⚠️ Les pièges à éviter pour son profil.`;
+    }
 
----ALTERNATIVES---
-1. 🥈 Deuxième option intéressante (Modèle + arguments rapides)
-2. 🥉 Troisième option intéressante (Modèle + arguments rapides)
-3. ⚠️ Pièges à éviter pour ton profil (Les motos à ne surtout pas acheter avec ton expérience/permis et pourquoi).`;
-
-    const result = await model.generateContent(systemInstructions);
-    const responseText = result.response.text();
-
-    return res.status(200).json({ result: responseText });
+    const result = await model.generateContent(prompt);
+    return res.status(200).json({ result: result.response.text() });
 
   } catch (error) {
-    return res.status(500).json({ error: error.message || "Erreur lors du calcul de la moto idéale." });
+    return res.status(500).json({ error: error.message || "Erreur serveur." });
   }
 }
