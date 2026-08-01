@@ -13,17 +13,23 @@ export default async function handler(req, res) {
   try {
     let adContent = prompt;
 
+    // Tentative de lecture du lien, mais sécurisée pour ne pas faire tout planté si bloqué
     if (prompt) {
       const urlMatch = prompt.match(/(https?:\/\/[^\s]+)/);
       if (urlMatch) {
         const extractedUrl = urlMatch[0];
         try {
-          const jinaResponse = await fetch(`https://r.jina.ai/${extractedUrl}`);
+          const jinaResponse = await fetch(`https://r.jina.ai/${extractedUrl}`, {
+            headers: { 'User-Agent': 'Mozilla/5.0' }
+          });
           if (jinaResponse.ok) {
-            adContent = await jinaResponse.text();
+            const text = await jinaResponse.text();
+            if (text && text.length > 100) {
+              adContent = text;
+            }
           }
         } catch (e) {
-          console.log("Erreur lors de la lecture du lien URL.");
+          console.log("Impossible de scraper l'URL directement, utilisation du texte brut.");
         }
       }
     }
@@ -43,7 +49,6 @@ Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce f
 3. ⚠️ Points d'attention : Quels problèmes mécaniques connus surveiller pour ce modèle/année ?
 4. ❓ Questions à poser au vendeur lors de la visite.`;
 
-    // Appel direct via l'API de chat standard compatible AI Gateway / OpenAI endpoint
     const response = await fetch('https://gateway.ai.vercel.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -51,10 +56,10 @@ Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce f
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash', // Modèle géré par la passerelle Vercel
+        model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemInstructions },
-          { role: 'user', content: `Voici l'annonce :\n${adContent}` }
+          { role: 'user', content: `Voici l'annonce / les informations :\n${adContent}` }
         ]
       })
     });
@@ -69,6 +74,6 @@ Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce f
     return res.status(200).json({ result: responseText });
 
   } catch (error) {
-    return res.status(500).json({ error: error.message || "Erreur lors de l'analyse de l'annonce." });
+    return res.status(500).json({ error: error.message || "Erreur lors de l'analyse." });
   }
 }
