@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +6,8 @@
     <title>RadarMoto | L'expert pour vos achats moto</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SDK Supabase intégré proprement ici -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
         :root {
@@ -289,7 +290,6 @@
 
         <div class="search-container">
             <form id="analyze-form" class="search-box">
-                <!-- MODIFICATION ICI : type="text" au lieu de type="url" pour accepter le texte libre avec le lien -->
                 <input type="text" id="prompt" placeholder="Collez votre message ou lien LeBonCoin ici..." required>
                 <button type="submit" id="submit-btn">
                     <span id="btn-text">Lancer l'audit</span>
@@ -323,6 +323,11 @@
     </footer>
 
     <script>
+        // Initialisation de Supabase côté Front
+        const SUPABASE_URL = 'https://pznorvhjaczmhaybneesk.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6bm9ydmhqY3ptaGF5Ym5lZXNrIiqicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1OTcxODQsImV4cCI6MjEwMTE3MzE4NH0.E5SzQyklK9pfzb__vZBwPB6ItyLSOSnoaUB0moHhUh4';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         // Gestion des onglets
         function switchTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -387,7 +392,6 @@
                     throw new Error(data.error || 'Erreur lors de la communication avec le serveur.');
                 }
 
-                // Découpage de la réponse de l'IA pour séparer les deux onglets
                 const fullText = data.result;
                 let summaryPart = fullText;
                 let detailedPart = "Rapport détaillé non disponible.";
