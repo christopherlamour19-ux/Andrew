@@ -30,8 +30,8 @@ export default async function handler(req, res) {
     // Initialisation du SDK Google AI
     const genAI = new GoogleGenerativeAI(apiKey);
     
-    // Utilisation de l'alias stable qui pointe automatiquement vers la version active
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    // LA LIGNE CORRIGÉE AVEC LE MODÈLE ACTUEL EN LIGNE (2026) :
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
 
     const systemInstructions = `Tu es un expert mécanicien et acheteur de motos d'occasion.
 Analyse l'annonce suivante et réponds clairement :
