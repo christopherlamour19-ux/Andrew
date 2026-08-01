@@ -39,14 +39,13 @@ Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce f
 ---RESUME_RAPIDE---
 - 💰 Prix : (Analyse rapide du prix et donne moi un prix)
 - 🛣️ Kilométrage : (si les kilometrage pose problème a l'avenir ou les grosses revisions bientot a faire, y'a t il des choses a changer prochainement ect)
-- ⚠️ Piège majeur : (Le point noir sur la moto, moteur parti cycle le kilometrage grosse revision ou pas prochainement)
+- ⚠️ Piège majeur : (Le point noir sur la moto, moteur parti cycle le kilometrage grosse revision ou pas prochainement,l'année si il y a des problèmes sur ces années la)
 - 🎯 Verdict final : (Fonce / Négocie / Fuis)
 
 ---RAPPORT_DETAILLE---
-1. 💰 Prix & Argus : Est-ce un bon prix en détail ?
+1. 💰 Prix & Argus : Est-ce un bon prix en détail et a combien tu mettrait comparer au marcher ?
 2. 🛣️ Kilométrage : Normal ou trop élevé pour l'année ?
 3. ⚠️ Points d'attention : Quels problèmes mécaniques connus surveiller pour ce modèle/année ?
-4. ❓ Questions à poser au vendeur lors de la visite.`;
 
     const result = await model.generateContent(`${systemInstructions}\n\nVoici l'annonce :\n${adContent}`);
     const responseText = result.response.text();
