@@ -68,16 +68,6 @@
             gap: 15px;
         }
 
-        .nav-badge {
-            background: rgba(255, 179, 0, 0.1);
-            color: var(--accent);
-            border: 1px solid rgba(255, 179, 0, 0.3);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
         .auth-btn {
             background: transparent;
             color: var(--text-main);
@@ -485,9 +475,8 @@
 
     <script>
         // --- CONFIGURATION SUPABASE ---
-        // Remplaces par tes propres clés si besoin
-        const SUPABASE_URL = "https://ton-projet.supabase.co"; 
-        const SUPABASE_ANON_KEY = "ta-cle-anon";
+        const SUPABASE_URL = "https://pznortvjczmhaybneesk.supabase.co"; 
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6bm9ydmhqY3ptaGF5Ym5lZXNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1OTcxODQsImV4cCI6MjEwMTE3MzE4NH0.E5SzQyklK9pfzb__vZBwPB6ItyLSOSnoaUB0moHhUh4";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // --- GESTION DE LA SESSION & AUTH ---
@@ -677,7 +666,6 @@
             }, 1200);
 
             try {
-                // 1. Appel de ton API Vercel (qui ne plante plus)
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -707,7 +695,6 @@
                 resultContainer.style.display = 'block';
                 switchTab('summary');
 
-                // 2. Si l'utilisateur est connecté, on enregistre l'historique directement depuis le front
                 const { data: { session } } = await supabaseClient.auth.getSession();
                 if (session) {
                     await supabaseClient.from('analyses').insert([
