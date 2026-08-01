@@ -1,57 +1,662 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RadarMoto | L'expert pour vos achats moto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #0B0F19;
+            --bg-card: #151C2C;
+            --accent: #FFB300;
+            --accent-hover: #FFA000;
+            --text-main: #FFFFFF;
+            --text-muted: #94A3B8;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
 
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Méthode non autorisée' });
-  }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
 
-  const { profile } = req.body;
-  const apiKey = process.env.GEMINI_API_KEY;
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-  if (!apiKey) {
-    return res.status(500).json({ error: 'Clé API non configurée sur Vercel.' });
-  }
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(15px);
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-  try {
-    const { ageRange, height, style, license, budget } = profile || {};
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    // Même initialisation exacte que ton fichier analyze.js qui fonctionne
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
+        .logo i { color: var(--accent); }
+        .logo span { color: var(--accent); }
 
-    const simPrompt = `Tu es un conseiller expert en choix de moto. Un utilisateur recherche sa moto idéale selon son profil précis :
-    - Tranche d'âge : ${ageRange}
-    - Taille : ${height}
-    - Style de moto recherché : ${style}
-    - Permis : ${license}
-    - Budget maximum : ${budget}
+        .nav-badge {
+            background: rgba(255, 179, 0, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(255, 179, 0, 0.3);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
 
-    Fournis une recommandation claire et structurée ainsi :
-    ---MOTO_IDEALE---
-    - 🏍️ Modèle conseillé : (Nom exact de la moto, année, cylindrée)
-    - 💡 Pourquoi ce choix : (Explique en quelques lignes pourquoi elle correspond à son style ${style}, sa taille, son permis ${license} et son budget)
-    - 🛡️ Assurance & Conso : (Analyse rapide de l'assurance pour son profil et la consommation réelle)
-    - ⚠️ Points de vigilance : (Les pièges ou défauts connus de ce modèle à surveiller)
-    - 🔍 Recherche photo : Donne un terme de recherche précis en anglais pour trouver une belle photo de cette moto (ex: "Yamaha MT-07 2022 studio shot") sur une ligne commençant par PHOTO_QUERY: [ton terme ici].`;
+        /* --- MODE SWITCHER --- */
+        .main-modes {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
 
-    const result = await model.generateContent(simPrompt);
-    const text = result.response.text();
+        .mode-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    let photoQuery = "motorcycle studio";
-    const queryMatch = text.match(/PHOTO_QUERY:\s*(.*)/);
-    if (queryMatch) {
-      photoQuery = queryMatch[1].trim();
-    }
+        .mode-btn.active {
+            background: var(--accent);
+            color: var(--bg-dark);
+            border-color: var(--accent);
+        }
 
-    const encodedQuery = encodeURIComponent(photoQuery);
-    const motoImageUrl = `https://pollinations.ai/p/${encodedQuery}?width=800&height=500&nologo=true`;
+        /* --- HERO SECTION --- */
+        .hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 130px 5% 60px 5%;
+            background: radial-gradient(circle at 50% 25%, rgba(255, 179, 0, 0.06), transparent 60%);
+        }
 
-    return res.status(200).json({ 
-      result: text, 
-      imageUrl: motoImageUrl 
-    });
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
 
-  } catch (error) {
-    return res.status(500).json({ error: error.message || "Erreur lors de la simulation." });
-  }
-}
+        .hero h1 span { color: var(--accent); }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            max-width: 650px;
+        }
+
+        /* --- FORMULAIRES --- */
+        .search-container {
+            width: 100%;
+            max-width: 750px;
+            margin-bottom: 15px;
+        }
+
+        .search-box {
+            display: flex;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(20px);
+            padding: 8px;
+            border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            transition: border-color 0.3s;
+        }
+
+        .search-box:focus-within { border-color: var(--accent); }
+
+        .search-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 15px 20px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-box input::placeholder { color: var(--text-muted); }
+
+        .search-box button {
+            background: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            padding: 0 35px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-box button:hover { background: var(--accent-hover); }
+
+        /* Formulaire Simulateur à choix multiples */
+        .simulator-form {
+            display: none;
+            width: 100%;
+            max-width: 750px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 30px;
+            text-align: left;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            margin-bottom: 40px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full { grid-column: span 2; }
+
+        .form-group label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .form-group select {
+            background: rgba(11, 15, 25, 0.8);
+            border: 1px solid var(--border-color);
+            padding: 12px 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .form-group select:focus { border-color: var(--accent); }
+
+        .sim-submit-btn {
+            width: 100%;
+            background: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sim-submit-btn:hover { background: var(--accent-hover); }
+
+        .sample-hint {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
+
+        .sample-hint span {
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: underline;
+            font-weight: 500;
+        }
+
+        /* --- ZONE DE RÉSULTAT ANNONCE --- */
+        .result-container {
+            width: 100%;
+            max-width: 750px;
+            display: none;
+            text-align: left;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.4s ease;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tabs-header {
+            display: flex;
+            background: rgba(11, 15, 25, 0.6);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+            background: rgba(255, 179, 0, 0.03);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 25px;
+            color: #E2E8F0;
+            line-height: 1.8;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+        }
+
+        .tab-content.active { display: block; }
+
+        /* --- ZONE DE RÉSULTAT SIMULATEUR --- */
+        .simulator-result {
+            display: none;
+            width: 100%;
+            max-width: 750px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 25px;
+            text-align: left;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            margin-bottom: 40px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .moto-preview-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .error-box { border-color: rgba(239, 68, 68, 0.4) !important; }
+
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(11, 15, 25, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--bg-dark);
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            background: rgba(11, 15, 25, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .search-box { flex-direction: column; background: transparent; border: none; box-shadow: none; }
+            .search-box input { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; padding: 15px; }
+            .search-box button { width: 100%; padding: 15px; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <i class="fa-solid fa-motorcycle"></i> Radar<span>Moto</span>
+        </div>
+        <div class="nav-badge">christo.r7 le best</div>
+    </nav>
+
+    <section class="hero">
+        <h1>Votre expert moto <span>intelligent</span></h1>
+        <p>Analysez une annonce Leboncoin ou trouvez la moto parfaite adaptée à votre profil.</p>
+
+        <!-- Sélecteur de mode -->
+        <div class="main-modes">
+            <button class="mode-btn active" id="btn-mode-ad" onclick="switchMode('ad')">
+                <i class="fa-solid fa-magnifying-glass-dollar"></i> Analyseur d'Annonce
+            </button>
+            <button class="mode-btn" id="btn-mode-sim" onclick="switchMode('simulator')">
+                <i class="fa-solid fa-user-gear"></i> Simulateur "Idéal Moto"
+            </button>
+        </div>
+
+        <!-- MODE 1 : ANNONCE -->
+        <div class="search-container" id="container-mode-ad">
+            <form id="analyze-form" class="search-box">
+                <input type="text" id="prompt" placeholder="Collez votre message ou lien LeBonCoin ici..." required>
+                <button type="submit" id="submit-btn">
+                    <span id="btn-text">Lancer l'audit</span>
+                    <div class="spinner" id="spinner"></div>
+                </button>
+            </form>
+            <div class="sample-hint">
+                Besoin d'un test rapide ? <span id="fill-sample">Cliquez ici pour insérer un lien exemple</span>
+            </div>
+        </div>
+
+        <!-- MODE 2 : SIMULATEUR PROFIL -->
+        <form id="simulator-form" class="simulator-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label><i class="fa-solid fa-cake-candles"></i> Tranche d'âge</label>
+                    <select id="sim-age">
+                        <option value="18-24 ans (Jeune conducteur)">18-24 ans</option>
+                        <option value="25-35 ans">25-35 ans</option>
+                        <option value="36-50 ans">36-50 ans</option>
+                        <option value="50 ans et plus">50 ans et plus</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-ruler-vertical"></i> Taille du pilote</label>
+                    <select id="sim-height">
+                        <option value="Moins de 1m65 (Petite taille)">Moins de 1m65</option>
+                        <option value="1m65 à 1m75 (Taille moyenne)">1m65 à 1m75</option>
+                        <option value="1m75 à 1m85 (Grande taille)" selected>1m75 à 1m85</option>
+                        <option value="Plus de 1m85 (Très grand)">Plus de 1m85</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-id-card"></i> Permis moto</label>
+                    <select id="sim-license">
+                        <option value="Permis A2 (Bridé 47.5ch)">Permis A2</option>
+                        <option value="Permis A (Full / Toutes cylindrées)">Permis A (Full)</option>
+                        <option value="Permis A1 / 125cc">Permis A1 (125cc)</option>
+                        <option value="Permis B (Passerelle auto/moto)">Permis B</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-motorcycle"></i> Style de moto</label>
+                    <select id="sim-style">
+                        <option value="Roadster">Roadster (Naked)</option>
+                        <option value="Sportive">Sportive (Racing)</option>
+                        <option value="Trail / Adventure">Trail / Adventure</option>
+                        <option value="Routière / Grand Tourisme">Routière / GT</option>
+                        <option value="Café Racer / Custom / Vintage">Custom / Café Racer</option>
+                    </select>
+                </div>
+
+                <div class="form-group full">
+                    <label><i class="fa-solid fa-wallet"></i> Budget maximum</label>
+                    <select id="sim-budget">
+                        <option value="Moins de 3 000 €">Moins de 3 000 € (Petit budget)</option>
+                        <option value="3 000 € à 5 000 €">3 000 € à 5 000 €</option>
+                        <option value="5 000 € à 8 000 €" selected>5 000 € à 8 000 €</option>
+                        <option value="8 000 € à 12 000 €">8 000 € à 12 000 €</option>
+                        <option value="Plus de 12 000 €">Plus de 12 000 € (Haut de gamme)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button type="submit" class="sim-submit-btn" id="sim-submit-btn">
+                <span>Générer ma moto idéale & Photo</span>
+                <div class="spinner" id="sim-spinner"></div>
+            </button>
+        </form>
+
+        <!-- RÉSULTAT ANNONCE -->
+        <div class="result-container" id="result-container">
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab('summary')">
+                    <i class="fa-solid fa-bolt"></i> Résumé Rapide
+                </button>
+                <button class="tab-btn" onclick="switchTab('detailed')">
+                    <i class="fa-solid fa-file-lines"></i> Rapport Technique Détaillé
+                </button>
+            </div>
+            <div id="tab-summary" class="tab-content active"></div>
+            <div id="tab-detailed" class="tab-content"></div>
+        </div>
+
+        <!-- RÉSULTAT SIMULATEUR -->
+        <div class="simulator-result" id="simulator-result-container">
+            <h3 style="color: var(--accent); margin-bottom: 15px;"><i class="fa-solid fa-trophy"></i> Recommandation Personnalisée</h3>
+            <img id="moto-img" class="moto-preview-img" src="" alt="Moto recommandée">
+            <div id="simulator-text-content" style="white-space: pre-wrap; line-height: 1.8; color: #E2E8F0;"></div>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2026 RadarMoto. Outil d'aide à l'achat de motos d'occasion.
+    </footer>
+
+    <script>
+        function switchMode(mode) {
+            const btnAd = document.getElementById('btn-mode-ad');
+            const btnSim = document.getElementById('btn-mode-sim');
+            const containerAd = document.getElementById('container-mode-ad');
+            const formSim = document.getElementById('simulator-form');
+            const resAd = document.getElementById('result-container');
+            const resSim = document.getElementById('simulator-result-container');
+
+            resAd.style.display = 'none';
+            resSim.style.display = 'none';
+
+            if (mode === 'ad') {
+                btnAd.classList.add('active');
+                btnSim.classList.remove('active');
+                containerAd.style.display = 'block';
+                formSim.style.display = 'none';
+            } else {
+                btnSim.classList.add('active');
+                btnAd.classList.remove('active');
+                containerAd.style.display = 'none';
+                formSim.style.display = 'block';
+            }
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            if (tabName === 'summary') {
+                document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+                document.getElementById('tab-summary').classList.add('active');
+            } else {
+                document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+                document.getElementById('tab-detailed').classList.add('active');
+            }
+        }
+
+        document.getElementById('fill-sample').addEventListener('click', function() {
+            document.getElementById('prompt').value = "Voici une annonce intéressante https://www.leboncoin.fr/ad/motos/3229286512";
+        });
+
+        // Soumission 1 : Analyse d'annonce
+        document.getElementById('analyze-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const promptInput = document.getElementById('prompt').value;
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            const spinner = document.getElementById('spinner');
+            const resultContainer = document.getElementById('result-container');
+            const summaryBox = document.getElementById('tab-summary');
+            const detailedBox = document.getElementById('tab-detailed');
+
+            submitBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            resultContainer.style.display = 'none';
+            resultContainer.classList.remove('error-box');
+
+            const steps = ["Connexion à l'annonce...", "Extraction des données...", "Génération des rapports..."];
+            let stepIdx = 0;
+            btnText.textContent = steps[0];
+            
+            const interval = setInterval(() => {
+                stepIdx++;
+                if (stepIdx < steps.length) {
+                    btnText.textContent = steps[stepIdx];
+                }
+            }, 1200);
+
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: promptInput })
+                });
+
+                clearInterval(interval);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Erreur lors de la communication avec le serveur.');
+                }
+
+                const fullText = data.result;
+                let summaryPart = fullText;
+                let detailedPart = "Rapport détaillé non disponible.";
+
+                if (fullText.includes("---RESUME_RAPIDE---") && fullText.includes("---RAPPORT_DETAILLE---")) {
+                    const parts = fullText.split("---RAPPORT_DETAILLE---");
+                    summaryPart = parts[0].replace("---RESUME_RAPIDE---", "").trim();
+                    detailedPart = parts[1].trim();
+                }
+
+                summaryBox.textContent = summaryPart;
+                detailedBox.textContent = detailedPart;
+                
+                resultContainer.style.display = 'block';
+                switchTab('summary');
+
+            } catch (error) {
+                clearInterval(interval);
+                resultContainer.classList.add('error-box');
+                summaryBox.textContent = "Erreur : " + error.message;
+                detailedBox.textContent = "Impossible de charger le rapport détaillé.";
+                resultContainer.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                btnText.textContent = "Lancer l'audit";
+                spinner.style.display = 'none';
+            }
+        });
+
+        // Soumission 2 : Simulateur "Idéal Moto" -> Pointe désormais vers /api/simulate
+        document.getElementById('simulator-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const profile = {
+                ageRange: document.getElementById('sim-age').value,
+                height: document.getElementById('sim-height').value,
+                license: document.getElementById('sim-license').value,
+                style: document.getElementById('sim-style').value,
+                budget: document.getElementById('sim-budget').value
+            };
+
+            const simSubmitBtn = document.getElementById('sim-submit-btn');
+            const simSpinner = document.getElementById('sim-spinner');
+            const simResultContainer = document.getElementById('simulator-result-container');
+            const simTextContent = document.getElementById('simulator-text-content');
+            const motoImg = document.getElementById('moto-img');
+
+            simSubmitBtn.disabled = true;
+            simSpinner.style.display = 'inline-block';
+            simResultContainer.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/simulate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ profile: profile })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
+
+                simTextContent.textContent = data.result.replace(/PHOTO_QUERY:.*/g, '').trim();
+                motoImg.src = data.imageUrl;
+                simResultContainer.style.display = 'block';
+
+            } catch (error) {
+                simTextContent.textContent = "Erreur : " + error.message;
+                simResultContainer.style.display = 'block';
+            } finally {
+                simSubmitBtn.disabled = false;
+                simSpinner.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
