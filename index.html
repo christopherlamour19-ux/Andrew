@@ -58,6 +58,12 @@
         .logo i { color: var(--accent); }
         .logo span { color: var(--accent); }
 
+        .nav-badges {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
         .nav-badge {
             background: rgba(255, 179, 0, 0.1);
             color: var(--accent);
@@ -340,6 +346,7 @@
             .search-box input { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; padding: 15px; }
             .search-box button { width: 100%; padding: 15px; justify-content: center; }
             .main-modes { flex-direction: column; width: 100%; }
+            .nav-badges { display: none; }
         }
     </style>
 </head>
@@ -349,11 +356,14 @@
         <div class="logo">
             <i class="fa-solid fa-motorcycle"></i> Radar<span>Moto</span>
         </div>
-        <div class="nav-badge">christo.r7 le best</div>
+        <div class="nav-badges">
+            <div class="nav-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> Gemini 3.5 Flash</div>
+            <div class="nav-badge">christo.r7 le best</div>
+        </div>
     </nav>
 
     <section class="hero">
-        <h1>Votre expert moto <span>intelligent</span></h1>
+        <h1>Votre expert moto avec <span>Gemini 3.5 Flash</span></h1>
         <p>Analysez une annonce Leboncoin ou trouvez la moto idéale adaptée à votre profil.</p>
 
         <div class="main-modes">
@@ -480,7 +490,7 @@
     </section>
 
     <footer>
-        &copy; 2026 RadarMoto. Outil d'aide à l'achat de motos d'occasion.
+        &copy; 2026 RadarMoto &bull; Propulsé par Gemini 3.5 Flash
     </footer>
 
     <script>
