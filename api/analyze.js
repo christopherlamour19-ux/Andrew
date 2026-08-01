@@ -34,7 +34,7 @@ export default async function handler(req, res) {
 
     // Initialisation du SDK Google AI
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 
     // Tes instructions personnalisées
     const systemInstructions = `Tu es un expert mécanicien et acheteur de motos d'occasion.
