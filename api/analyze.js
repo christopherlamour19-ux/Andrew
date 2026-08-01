@@ -1,12 +1,10 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Méthode non autorisée' });
   }
 
   const { prompt } = req.body;
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.AI_GATEWAY_API_KEY || process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
     return res.status(500).json({ error: 'Clé API non configurée sur Vercel.' });
@@ -30,10 +28,6 @@ export default async function handler(req, res) {
       }
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    // Utilisation d'un modèle flash valide et stable
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-
     const systemInstructions = `Tu es un expert mécanicien et acheteur de motos d'occasion.
 Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce format pour séparer les onglets :
 
@@ -49,9 +43,29 @@ Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce f
 3. ⚠️ Points d'attention : Quels problèmes mécaniques connus surveiller pour ce modèle/année ?
 4. ❓ Questions à poser au vendeur lors de la visite.`;
 
-    const result = await model.generateContent(`${systemInstructions}\n\nVoici l'annonce :\n${adContent}`);
-    const responseText = result.response.text();
+    // Appel direct via l'API de chat standard compatible AI Gateway / OpenAI endpoint
+    const response = await fetch('https://gateway.ai.vercel.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash', // Modèle géré par la passerelle Vercel
+        messages: [
+          { role: 'system', content: systemInstructions },
+          { role: 'user', content: `Voici l'annonce :\n${adContent}` }
+        ]
+      })
+    });
 
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error?.message || 'Erreur de la passerelle AI Gateway');
+    }
+
+    const responseText = data.choices[0].message.content;
     return res.status(200).json({ result: responseText });
 
   } catch (error) {
