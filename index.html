@@ -479,7 +479,7 @@
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6bm9ydmhqY3ptaGF5Ym5lZXNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1OTcxODQsImV4cCI6MjEwMTE3MzE4NH0.E5SzQyklK9pfzb__vZBwPB6ItyLSOSnoaUB0moHhUh4";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // --- GESTION DE LA SESSION & AUTH ---
+        // --- ÉLÉMENTS DOM AUTH ---
         const authModal = document.getElementById('auth-modal');
         const openAuthBtn = document.getElementById('open-auth-modal');
         const closeAuthBtn = document.getElementById('close-auth-modal');
@@ -496,6 +496,7 @@
 
         let isLoginMode = true;
 
+        // --- GESTION DE LA SESSION ---
         async function checkUserSession() {
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
@@ -508,6 +509,7 @@
         }
         checkUserSession();
 
+        // Ouvrir modale ou déconnexion si déjà connecté
         openAuthBtn.addEventListener('click', async () => {
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
@@ -523,8 +525,10 @@
 
         closeAuthBtn.addEventListener('click', () => authModal.style.display = 'none');
 
+        // Bascule Connexion / Inscription
         switchToSignup.addEventListener('click', () => {
             isLoginMode = !isLoginMode;
+            authMessage.textContent = "";
             if (isLoginMode) {
                 authModalTitle.textContent = "Connexion";
                 authModalDesc.textContent = "Accédez à votre compte RadarMoto.";
@@ -538,16 +542,17 @@
             }
         });
 
+        // Soumission Formulaire Authentification
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            authMessage.textContent = "Chargement...";
+            authMessage.textContent = "Traitement en cours...";
             authMessage.style.color = "var(--text-muted)";
 
+            const email = authEmail.value.trim();
+            const password = authPassword.value;
+
             if (isLoginMode) {
-                const { data, error } = await supabaseClient.auth.signInWithPassword({
-                    email: authEmail.value,
-                    password: authPassword.value,
-                });
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                 if (error) {
                     authMessage.textContent = error.message;
                     authMessage.style.color = "#EF4444";
@@ -559,19 +564,25 @@
                         checkUserSession();
                         authMessage.textContent = "";
                         authForm.reset();
-                    }, 1000);
+                    }, 800);
                 }
             } else {
-                const { data, error } = await supabaseClient.auth.signUp({
-                    email: authEmail.value,
-                    password: authPassword.value,
-                });
+                const { data, error } = await supabaseClient.auth.signUp({ email, password });
                 if (error) {
                     authMessage.textContent = error.message;
                     authMessage.style.color = "#EF4444";
                 } else {
-                    authMessage.textContent = "Compte créé avec succès ! Tu peux maintenant te connecter.";
+                    authMessage.textContent = "Compte créé avec succès ! Vous pouvez maintenant vous connecter.";
                     authMessage.style.color = "#10B981";
+                    // Basculer automatiquement sur le mode connexion pour faciliter la vie de l'utilisateur
+                    setTimeout(() => {
+                        isLoginMode = true;
+                        authModalTitle.textContent = "Connexion";
+                        authModalDesc.textContent = "Accédez à votre compte RadarMoto.";
+                        authSubmitAction.textContent = "Se connecter";
+                        switchToSignup.textContent = "Pas encore de compte ? S'inscrire";
+                        authMessage.textContent = "Connectez-vous avec vos nouveaux identifiants.";
+                    }, 1500);
                 }
             }
         });
@@ -614,7 +625,7 @@
             `).join('');
         });
 
-        // --- GESTION DES ONGLETS ---
+        // --- GESTION DES ONGLETS DE RÉSULTAT ---
         function switchTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -632,7 +643,7 @@
             document.getElementById('prompt').value = "Voici une annonce intéressante https://www.leboncoin.fr/ad/motos/3229286512";
         });
 
-        // --- SOUMISSION DE LA RECHERCHE ET SAUVEGARDE HISTORIQUE ---
+        // --- SOUMISSION DE LA RECHERCHE ET SAUVEGARDE ---
         document.getElementById('analyze-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -695,6 +706,7 @@
                 resultContainer.style.display = 'block';
                 switchTab('summary');
 
+                // Enregistrement automatique dans l'historique si l'utilisateur est connecté
                 const { data: { session } } = await supabaseClient.auth.getSession();
                 if (session) {
                     await supabaseClient.from('historique de recherche').insert([
