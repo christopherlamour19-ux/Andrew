@@ -15,6 +15,7 @@ export default async function handler(req, res) {
   try {
     let adContent = prompt;
 
+    // Extraction automatique de l'URL LeBonCoin même si du texte (partage mobile) est écrit devant
     if (prompt) {
       const urlMatch = prompt.match(/(https?:\/\/[^\s]+)/);
       
@@ -31,9 +32,11 @@ export default async function handler(req, res) {
       }
     }
 
+    // Initialisation du SDK Google AI
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
 
+    // Tes instructions personnalisées
     const systemInstructions = `Tu es un expert mécanicien et acheteur de motos d'occasion.
 Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce format pour séparer les onglets :
 
