@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   try {
     let adContent = prompt;
 
-    // Si l'utilisateur colle une URL LeBonCoin, extraction via Jina AI
+    // Si l'utilisateur colle un lien URL LeBonCoin, extraction du texte
     if (prompt && (prompt.startsWith('http://') || prompt.startsWith('https://'))) {
       try {
         const jinaResponse = await fetch(`https://r.jina.ai/${prompt}`);
@@ -27,11 +27,11 @@ export default async function handler(req, res) {
       }
     }
 
-    // Initialisation avec la clé d'API
+    // Initialisation du SDK Google AI
     const genAI = new GoogleGenerativeAI(apiKey);
     
-    // Nom exact du modèle de production
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    // Utilisation de l'alias stable qui pointe automatiquement vers la version active
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     const systemInstructions = `Tu es un expert mécanicien et acheteur de motos d'occasion.
 Analyse l'annonce suivante et réponds clairement :
