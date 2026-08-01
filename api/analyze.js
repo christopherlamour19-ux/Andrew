@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Méthode non autorisée' });
   }
 
-  const { prompt } = req.body; // prompt contient l'URL collée par l'utilisateur
+  const { prompt } = req.body; // URL ou texte collé par l'utilisateur
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
@@ -13,9 +13,8 @@ export default async function handler(req, res) {
   try {
     let adContent = prompt;
 
-    // Si l'utilisateur a entré un lien URL (ex: LeBonCoin)
+    // Si l'utilisateur a collé une URL (LeBonCoin, etc.)
     if (prompt.startsWith('http://') || prompt.startsWith('https://')) {
-      // On utilise Jina AI pour extraire le texte de la page web
       const jinaResponse = await fetch(`https://r.jina.ai/${prompt}`);
       if (jinaResponse.ok) {
         adContent = await jinaResponse.text();
@@ -31,7 +30,8 @@ Analyse l'annonce suivante et réponds clairement :
 3. ⚠️ Points d'attention : Quels problèmes mécaniques connus surveiller pour ce modèle/année ?
 4. ❓ Questions à poser au vendeur lors de la visite.`;
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
+    // Endpoint officiel v1 avec le modèle gemini-1.5-flash
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -51,6 +51,6 @@ Analyse l'annonce suivante et réponds clairement :
     return res.status(200).json({ result });
 
   } catch (error) {
-    return res.status(500).json({ error: "Erreur lors du traitement du lien ou de l'analyse." });
+    return res.status(500).json({ error: "Erreur lors du traitement de l'annonce." });
   }
 }
