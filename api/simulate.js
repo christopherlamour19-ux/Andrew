@@ -14,7 +14,7 @@ export default async function handler(req, res) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 
     const systemInstructions = `Tu es un conseiller expert en choix de motos d'occasion et neuves. 
 Analyse le profil du motard ci-dessous et recommande-lui LA moto idéale. 
