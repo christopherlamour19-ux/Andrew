@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { prompt } = req.body; // C'est ici qu'on reçoit l'URL ou le texte
+        const { prompt } = req.body;
 
         if (!prompt) {
             return res.status(400).json({ error: 'URL manquante.' });
@@ -16,26 +16,21 @@ export default async function handler(req, res) {
 
         let pageContent = prompt;
 
-        // 1. Si l'utilisateur envoie une URL LeBonCoin, on la scrape via Jina AI
+        // 1. Scraping via Jina AI avec gestion d'erreur sécurisée
         if (prompt.startsWith('http')) {
             try {
                 const jinaResponse = await fetch(`https://r.jina.ai/${prompt}`, {
-                    headers: {
-                        'Accept': 'text/plain',
-                        // Optionnel si tu as une clé Jina : 'Authorization': 'Bearer TON_API_KEY'
-                    }
+                    headers: { 'Accept': 'text/plain' }
                 });
                 
                 if (jinaResponse.ok) {
                     pageContent = await jinaResponse.text();
                 }
             } catch (scrapeError) {
-                console.error("Erreur de scraping Jina:", scrapeError);
-                // Si le scraping échoue, on continue quand même avec l'URL brute au cas où
+                console.error("Avertissement scraping Jina:", scrapeError);
             }
         }
 
-        // 2. On prépare les instructions strictes pour l'IA
         const systemInstruction = `Tu es un expert mécanicien et acheteur de motos d'occasion. 
 Tu vas analyser le contenu d'une annonce LeBonCoin qui te sera fourni.
 Réponds obligatoirement et strictement sous ce format pour que l'interface puisse les séparer :
@@ -49,20 +44,21 @@ Réponds obligatoirement et strictement sous ce format pour que l'interface puis
 ---RAPPORT_DETAILLE---
 (Donne ici une analyse complète et technique : points forts, historique à vérifier, points précis à inspecter lors du rendez-vous, et estimation de l'entretien futur).`;
 
-        // 3. Appel à Gemini avec le modèle stable
+        // 2. Appel Gemini (utilisation du modèle alias stable)
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-1.5-flash',
             contents: [
-                { role: 'user', parts: [{ text: systemInstruction }, { text: `Voici le contenu de l'annonce à analyser :\n\n${pageContent}` }] }
+                { role: 'user', parts: [{ text: systemInstruction }, { text: `Voici le contenu à analyser :\n\n${pageContent}` }] }
             ],
         });
 
-        const textResult = response.text();
+        // 3. Sécurité pour extraire le texte
+        const textResult = typeof response.text === 'function' ? response.text() : response.text;
 
         return res.status(200).json({ result: textResult });
 
     } catch (error) {
-        console.error("Erreur API:", error);
-        return res.status(500).json({ error: 'Erreur interne du serveur: ' + error.message });
+        console.error("Erreur critique API:", error);
+        return res.status(500).json({ error: 'Erreur serveur : ' + error.message });
     }
 }
