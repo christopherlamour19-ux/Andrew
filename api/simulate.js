@@ -15,6 +15,7 @@ export default async function handler(req, res) {
   try {
     const { ageRange, height, style, license, budget } = profile || {};
 
+    // Même initialisation exacte que ton fichier analyze.js qui fonctionne
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
 
