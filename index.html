@@ -96,7 +96,6 @@
             max-width: 650px;
         }
 
-        /* Sélecteur de mode principal */
         .main-modes {
             display: flex;
             justify-content: center;
@@ -124,7 +123,6 @@
             border-color: var(--accent);
         }
 
-        /* Mode Analyse */
         .search-container {
             width: 100%;
             max-width: 750px;
@@ -173,7 +171,6 @@
 
         .search-box button:hover { background: var(--accent-hover); }
 
-        /* Mode Simulateur Formulaire */
         .simulator-form {
             display: none;
             width: 100%;
@@ -199,8 +196,6 @@
             flex-direction: column;
             gap: 8px;
         }
-
-        .form-group.full { grid-column: span 2; }
 
         .form-group label {
             font-size: 0.9rem;
@@ -253,8 +248,7 @@
             font-weight: 500;
         }
 
-        /* Résultats Analyse */
-        .result-container {
+        .result-container, .simulator-result {
             width: 100%;
             max-width: 750px;
             display: none;
@@ -309,28 +303,11 @@
 
         .tab-content.active { display: block; }
 
-        /* Résultat Simulateur */
-        .simulator-result {
-            display: none;
-            width: 100%;
-            max-width: 750px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 25px;
-            text-align: left;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            margin-bottom: 40px;
-            animation: fadeIn 0.4s ease;
-        }
-
         .moto-preview-img {
             width: 100%;
-            height: 280px;
+            height: 250px;
             object-fit: cover;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .error-box { border-color: rgba(239, 68, 68, 0.4) !important; }
@@ -379,7 +356,6 @@
         <h1>Votre expert moto <span>intelligent</span></h1>
         <p>Analysez une annonce Leboncoin ou trouvez la moto idéale adaptée à votre profil.</p>
 
-        <!-- Sélecteur de mode -->
         <div class="main-modes">
             <button class="mode-btn active" id="btn-mode-ad" onclick="switchMode('ad')">
                 <i class="fa-solid fa-magnifying-glass-dollar"></i> Analyseur d'Annonce
@@ -422,8 +398,7 @@
                         <option value="Moins de 1m65">Moins de 1m65</option>
                         <option value="1m65 à 1m75">1m65 à 1m75</option>
                         <option value="1m75 à 1m85" selected>1m75 à 1m85</option>
-                        <option value="Plus de 1m85">Plus de 1m85</option>
-                        <option value="Plus 4000M">Plus de 1m85</option>
+                        <option value="Plus de 4,00m (Grand gabarit)">Plus de 4,00m (Grand gabarit)</option>
                     </select>
                 </div>
 
@@ -432,17 +407,17 @@
                     <select id="sim-license">
                         <option value="Permis A2">Permis A2</option>
                         <option value="Permis A (Full)">Permis A (Full)</option>
-                        <option value="Permis A1 (125cc)">Permis A1 (125cc)</option
+                        <option value="Permis A1 (125cc)">Permis A1 (125cc)</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fa-solid fa-clock-rotate-left"></i> Depuis quand il roule</label>
+                    <label><i class="fa-solid fa-clock-rotate-left"></i> Expérience / Pratique</label>
                     <select id="sim-experience">
                         <option value="Débutant total (Jamais roulé)">Débutant total</option>
                         <option value="Moins d'un an d'expérience" selected>Moins d'un an</option>
                         <option value="1 à 3 ans d'expérience">1 à 3 ans</option>
-                        <option value="Plus de 3 ans d'expérienceur">Plus de 3 ans (Expérimenté)</option>
+                        <option value="Plus de 3 ans d'expérience">Plus de 3 ans</option>
                     </select>
                 </div>
 
@@ -469,18 +444,18 @@
             </div>
             
             <button type="submit" class="sim-submit-btn" id="sim-submit-btn">
-                <span>Trouver ma moto idéale & Photo</span>
+                <span>Trouver ma moto idéale</span>
                 <div class="spinner" id="sim-spinner"></div>
             </button>
         </form>
 
-        <!-- RÉSULTAT ANNONCE -->
+        <!-- RÉSULTAT ANNONCE (Onglets) -->
         <div class="result-container" id="result-container">
             <div class="tabs-header">
-                <button class="tab-btn active" onclick="switchTab('summary')">
+                <button class="tab-btn active" onclick="switchTab('summary', 'ad')">
                     <i class="fa-solid fa-bolt"></i> Résumé Rapide
                 </button>
-                <button class="tab-btn" onclick="switchTab('detailed')">
+                <button class="tab-btn" onclick="switchTab('detailed', 'ad')">
                     <i class="fa-solid fa-file-lines"></i> Rapport Technique Détaillé
                 </button>
             </div>
@@ -488,11 +463,19 @@
             <div id="tab-detailed" class="tab-content"></div>
         </div>
 
-        <!-- RÉSULTAT SIMULATEUR -->
+        <!-- RÉSULTAT SIMULATEUR (Onglets + Image) -->
         <div class="simulator-result" id="simulator-result-container">
-            <h3 style="color: var(--accent); margin-bottom: 15px;"><i class="fa-solid fa-trophy"></i> Recommandation Personnalisée</h3>
             <img id="moto-img" class="moto-preview-img" src="" alt="Moto recommandée">
-            <div id="simulator-text-content" style="white-space: pre-wrap; line-height: 1.8; color: #E2E8F0;"></div>
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab('summary', 'sim')">
+                    <i class="fa-solid fa-bolt"></i> Résumé Idéal
+                </button>
+                <button class="tab-btn" onclick="switchTab('detailed', 'sim')">
+                    <i class="fa-solid fa-file-lines"></i> Rapport Détaillé
+                </button>
+            </div>
+            <div id="sim-tab-summary" class="tab-content active"></div>
+            <div id="sim-tab-detailed" class="tab-content"></div>
         </div>
     </section>
 
@@ -525,16 +508,29 @@
             }
         }
 
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        function switchTab(tabName, type) {
+            if (type === 'ad') {
+                document.querySelectorAll('#result-container .tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('#result-container .tab-content').forEach(content => content.classList.remove('active'));
 
-            if (tabName === 'summary') {
-                document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
-                document.getElementById('tab-summary').classList.add('active');
+                if (tabName === 'summary') {
+                    document.querySelector('#result-container .tab-btn:nth-child(1)').classList.add('active');
+                    document.getElementById('tab-summary').classList.add('active');
+                } else {
+                    document.querySelector('#result-container .tab-btn:nth-child(2)').classList.add('active');
+                    document.getElementById('tab-detailed').classList.add('active');
+                }
             } else {
-                document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
-                document.getElementById('tab-detailed').classList.add('active');
+                document.querySelectorAll('#simulator-result-container .tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('#simulator-result-container .tab-content').forEach(content => content.classList.remove('active'));
+
+                if (tabName === 'summary') {
+                    document.querySelector('#simulator-result-container .tab-btn:nth-child(1)').classList.add('active');
+                    document.getElementById('sim-tab-summary').classList.add('active');
+                } else {
+                    document.querySelector('#simulator-result-container .tab-btn:nth-child(2)').classList.add('active');
+                    document.getElementById('sim-tab-detailed').classList.add('active');
+                }
             }
         }
 
@@ -542,10 +538,9 @@
             document.getElementById('prompt').value = "Voici une annonce intéressante https://www.leboncoin.fr/ad/motos/3229286512";
         });
 
-        // Script 1 : Analyse d'annonce (Ton code d'origine inchangé)
+        // Script Analyse d'annonce
         document.getElementById('analyze-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
             const promptInput = document.getElementById('prompt').value;
             const submitBtn = document.getElementById('submit-btn');
             const btnText = document.getElementById('btn-text');
@@ -565,9 +560,7 @@
             
             const interval = setInterval(() => {
                 stepIdx++;
-                if (stepIdx < steps.length) {
-                    btnText.textContent = steps[stepIdx];
-                }
+                if (stepIdx < steps.length) btnText.textContent = steps[stepIdx];
             }, 1200);
 
             try {
@@ -579,10 +572,7 @@
 
                 clearInterval(interval);
                 const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || 'Erreur lors de la communication avec le serveur.');
-                }
+                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
 
                 const fullText = data.result;
                 let summaryPart = fullText;
@@ -596,9 +586,8 @@
 
                 summaryBox.textContent = summaryPart;
                 detailedBox.textContent = detailedPart;
-                
                 resultContainer.style.display = 'block';
-                switchTab('summary');
+                switchTab('summary', 'ad');
 
             } catch (error) {
                 clearInterval(interval);
@@ -613,7 +602,7 @@
             }
         });
 
-        // Script 2 : Simulateur "Idéal Moto"
+        // Script Simulateur Profil
         document.getElementById('simulator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -629,7 +618,8 @@
             const simSubmitBtn = document.getElementById('sim-submit-btn');
             const simSpinner = document.getElementById('sim-spinner');
             const simResultContainer = document.getElementById('simulator-result-container');
-            const simTextContent = document.getElementById('simulator-text-content');
+            const simSummaryBox = document.getElementById('sim-tab-summary');
+            const simDetailedBox = document.getElementById('sim-tab-detailed');
             const motoImg = document.getElementById('moto-img');
 
             simSubmitBtn.disabled = true;
@@ -646,12 +636,26 @@
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
 
-                simTextContent.textContent = data.result.replace(/PHOTO_QUERY:.*/g, '').trim();
+                const fullText = data.result.replace(/PHOTO_QUERY:.*/g, '').trim();
+                let summaryPart = fullText;
+                let detailedPart = "Rapport détaillé non disponible.";
+
+                if (fullText.includes("---RESUME_IDEAL---") && fullText.includes("---RAPPORT_DETAILLE---")) {
+                    const parts = fullText.split("---RAPPORT_DETAILLE---");
+                    summaryPart = parts[0].replace("---RESUME_IDEAL---", "").trim();
+                    detailedPart = parts[1].trim();
+                }
+
+                simSummaryBox.textContent = summaryPart;
+                simDetailedBox.textContent = detailedPart;
                 motoImg.src = data.imageUrl;
+                
                 simResultContainer.style.display = 'block';
+                switchTab('summary', 'sim');
 
             } catch (error) {
-                simTextContent.textContent = "Erreur : " + error.message;
+                simSummaryBox.textContent = "Erreur : " + error.message;
+                simDetailedBox.textContent = "Impossible de charger les détails.";
                 simResultContainer.style.display = 'block';
             } finally {
                 simSubmitBtn.disabled = false;
