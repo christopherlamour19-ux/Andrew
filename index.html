@@ -33,7 +33,6 @@
             flex-direction: column;
         }
 
-        /* --- NAVIGATION --- */
         nav {
             display: flex;
             justify-content: space-between;
@@ -69,7 +68,6 @@
             font-weight: 600;
         }
 
-        /* --- MODE SWITCHER --- */
         .main-modes {
             display: flex;
             justify-content: center;
@@ -97,7 +95,6 @@
             border-color: var(--accent);
         }
 
-        /* --- HERO SECTION --- */
         .hero {
             flex: 1;
             display: flex;
@@ -126,7 +123,6 @@
             max-width: 650px;
         }
 
-        /* --- FORMULAIRES --- */
         .search-container {
             width: 100%;
             max-width: 750px;
@@ -175,7 +171,6 @@
 
         .search-box button:hover { background: var(--accent-hover); }
 
-        /* Formulaire Simulateur à choix multiples */
         .simulator-form {
             display: none;
             width: 100%;
@@ -255,7 +250,6 @@
             font-weight: 500;
         }
 
-        /* --- ZONE DE RÉSULTAT ANNONCE --- */
         .result-container {
             width: 100%;
             max-width: 750px;
@@ -319,32 +313,6 @@
 
         .tab-content.active { display: block; }
 
-        /* --- ZONE DE RÉSULTAT SIMULATEUR --- */
-        .simulator-result {
-            display: none;
-            width: 100%;
-            max-width: 750px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 25px;
-            text-align: left;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            margin-bottom: 40px;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .moto-preview-img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
-        }
-
-        .error-box { border-color: rgba(239, 68, 68, 0.4) !important; }
-
         .spinner {
             display: none;
             width: 18px;
@@ -365,14 +333,6 @@
             border-top: 1px solid var(--border-color);
             background: rgba(11, 15, 25, 0.5);
         }
-
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.2rem; }
-            .form-grid { grid-template-columns: 1fr; }
-            .search-box { flex-direction: column; background: transparent; border: none; box-shadow: none; }
-            .search-box input { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; padding: 15px; }
-            .search-box button { width: 100%; padding: 15px; justify-content: center; }
-        }
     </style>
 </head>
 <body>
@@ -388,7 +348,6 @@
         <h1>Votre expert moto <span>intelligent</span></h1>
         <p>Analysez une annonce Leboncoin ou trouvez la moto parfaite adaptée à votre profil.</p>
 
-        <!-- Sélecteur de mode -->
         <div class="main-modes">
             <button class="mode-btn active" id="btn-mode-ad" onclick="switchMode('ad')">
                 <i class="fa-solid fa-magnifying-glass-dollar"></i> Analyseur d'Annonce
@@ -398,7 +357,6 @@
             </button>
         </div>
 
-        <!-- MODE 1 : ANNONCE -->
         <div class="search-container" id="container-mode-ad">
             <form id="analyze-form" class="search-box">
                 <input type="text" id="prompt" placeholder="Collez votre message ou lien LeBonCoin ici..." required>
@@ -412,69 +370,6 @@
             </div>
         </div>
 
-        <!-- MODE 2 : SIMULATEUR PROFIL (Menus déroulants demandés) -->
-        <form id="simulator-form" class="simulator-form">
-            <div class="form-grid">
-                <div class="form-group">
-                    <label><i class="fa-solid fa-cake-candles"></i> Tranche d'âge</label>
-                    <select id="sim-age">
-                        <option value="18-24 ans (Jeune conducteur)">18-24 ans</option>
-                        <option value="25-35 ans">25-35 ans</option>
-                        <option value="36-50 ans">36-50 ans</option>
-                        <option value="50 ans et plus">50 ans et plus</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label><i class="fa-solid fa-ruler-vertical"></i> Taille du pilote</label>
-                    <select id="sim-height">
-                        <option value="Moins de 1m65 (Petite taille)">Moins de 1m65</option>
-                        <option value="1m65 à 1m75 (Taille moyenne)">1m65 à 1m75</option>
-                        <option value="1m75 à 1m85 (Grande taille)" selected>1m75 à 1m85</option>
-                        <option value="Plus de 1m85 (Très grand)">Plus de 1m85</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label><i class="fa-solid fa-id-card"></i> Permis moto</label>
-                    <select id="sim-license">
-                        <option value="Permis A2 (Bridé 47.5ch)">Permis A2</option>
-                        <option value="Permis A (Full / Toutes cylindrées)">Permis A (Full)</option>
-                        <option value="Permis A1 / 125cc">Permis A1 (125cc)</option>
-                        <option value="Permis B (Passerelle auto/moto)">Permis B</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label><i class="fa-solid fa-motorcycle"></i> Style de moto</label>
-                    <select id="sim-style">
-                        <option value="Roadster">Roadster (Naked)</option>
-                        <option value="Sportive">Sportive (Racing)</option>
-                        <option value="Trail / Adventure">Trail / Adventure</option>
-                        <option value="Routière / Grand Tourisme">Routière / GT</option>
-                        <option value="Café Racer / Custom / Vintage">Custom / Café Racer</option>
-                    </select>
-                </div>
-
-                <div class="form-group full">
-                    <label><i class="fa-solid fa-wallet"></i> Budget maximum</label>
-                    <select id="sim-budget">
-                        <option value="Moins de 3 000 €">Moins de 3 000 € (Petit budget)</option>
-                        <option value="3 000 € à 5 000 €">3 000 € à 5 000 €</option>
-                        <option value="5 000 € à 8 000 €" selected>5 000 € à 8 000 €</option>
-                        <option value="8 000 € à 12 000 €">8 000 € à 12 000 €</option>
-                        <option value="Plus de 12 000 €">Plus de 12 000 € (Haut de gamme)</option>
-                    </select>
-                </div>
-            </div>
-            
-            <button type="submit" class="sim-submit-btn" id="sim-submit-btn">
-                <span>Générer ma moto idéale & Photo</span>
-                <div class="spinner" id="sim-spinner"></div>
-            </button>
-        </form>
-
-        <!-- RÉSULTAT ANNONCE -->
         <div class="result-container" id="result-container">
             <div class="tabs-header">
                 <button class="tab-btn active" onclick="switchTab('summary')">
@@ -487,13 +382,6 @@
             <div id="tab-summary" class="tab-content active"></div>
             <div id="tab-detailed" class="tab-content"></div>
         </div>
-
-        <!-- RÉSULTAT SIMULATEUR -->
-        <div class="simulator-result" id="simulator-result-container">
-            <h3 style="color: var(--accent); margin-bottom: 15px;"><i class="fa-solid fa-trophy"></i> Recommandation Personnalisée</h3>
-            <img id="moto-img" class="moto-preview-img" src="" alt="Moto recommandée">
-            <div id="simulator-text-content" style="white-space: pre-wrap; line-height: 1.8; color: #E2E8F0;"></div>
-        </div>
     </section>
 
     <footer>
@@ -503,25 +391,13 @@
     <script>
         function switchMode(mode) {
             const btnAd = document.getElementById('btn-mode-ad');
-            const btnSim = document.getElementById('btn-mode-sim');
             const containerAd = document.getElementById('container-mode-ad');
-            const formSim = document.getElementById('simulator-form');
             const resAd = document.getElementById('result-container');
-            const resSim = document.getElementById('simulator-result-container');
 
             resAd.style.display = 'none';
-            resSim.style.display = 'none';
-
             if (mode === 'ad') {
                 btnAd.classList.add('active');
-                btnSim.classList.remove('active');
                 containerAd.style.display = 'block';
-                formSim.style.display = 'none';
-            } else {
-                btnSim.classList.add('active');
-                btnAd.classList.remove('active');
-                containerAd.style.display = 'none';
-                formSim.style.display = 'block';
             }
         }
 
@@ -542,7 +418,6 @@
             document.getElementById('prompt').value = "Voici une annonce intéressante https://www.leboncoin.fr/ad/motos/3229286512";
         });
 
-        // Soumission 1 : Analyse d'annonce
         document.getElementById('analyze-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -557,7 +432,6 @@
             submitBtn.disabled = true;
             spinner.style.display = 'inline-block';
             resultContainer.style.display = 'none';
-            resultContainer.classList.remove('error-box');
 
             const steps = ["Connexion à l'annonce...", "Extraction des données...", "Génération des rapports..."];
             let stepIdx = 0;
@@ -574,7 +448,7 @@
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mode: 'ad', prompt: promptInput })
+                    body: JSON.stringify({ prompt: promptInput })
                 });
 
                 clearInterval(interval);
@@ -602,7 +476,6 @@
 
             } catch (error) {
                 clearInterval(interval);
-                resultContainer.classList.add('error-box');
                 summaryBox.textContent = "Erreur : " + error.message;
                 detailedBox.textContent = "Impossible de charger le rapport détaillé.";
                 resultContainer.style.display = 'block';
@@ -610,51 +483,6 @@
                 submitBtn.disabled = false;
                 btnText.textContent = "Lancer l'audit";
                 spinner.style.display = 'none';
-            }
-        });
-
-        // Soumission 2 : Simulateur "Idéal Moto" à choix multiples
-        document.getElementById('simulator-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            const profile = {
-                ageRange: document.getElementById('sim-age').value,
-                height: document.getElementById('sim-height').value,
-                license: document.getElementById('sim-license').value,
-                style: document.getElementById('sim-style').value,
-                budget: document.getElementById('sim-budget').value
-            };
-
-            const simSubmitBtn = document.getElementById('sim-submit-btn');
-            const simSpinner = document.getElementById('sim-spinner');
-            const simResultContainer = document.getElementById('simulator-result-container');
-            const simTextContent = document.getElementById('simulator-text-content');
-            const motoImg = document.getElementById('moto-img');
-
-            simSubmitBtn.disabled = true;
-            simSpinner.style.display = 'inline-block';
-            simResultContainer.style.display = 'none';
-
-            try {
-                const response = await fetch('/api/analyze', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mode: 'simulator', profile: profile })
-                });
-
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
-
-                simTextContent.textContent = data.result.replace(/PHOTO_QUERY:.*/g, '').trim();
-                motoImg.src = data.imageUrl;
-                simResultContainer.style.display = 'block';
-
-            } catch (error) {
-                simTextContent.textContent = "Erreur : " + error.message;
-                simResultContainer.style.display = 'block';
-            } finally {
-                simSubmitBtn.disabled = false;
-                simSpinner.style.display = 'none';
             }
         });
     </script>
