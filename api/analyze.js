@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   try {
     let adContent = prompt;
 
-    // Extraction automatique de l'URL LeBonCoin même si elle est perdue au milieu d'un texte de partage
+    // Extraction automatique de l'URL LeBonCoin même si du texte (partage mobile) est écrit devant
     if (prompt) {
       const urlMatch = prompt.match(/(https?:\/\/[^\s]+)/);
       
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
             adContent = await jinaResponse.text();
           }
         } catch (e) {
-          console.log("Erreur lors de la lecture du lien URL via Jina.");
+          console.log("Erreur lors de la lecture du lien URL.");
         }
       }
     }
@@ -36,20 +36,21 @@ export default async function handler(req, res) {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
 
-    const systemInstructions = `Tu es un expert mécanicien et analyste de marché moto. À partir de l'annonce fournie, tu dois donner un avis ultra-précis. 
-Réponds obligatoirement et strictement selon ce format pour séparer les onglets :
+    // Tes instructions personnalisées
+    const systemInstructions = `Tu es un expert mécanicien et acheteur de motos d'occasion.
+Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce format pour séparer les onglets :
 
 ---RESUME_RAPIDE---
-- 💰 Prix actuel vs Estimation : (Dis si le prix demandé est trop haut, correct ou une affaire, et donne une estimation réaliste de ce qu'elle devrait valoir).
-- 🛣️ Kilométrage & Usure : (Dis si le kilométrage est élevé pour l'année et si c'est risqué).
-- ⚠️ Gros frais à venir : (Les grosses révisions ou pièces d'usure imminentes : ex: kit chaîne, pneus, soupapes, vidange de fourche).
-- 🎯 Verdict final : (Fonce / Négocie à [X] € / Fuis).
+- 💰 Prix : (Analyse rapide du prix et donne moi un prix)
+- 🛣️ Kilométrage : (si les kilometrage pose problème a l'avenir ou les grosses revisions bientot a faire, y'a t il des choses a changer prochainement ect)
+- ⚠️ Piège majeur : (Le point noir sur la moto, moteur parti cycle le kilometrage grosse revision ou pas prochainement)
+- 🎯 Verdict final : (Fonce / Négocie / Fuis)
 
 ---RAPPORT_DETAILLE---
-1. 💸 **Évaluation du prix & Cote du marché :** Analyse le prix affiché face à l'année et au kilométrage. Donne une fourchette de prix réaliste pour ce modèle sur le marché de l'occasion.
-2. ⚙️ **Analyse du kilométrage & des révisions :** En fonction du kilométrage actuel, liste les révisions majeures qui ont dû être faites ou qui approchent à grands pas (et leur coût estimé).
-3. 🛠️ **Défauts chroniques & Pièges du modèle :** Cite les pannes connues, les vices cachés ou les problèmes moteurs répertoriés sur cette moto et cette année précise.
-4. 🔍 **Points de contrôle spécifiques & Négociation :** Ce qu'il faut inspecter en priorité sur place et les arguments précis pour faire baisser le prix.`;
+1. 💰 Prix & Argus : Est-ce un bon prix en détail ?
+2. 🛣️ Kilométrage : Normal ou trop élevé pour l'année ?
+3. ⚠️ Points d'attention : Quels problèmes mécaniques connus surveiller pour ce modèle/année ?
+4. ❓ Questions à poser au vendeur lors de la visite.`;
 
     const result = await model.generateContent(`${systemInstructions}\n\nVoici l'annonce :\n${adContent}`);
     const responseText = result.response.text();
