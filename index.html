@@ -3,26 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RadarMoto | L'expert intelligent pour vos achats moto</title>
+    <title>RadarMoto | Votre expert moto intelligent</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --bg-body: #F9FAFB;
-            --bg-card: #FFFFFF;
-            --text-main: #111827;
-            --text-muted: #6B7280;
-            --accent: #2563EB;
-            --accent-hover: #1D4ED8;
-            --accent-light: #EFF6FF;
-            --border-color: #E5E7EB;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+            --bg-main: #0B0F19; /* Fond très sombre */
+            --bg-card: #111827;
+            --bg-input: #1F2937;
+            --text-main: #FFFFFF;
+            --text-muted: #9CA3AF;
+            --accent: #F59E0B; /* Orange/Jaune de la capture */
+            --accent-hover: #D97706;
+            --border-color: #374151;
             --radius-md: 12px;
             --radius-lg: 20px;
+            --radius-pill: 100px;
         }
 
         * {
@@ -33,7 +31,9 @@
         }
 
         body {
-            background-color: var(--bg-body);
+            background-color: var(--bg-main);
+            /* Effet de lueur radiale au centre comme sur l'image */
+            background-image: radial-gradient(circle at 50% 30%, rgba(245, 158, 11, 0.08) 0%, transparent 50%);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
@@ -41,24 +41,19 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Navigation Minimaliste */
+        /* En-tête */
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 5%;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            position: fixed;
             width: 100%;
             z-index: 100;
-            border-bottom: 1px solid var(--border-color);
         }
 
         .logo {
             font-size: 1.4rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -67,40 +62,51 @@
 
         .logo i { 
             color: var(--accent); 
-            background: var(--accent-light);
-            padding: 8px;
+            border: 2px solid var(--accent);
             border-radius: 8px;
+            padding: 6px;
+            font-size: 1.1rem;
         }
 
         .nav-badge {
-            background: var(--bg-body);
-            color: var(--text-muted);
+            background: transparent;
+            color: var(--accent);
             border: 1px solid var(--border-color);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
+            padding: 6px 16px;
+            border-radius: var(--radius-pill);
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-badge::before {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent);
+            border-radius: 50%;
         }
 
-        /* Hero Section */
+        /* Section Principale (Hero) */
         .hero {
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             text-align: center;
-            padding: 160px 5% 80px 5%;
+            padding: 80px 5% 60px 5%;
         }
 
         .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-size: clamp(2rem, 4vw, 3.5rem);
             font-weight: 800;
-            letter-spacing: -1.5px;
-            margin-bottom: 20px;
+            letter-spacing: -1px;
+            margin-bottom: 15px;
             color: var(--text-main);
-            max-width: 800px;
-            line-height: 1.1;
         }
 
         .hero h1 span { color: var(--accent); }
@@ -110,18 +116,18 @@
             color: var(--text-muted);
             margin-bottom: 40px;
             max-width: 600px;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
-        /* Toggle Modes (Pills) */
+        /* Sélecteur de modes (Pilules) */
         .main-modes {
             display: flex;
             justify-content: center;
-            gap: 8px;
-            margin-bottom: 40px;
-            background: var(--border-color);
+            background: rgba(31, 41, 55, 0.5);
+            border: 1px solid var(--border-color);
             padding: 6px;
-            border-radius: 100px;
+            border-radius: var(--radius-pill);
+            margin-bottom: 40px;
         }
 
         .mode-btn {
@@ -129,7 +135,7 @@
             border: none;
             color: var(--text-muted);
             padding: 12px 24px;
-            border-radius: 100px;
+            border-radius: var(--radius-pill);
             font-weight: 600;
             font-size: 0.95rem;
             cursor: pointer;
@@ -142,9 +148,8 @@
         .mode-btn:hover { color: var(--text-main); }
 
         .mode-btn.active {
-            background: var(--bg-card);
-            color: var(--text-main);
-            box-shadow: var(--shadow-sm);
+            background: var(--accent);
+            color: #000; /* Texte noir sur fond orange pour un fort contraste */
         }
 
         /* Conteneurs Principaux */
@@ -159,15 +164,14 @@
             display: flex;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            padding: 8px;
-            border-radius: 100px;
-            box-shadow: var(--shadow-md);
+            padding: 6px;
+            border-radius: var(--radius-pill);
             transition: all 0.3s ease;
         }
 
         .search-box:focus-within {
             border-color: var(--accent);
-            box-shadow: 0 0 0 4px var(--accent-light), var(--shadow-md);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
         }
 
         .search-box input {
@@ -180,16 +184,16 @@
             outline: none;
         }
 
-        .search-box input::placeholder { color: #9CA3AF; }
+        .search-box input::placeholder { color: var(--text-muted); }
 
         .search-box button {
             background: var(--accent);
-            color: white;
+            color: #000;
             border: none;
             padding: 0 32px;
             font-size: 1rem;
-            font-weight: 600;
-            border-radius: 100px;
+            font-weight: 700;
+            border-radius: var(--radius-pill);
             cursor: pointer;
             transition: background 0.2s;
             display: flex;
@@ -209,17 +213,20 @@
             color: var(--accent);
             cursor: pointer;
             font-weight: 500;
+            text-decoration: underline;
+            text-decoration-color: transparent;
+            transition: text-decoration-color 0.2s;
         }
-        .sample-hint span:hover { text-decoration: underline; }
+        
+        .sample-hint span:hover { text-decoration-color: var(--accent); }
 
-        /* Simulateur (Formulaire Clean) */
+        /* Simulateur (Formulaire Sombre) */
         .simulator-form {
             display: none;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
             padding: 40px;
-            box-shadow: var(--shadow-lg);
             text-align: left;
             margin-bottom: 40px;
         }
@@ -243,18 +250,15 @@
 
         .form-group label {
             font-size: 0.9rem;
-            color: var(--text-main);
+            color: var(--text-muted);
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        /* Style unifié pour selects ET inputs texte/nombre */
+        /* Champs Inputs et Selects */
         .form-group select,
         .form-group input[type="number"] {
-            background: #F3F4F6;
-            border: 1px solid transparent;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
             padding: 14px 16px;
             border-radius: var(--radius-md);
             color: var(--text-main);
@@ -267,7 +271,7 @@
         .form-group select {
             cursor: pointer;
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239CA3AF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 16px center;
             background-size: 16px;
@@ -275,21 +279,20 @@
 
         .form-group select:hover,
         .form-group input[type="number"]:hover { 
-            background-color: #E5E7EB; 
+            border-color: var(--text-muted);
         }
 
         .form-group select:focus,
         .form-group input[type="number"]:focus { 
-            background-color: var(--bg-card);
             border-color: var(--accent);
-            box-shadow: 0 0 0 4px var(--accent-light);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
         }
 
         .form-group input::placeholder {
-            color: #9CA3AF;
+            color: #6B7280;
         }
 
-        /* Conteneur spécial pour le budget avec symbole € */
+        /* Budget avec symbole */
         .input-currency-wrapper {
             position: relative;
             display: flex;
@@ -297,7 +300,7 @@
         }
 
         .input-currency-wrapper input {
-            padding-right: 40px; /* Espace pour le symbole */
+            padding-right: 40px; 
         }
 
         .input-currency-wrapper .currency-symbol {
@@ -308,14 +311,15 @@
             pointer-events: none;
         }
 
+        /* Bouton de soumission simulateur */
         .sim-submit-btn {
             width: 100%;
             background: var(--accent);
-            color: white;
+            color: #000;
             border: none;
             padding: 16px;
             font-size: 1.05rem;
-            font-weight: 600;
+            font-weight: 700;
             border-radius: var(--radius-md);
             cursor: pointer;
             transition: background 0.2s;
@@ -333,7 +337,6 @@
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
             margin-top: 20px;
             margin-bottom: 50px;
             overflow: hidden;
@@ -343,7 +346,7 @@
         .tabs-header {
             display: flex;
             border-bottom: 1px solid var(--border-color);
-            background: #F9FAFB;
+            background: rgba(31, 41, 55, 0.3);
         }
 
         .tab-btn {
@@ -367,13 +370,12 @@
         .tab-btn.active { 
             color: var(--accent); 
             border-bottom-color: var(--accent); 
-            background: white;
         }
 
         .tab-content {
             display: none;
             padding: 30px;
-            color: #374151;
+            color: #D1D5DB;
             line-height: 1.7;
             font-size: 1rem;
             white-space: pre-wrap;
@@ -393,9 +395,9 @@
             display: none;
             width: 18px;
             height: 18px;
-            border: 2px solid rgba(255,255,255,0.3);
+            border: 2px solid rgba(0,0,0,0.3);
             border-radius: 50%;
-            border-top-color: white;
+            border-top-color: #000;
             animation: spin 0.8s linear infinite;
         }
 
@@ -406,16 +408,16 @@
             padding: 30px;
             color: var(--text-muted);
             font-size: 0.85rem;
-            border-top: 1px solid var(--border-color);
-            background: var(--bg-card);
+            border-top: 1px solid #1F2937;
+            margin-top: auto;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2rem; }
             .form-grid { grid-template-columns: 1fr; gap: 16px; }
-            .search-box { flex-direction: column; border-radius: var(--radius-md); padding: 8px; background: transparent; box-shadow: none; border: none; }
-            .search-box input { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 10px; box-shadow: var(--shadow-sm); }
+            .search-box { flex-direction: column; border-radius: var(--radius-md); padding: 8px; background: transparent; border: none; }
+            .search-box input { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 10px; }
             .search-box button { padding: 16px; border-radius: var(--radius-md); justify-content: center; }
             .main-modes { flex-direction: column; border-radius: var(--radius-md); }
             .mode-btn { border-radius: 8px; justify-content: center; }
@@ -426,35 +428,35 @@
 
     <nav>
         <div class="logo">
-            <i class="fa-solid fa-motorcycle"></i> RadarMoto
+            <i class="fa-solid fa-motorcycle"></i> Radar Moto
         </div>
-        <div class="nav-badge">Bêta Publique</div>
+        <div class="nav-badge">christo.r7 le best</div>
     </nav>
 
     <section class="hero">
-        <h1>Trouvez la moto parfaite, <span>simplement.</span></h1>
-        <p>Analysez une annonce d'occasion en un clic ou laissez notre simulateur trouver le modèle idéal adapté à votre profil.</p>
+        <h1>Votre expert moto <span>intelligent</span></h1>
+        <p>Analysez instantanément une annonce Leboncoin ou utilisez notre simulateur de pointe pour dénicher la monture de vos rêves.</p>
 
         <div class="main-modes">
             <button class="mode-btn active" id="btn-mode-ad" onclick="switchMode('ad')">
-                <i class="fa-solid fa-search"></i> Analyser une annonce
+                <i class="fa-solid fa-search"></i> Analyseur d'Annonce
             </button>
             <button class="mode-btn" id="btn-mode-sim" onclick="switchMode('simulator')">
-                <i class="fa-solid fa-sliders"></i> Simulateur idéal
+                <i class="fa-solid fa-user-astronaut"></i> Simulateur "Idéal Moto"
             </button>
         </div>
 
         <!-- MODE 1 : ANNONCE -->
         <div class="search-container" id="container-mode-ad">
             <form id="analyze-form" class="search-box">
-                <input type="text" id="prompt" placeholder="Collez l'URL de l'annonce Leboncoin..." required>
+                <input type="text" id="prompt" placeholder="Collez votre message ou lien LeBonCoin ici..." required>
                 <button type="submit" id="submit-btn">
-                    <span id="btn-text">Analyser</span>
+                    <span id="btn-text">Lancer l'audit</span>
                     <div class="spinner" id="spinner"></div>
                 </button>
             </form>
             <div class="sample-hint">
-                <span id="fill-sample">Remplir avec une annonce de test</span>
+                Besoin d'un test rapide ? <span id="fill-sample">Cliquez ici pour insérer un lien exemple</span>
             </div>
         </div>
 
@@ -477,7 +479,6 @@
                         <option value="Moins de 1m65">Moins de 1m65</option>
                         <option value="1m65 à 1m75">1m65 à 1m75</option>
                         <option value="1m75 à 1m85" selected>1m75 à 1m85</option>
-                        <!-- NOUVELLES OPTIONS DE TAILLE -->
                         <option value="1m85 à 2m">1m85 à 2m</option>
                         <option value="Plus de 2m">Plus de 2m</option>
                     </select>
@@ -524,7 +525,7 @@
                     </select>
                 </div>
 
-                <!-- NOUVEAU CHAMP : BUDGET MANUEL (Prend toute la largeur) -->
+                <!-- NOUVEAU CHAMP : BUDGET MANUEL -->
                 <div class="form-group full-width">
                     <label>Budget maximal alloué</label>
                     <div class="input-currency-wrapper">
@@ -563,7 +564,7 @@
     </section>
 
     <footer>
-        &copy; 2026 RadarMoto. Simplifiez vos achats d'occasion.
+        &copy; 2026 RadarMoto. Outil d'aide à l'achat de motos d'occasion.
     </footer>
 
     <script>
@@ -675,7 +676,6 @@
         document.getElementById('simulator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            // L'objet profile inclut maintenant la cylindrée (engine) et le budget tapé à la main (formaté avec €)
             const profile = {
                 ageRange: document.getElementById('sim-age').value,
                 height: document.getElementById('sim-height').value,
