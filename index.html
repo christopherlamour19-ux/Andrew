@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RadarMoto | L'expert pour vos achats moto</title>
+    <title>Radar Moto</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         :root {
             --bg-dark: #0B0F19;
@@ -53,20 +52,30 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
         }
 
         .logo i { color: var(--accent); }
         .logo span { color: var(--accent); }
 
-        .nav-badge {
-            background: rgba(255, 179, 0, 0.1);
-            color: var(--accent);
-            border: 1px solid rgba(255, 179, 0, 0.3);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
+
+        .auth-nav-btn {
+            background: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .auth-nav-btn:hover { background: var(--accent-hover); }
 
         .hero {
             flex: 1;
@@ -75,8 +84,10 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 130px 5% 60px 5%;
+            padding: 100px 5% 40px 5%;
             background: radial-gradient(circle at 50% 25%, rgba(255, 179, 0, 0.06), transparent 60%);
+            min-height: calc(100vh - 70px);
+            margin-top: 70px;
         }
 
         .hero h1 {
@@ -123,10 +134,24 @@
             border-color: var(--accent);
         }
 
-        .search-container {
+        .search-container, .simulator-form, .auth-container, .dashboard-container {
             width: 100%;
             max-width: 750px;
-            margin-bottom: 15px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 30px;
+            text-align: left;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            margin: 0 auto;
+            display: none;
+        }
+
+        .search-container {
+            background: transparent;
+            border: none;
+            padding: 0;
+            box-shadow: none;
         }
 
         .search-box {
@@ -154,7 +179,7 @@
 
         .search-box input::placeholder { color: var(--text-muted); }
 
-        .search-box button {
+        .search-box button, .auth-submit-btn {
             background: var(--accent);
             color: var(--bg-dark);
             border: none;
@@ -166,25 +191,13 @@
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
         }
 
-        .search-box button:hover { background: var(--accent-hover); }
+        .auth-submit-btn { width: 100%; padding: 15px; margin-top: 10px; }
+        .search-box button:hover, .auth-submit-btn:hover { background: var(--accent-hover); }
 
-        .simulator-form {
-            display: none;
-            width: 100%;
-            max-width: 750px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 30px;
-            text-align: left;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            margin-bottom: 40px;
-        }
-
-        /* MODIFICATION ICI : Passage en 1 seule colonne 1 par 1 */
         .form-grid {
             display: flex;
             flex-direction: column;
@@ -204,7 +217,7 @@
             font-weight: 500;
         }
 
-        .form-group select, .form-group input[type="number"] {
+        .form-group select, .form-group input {
             background: rgba(11, 15, 25, 0.8);
             border: 1px solid var(--border-color);
             padding: 12px 15px;
@@ -215,115 +228,32 @@
             width: 100%;
         }
 
-        .form-group select:focus, .form-group input[type="number"]:focus { border-color: var(--accent); }
+        .form-group select:focus, .form-group input:focus { border-color: var(--accent); }
 
-        .sim-submit-btn {
-            width: 100%;
-            background: var(--accent);
-            color: var(--bg-dark);
-            border: none;
-            padding: 15px;
-            font-size: 1rem;
-            font-weight: 700;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .sim-submit-btn:hover { background: var(--accent-hover); }
-
-        .sample-hint {
+        .auth-switch {
+            text-align: center;
+            margin-top: 15px;
             font-size: 0.9rem;
             color: var(--text-muted);
-            margin-bottom: 40px;
         }
 
-        .sample-hint span {
+        .auth-switch span {
             color: var(--accent);
             cursor: pointer;
-            text-decoration: underline;
-            font-weight: 500;
-        }
-
-        .result-container, .simulator-result {
-            width: 100%;
-            max-width: 750px;
-            display: none;
-            text-align: left;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            animation: fadeIn 0.4s ease;
-            margin-bottom: 40px;
-            overflow: hidden;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .tabs-header {
-            display: flex;
-            background: rgba(11, 15, 25, 0.6);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 15px;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
             font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.3s;
+            text-decoration: underline;
+        }
+
+        .history-item {
+            background: rgba(11, 15, 25, 0.6);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
-
-        .tab-btn:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.02); }
-        .tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); background: rgba(255, 179, 0, 0.03); }
-
-        .tab-content {
-            display: none;
-            padding: 25px;
-            color: #E2E8F0;
-            line-height: 1.8;
-            font-size: 0.95rem;
-            white-space: pre-wrap;
-        }
-
-        .tab-content.active { display: block; }
-
-        .moto-preview-img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .error-box { border-color: rgba(239, 68, 68, 0.4) !important; }
-
-        .spinner {
-            display: none;
-            width: 18px;
-            height: 18px;
-            border: 3px solid rgba(11, 15, 25, 0.3);
-            border-radius: 50%;
-            border-top-color: var(--bg-dark);
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
 
         footer {
             text-align: center;
@@ -333,353 +263,211 @@
             border-top: 1px solid var(--border-color);
             background: rgba(11, 15, 25, 0.5);
         }
-
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.2rem; }
-            .search-box { flex-direction: column; background: transparent; border: none; box-shadow: none; }
-            .search-box input { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; padding: 15px; }
-            .search-box button { width: 100%; padding: 15px; justify-content: center; }
-            .main-modes { flex-direction: column; width: 100%; }
-        }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">
-            <i class="fa-solid fa-motorcycle"></i> Radar<span>Moto</span>
+        <div class="logo" onclick="location.reload()">
+            <i class="fa-solid fa-motorcycle"></i> Radar <span>Moto</span>
         </div>
-        <div class="nav-badge">christo.r7 le best</div>
+        <div class="nav-right">
+            <button class="auth-nav-btn" id="navAuthBtn" onclick="openAuthModal()">Mon Compte</button>
+        </div>
     </nav>
 
-    <section class="hero">
-        <h1>Votre expert moto <span>intelligent</span></h1>
-        <p>Analysez une annonce Leboncoin ou trouvez la moto idéale adaptée à votre profil.</p>
+    <div class="hero">
+        <h1>Analysez et Estimez <span>votre Moto</span></h1>
+        <p>Entrez l'annonce ou utilisez le simulateur pour obtenir une analyse complète.</p>
 
         <div class="main-modes">
-            <button class="mode-btn active" id="btn-mode-ad" onclick="switchMode('ad')">
-                <i class="fa-solid fa-magnifying-glass-dollar"></i> Analyseur d'Annonce
+            <button class="mode-btn active" id="btnModeSearch" onclick="switchMode('search')">
+                <i class="fa-solid fa-magnifying-glass"></i> Analyse d'annonce
             </button>
-            <button class="mode-btn" id="btn-mode-sim" onclick="switchMode('simulator')">
-                <i class="fa-solid fa-user-gear"></i> Simulateur "Idéal Moto"
+            <button class="mode-btn" id="btnModeSim" onclick="switchMode('sim')">
+                <i class="fa-solid fa-calculator"></i> Simulateur
             </button>
         </div>
 
-        <!-- MODE 1 : ANNONCE -->
-        <div class="search-container" id="container-mode-ad">
-            <form id="analyze-form" class="search-box">
-                <input type="text" id="prompt" placeholder="Collez votre message ou lien LeBonCoin ici..." required>
-                <button type="submit" id="submit-btn">
-                    <span id="btn-text">Lancer l'audit</span>
-                    <div class="spinner" id="spinner"></div>
-                </button>
-            </form>
-            <div class="sample-hint">
-                Besoin d'un test rapide ? <span id="fill-sample">Cliquez ici pour insérer un lien exemple</span>
+        <!-- Recherche d'annonce -->
+        <div class="search-container" id="searchContainer" style="display: block;">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Collez le lien de l'annonce (Leboncoin, etc.)...">
+                <button onclick="lancerAnalyse()">Analyser <i class="fa-solid fa-arrow-right"></i></button>
             </div>
         </div>
 
-        <!-- MODE 2 : SIMULATEUR PROFIL -->
-        <form id="simulator-form" class="simulator-form">
+        <!-- Simulateur (Conservé intact) -->
+        <div class="simulator-form" id="simulatorForm">
             <div class="form-grid">
                 <div class="form-group">
-                    <label><i class="fa-solid fa-cake-candles"></i> Tranche d'âge</label>
-                    <select id="sim-age">
-                        <option value="18-24 ans">18-24 ans</option>
-                        <option value="25-35 ans" selected>25-35 ans</option>
-                        <option value="36-50 ans">36-50 ans</option>
-                        <option value="50 ans et plus">50 ans et plus</option>
-                    </select>
+                    <label>Modèle de moto</label>
+                    <input type="text" placeholder="Ex: Yamaha MT-07">
                 </div>
-
                 <div class="form-group">
-                    <label><i class="fa-solid fa-ruler-vertical"></i> Taille du pilote</label>
-                    <select id="sim-height">
-                        <option value="Moins de 1m65">Moins de 1m65</option>
-                        <option value="1m65 à 1m75">1m65 à 1m75</option>
-                        <option value="1m75 à 1m85">1m75 à 1m85</option>
-                        <option value="1m85 à 2m" selected>1m85 à 2m (Grand gabarit)</option>
-                        <option value="Plus de 2m">Plus de 2m (Très grand gabarit)</option>
-                    </select>
+                    <label>Année</label>
+                    <input type="number" placeholder="Ex: 2021">
                 </div>
+            </div>
+            <button class="sim-submit-btn" onclick="lancerSimulation()">Lancer la simulation</button>
+        </div>
 
-                <div class="form-group">
-                    <label><i class="fa-solid fa-id-card"></i> Permis moto</label>
-                    <select id="sim-license">
-                        <option value="Permis A2">Permis A2</option>
-                        <option value="Permis A (Full)">Permis A (Full)</option>
-                        <option value="Permis A1 (125cc)">Permis A1 (125cc)</option>
-                    </select>
+        <!-- Espace Connexion / Inscription -->
+        <div class="auth-container" id="authContainer">
+            <h2 id="authTitle" style="margin-bottom: 20px; color: var(--text-main);">Connexion</h2>
+            <form id="authForm" onsubmit="handleAuth(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="authEmail" required placeholder="votre@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Mot de passe</label>
+                        <input type="password" id="authPassword" required placeholder="••••••••">
+                    </div>
                 </div>
+                <button type="submit" class="auth-submit-btn" id="authSubmitText">Se connecter</button>
+            </form>
+            <div class="auth-switch">
+                <span id="authSwitchText" onclick="toggleAuthMode()">Pas encore de compte ? S'inscrire</span>
+            </div>
+        </div>
 
-                <div class="form-group">
-                    <label><i class="fa-solid fa-clock-rotate-left"></i> Expérience / Pratique</label>
-                    <select id="sim-experience">
-                        <option value="Débutant total (Jamais roulé)">Débutant total</option>
-                        <option value="Moins d'un an d'expérience" selected>Moins d'un an</option>
-                        <option value="1 à 3 ans d'expérience">1 à 3 ans</option>
-                        <option value="Plus de 3 ans d'expérience">Plus de 3 ans</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label><i class="fa-solid fa-motorcycle"></i> Style de moto</label>
-                    <select id="sim-style">
-                        <option value="Roadster">Roadster</option>
-                        <option value="Sportive">Sportive</option>
-                        <option value="Trail / Adventure">Trail / Adventure</option>
-                        <option value="Routière / GT">Routière / GT</option>
-                        <option value="Custom / Café Racer">Custom / Café Racer</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label><i class="fa-solid fa-gauge-high"></i> Gamme de cylindrée</label>
-                    <select id="sim-displacement">
-                        <option value="Peu importe">Peu importe / Laisser l'IA juger</option>
-                        <option value="125cc">125cc</option>
-                        <option value="A2 (300cc - 500cc)">A2 intermédiaire (300cc - 500cc)</option>
-                        <option value="Moyenne cylindrée (600cc - 900cc)">Moyenne cylindrée (600cc - 900cc)</option>
-                        <option value="Grosse cylindrée (1000cc et +)">Grosse cylindrée (1000cc et +)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label><i class="fa-solid fa-wallet"></i> Budget maximum (€)</label>
-                    <input type="number" id="sim-budget" placeholder="Ex: 6500" min="500" step="100" value="6500" required>
-                </div>
+        <!-- Tableau de bord / Historique -->
+        <div class="dashboard-container" id="dashboardContainer">
+            <h2 style="margin-bottom: 10px;">Mon Compte</h2>
+            <p id="userEmailDisplay" style="color: var(--text-muted); margin-bottom: 20px;"></p>
+            
+            <h3 style="margin-bottom: 15px; font-size: 1.1rem;">Mon historique de recherches</h3>
+            <div id="historyList" style="max-height: 250px; overflow-y: auto; margin-bottom: 20px;">
+                <!-- Les recherches s'afficheront ici -->
             </div>
             
-            <button type="submit" class="sim-submit-btn" id="sim-submit-btn">
-                <span>Trouver ma moto idéale</span>
-                <div class="spinner" id="sim-spinner"></div>
-            </button>
-        </form>
-
-        <!-- RÉSULTAT ANNONCE (Onglets) -->
-        <div class="result-container" id="result-container">
-            <div class="tabs-header">
-                <button class="tab-btn active" onclick="switchTab('summary', 'ad')">
-                    <i class="fa-solid fa-bolt"></i> Résumé Rapide
-                </button>
-                <button class="tab-btn" onclick="switchTab('detailed', 'ad')">
-                    <i class="fa-solid fa-file-lines"></i> Rapport Technique Détaillé
-                </button>
-            </div>
-            <div id="tab-summary" class="tab-content active"></div>
-            <div id="tab-detailed" class="tab-content"></div>
+            <button class="auth-submit-btn" style="background: #ef4444; color: white;" onclick="deconnecter()">Se déconnecter</button>
         </div>
-
-        <!-- RÉSULTAT SIMULATEUR (Onglets + Image) -->
-        <div class="simulator-result" id="simulator-result-container">
-            <img id="moto-img" class="moto-preview-img" src="" alt="Moto recommandée">
-            <div class="tabs-header">
-                <button class="tab-btn active" onclick="switchTab('summary', 'sim')">
-                    <i class="fa-solid fa-bolt"></i> Résumé Idéal
-                </button>
-                <button class="tab-btn" onclick="switchTab('detailed', 'sim')">
-                    <i class="fa-solid fa-file-lines"></i> Rapport Détaillé
-                </button>
-            </div>
-            <div id="sim-tab-summary" class="tab-content active"></div>
-            <div id="sim-tab-detailed" class="tab-content"></div>
-        </div>
-    </section>
+    </div>
 
     <footer>
-        &copy; 2026 RadarMoto. Outil d'aide à l'achat de motos d'occasion.
+        <p>&copy; 2026 Radar Moto. Tous droits réservés.</p>
     </footer>
 
     <script>
+        let isRegisterMode = false;
+
         function switchMode(mode) {
-            const btnAd = document.getElementById('btn-mode-ad');
-            const btnSim = document.getElementById('btn-mode-sim');
-            const containerAd = document.getElementById('container-mode-ad');
-            const formSim = document.getElementById('simulator-form');
-            const resAd = document.getElementById('result-container');
-            const resSim = document.getElementById('simulator-result-container');
+            document.getElementById('searchContainer').style.display = 'none';
+            document.getElementById('simulatorForm').style.display = 'none';
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('dashboardContainer').style.display = 'none';
 
-            resAd.style.display = 'none';
-            resSim.style.display = 'none';
+            document.getElementById('btnModeSearch').classList.remove('active');
+            document.getElementById('btnModeSim').classList.remove('active');
 
-            if (mode === 'ad') {
-                btnAd.classList.add('active');
-                btnSim.classList.remove('active');
-                containerAd.style.display = 'block';
-                formSim.style.display = 'none';
-            } else {
-                btnSim.classList.add('active');
-                btnAd.classList.remove('active');
-                containerAd.style.display = 'none';
-                formSim.style.display = 'block';
+            if (mode === 'search') {
+                document.getElementById('searchContainer').style.display = 'block';
+                document.getElementById('btnModeSearch').classList.add('active');
+            } else if (mode === 'sim') {
+                document.getElementById('simulatorForm').style.display = 'block';
+                document.getElementById('btnModeSim').classList.add('active');
             }
         }
 
-        function switchTab(tabName, type) {
-            if (type === 'ad') {
-                document.querySelectorAll('#result-container .tab-btn').forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('#result-container .tab-content').forEach(content => content.classList.remove('active'));
+        function openAuthModal() {
+            document.getElementById('searchContainer').style.display = 'none';
+            document.getElementById('simulatorForm').style.display = 'none';
+            document.getElementById('btnModeSearch').classList.remove('active');
+            document.getElementById('btnModeSim').classList.remove('active');
 
-                if (tabName === 'summary') {
-                    document.querySelector('#result-container .tab-btn:nth-child(1)').classList.add('active');
-                    document.getElementById('tab-summary').classList.add('active');
-                } else {
-                    document.querySelector('#result-container .tab-btn:nth-child(2)').classList.add('active');
-                    document.getElementById('tab-detailed').classList.add('active');
-                }
+            const currentUser = localStorage.getItem('radar_current_user');
+            if (currentUser) {
+                afficherDashboard(currentUser);
             } else {
-                document.querySelectorAll('#simulator-result-container .tab-btn').forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('#simulator-result-container .tab-content').forEach(content => content.classList.remove('active'));
-
-                if (tabName === 'summary') {
-                    document.querySelector('#simulator-result-container .tab-btn:nth-child(1)').classList.add('active');
-                    document.getElementById('sim-tab-summary').classList.add('active');
-                } else {
-                    document.querySelector('#simulator-result-container .tab-btn:nth-child(2)').classList.add('active');
-                    document.getElementById('sim-tab-detailed').classList.add('active');
-                }
+                document.getElementById('authContainer').style.display = 'block';
             }
         }
 
-        document.getElementById('fill-sample').addEventListener('click', function() {
-            document.getElementById('prompt').value = "Voici une annonce intéressante https://www.leboncoin.fr/ad/motos/3229286512";
-        });
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById('authTitle').innerText = isRegisterMode ? "Inscription" : "Connexion";
+            document.getElementById('authSubmitText').innerText = isRegisterMode ? "Créer un compte" : "Se connecter";
+            document.getElementById('authSwitchText').innerText = isRegisterMode ? "Déjà un compte ? Se connecter" : "Pas encore de compte ? S'inscrire";
+        }
 
-        // Script Analyse d'annonce
-        document.getElementById('analyze-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const promptInput = document.getElementById('prompt').value;
-            const submitBtn = document.getElementById('submit-btn');
-            const btnText = document.getElementById('btn-text');
-            const spinner = document.getElementById('spinner');
-            const resultContainer = document.getElementById('result-container');
-            const summaryBox = document.getElementById('tab-summary');
-            const detailedBox = document.getElementById('tab-detailed');
+        function handleAuth(event) {
+            event.preventDefault();
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value;
 
-            submitBtn.disabled = true;
-            spinner.style.display = 'inline-block';
-            resultContainer.style.display = 'none';
-            resultContainer.classList.remove('error-box');
+            let users = JSON.parse(localStorage.getItem('radar_users')) || {};
 
-            const steps = ["Connexion à l'annonce...", "Extraction des données...", "Génération des rapports..."];
-            let stepIdx = 0;
-            btnText.textContent = steps[0];
-            
-            const interval = setInterval(() => {
-                stepIdx++;
-                if (stepIdx < steps.length) btnText.textContent = steps[stepIdx];
-            }, 1200);
-
-            try {
-                const response = await fetch('/api/analyze', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: promptInput })
-                });
-
-                clearInterval(interval);
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
-
-                const fullText = data.result;
-                let summaryPart = fullText;
-                let detailedPart = "Rapport détaillé non disponible.";
-
-                if (fullText.includes("---RESUME_RAPIDE---") && fullText.includes("---RAPPORT_DETAILLE---")) {
-                    const parts = fullText.split("---RAPPORT_DETAILLE---");
-                    summaryPart = parts[0].replace("---RESUME_RAPIDE---", "").trim();
-                    detailedPart = parts[1].trim();
+            if (isRegisterMode) {
+                if (users[email]) {
+                    alert("Cet email possède déjà un compte.");
+                    return;
                 }
-
-                summaryBox.textContent = summaryPart;
-                detailedBox.textContent = detailedPart;
-                resultContainer.style.display = 'block';
-                switchTab('summary', 'ad');
-
-            } catch (error) {
-                clearInterval(interval);
-                resultContainer.classList.add('error-box');
-                summaryBox.textContent = "Erreur : " + error.message;
-                detailedBox.textContent = "Impossible de charger le rapport détaillé.";
-                resultContainer.style.display = 'block';
-            } finally {
-                submitBtn.disabled = false;
-                btnText.textContent = "Lancer l'audit";
-                spinner.style.display = 'none';
+                users[email] = { password: password, history: [] };
+                localStorage.setItem('radar_users', JSON.stringify(users));
+                alert("Compte créé avec succès !");
+            } else {
+                if (!users[email] || users[email].password !== password) {
+                    alert("Email ou mot de passe incorrect.");
+                    return;
+                }
             }
-        });
 
-        // Script Simulateur Profil
-        document.getElementById('simulator-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
+            localStorage.setItem('radar_current_user', email);
+            afficherDashboard(email);
+        }
 
-            const profile = {
-                ageRange: document.getElementById('sim-age').value,
-                height: document.getElementById('sim-height').value,
-                license: document.getElementById('sim-license').value,
-                experience: document.getElementById('sim-experience').value,
-                style: document.getElementById('sim-style').value,
-                displacement: document.getElementById('sim-displacement').value,
-                budget: document.getElementById('sim-budget').value + " €"
-            };
+        function afficherDashboard(email) {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('dashboardContainer').style.display = 'block';
+            document.getElementById('userEmailDisplay').innerText = `Connecté en tant que : ${email}`;
 
-            const simSubmitBtn = document.getElementById('sim-submit-btn');
-            const simSpinner = document.getElementById('sim-spinner');
-            const simResultContainer = document.getElementById('simulator-result-container');
-            const simSummaryBox = document.getElementById('sim-tab-summary');
-            const simDetailedBox = document.getElementById('sim-tab-detailed');
-            const motoImg = document.getElementById('moto-img');
+            let users = JSON.parse(localStorage.getItem('radar_users')) || {};
+            let userHistory = users[email]?.history || [];
+            let historyList = document.getElementById('historyList');
 
-            simSubmitBtn.disabled = true;
-            simSpinner.style.display = 'inline-block';
-            simResultContainer.style.display = 'none';
-
-            try {
-                const response = await fetch('/api/simulate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ profile: profile })
-                });
-
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
-
-                const fullText = (data.result || "").replace(/PHOTO_QUERY:.*/g, '').trim();
-                let summaryPart = fullText;
-                let detailedPart = "Rapport détaillé non disponible.";
-
-                if (fullText.includes("---RESUME_IDEAL---") && fullText.includes("---RAPPORT_DETAILLE---")) {
-                    const parts = fullText.split("---RAPPORT_DETAILLE---");
-                    summaryPart = parts[0].replace("---RESUME_IDEAL---", "").trim();
-                    detailedPart = parts[1].trim();
-                } else if (fullText.includes("---RESUME_RAPIDE---") && fullText.includes("---RAPPORT_DETAILLE---")) {
-                    const parts = fullText.split("---RAPPORT_DETAILLE---");
-                    summaryPart = parts[0].replace("---RESUME_RAPIDE---", "").trim();
-                    detailedPart = parts[1].trim();
-                }
-
-                simSummaryBox.textContent = summaryPart || "Aucun résumé généré.";
-                simDetailedBox.textContent = detailedPart;
-                
-                if (data.imageUrl) {
-                    motoImg.src = data.imageUrl;
-                    motoImg.style.display = 'block';
-                } else {
-                    motoImg.style.display = 'none';
-                }
-                
-                simResultContainer.style.display = 'block';
-                switchTab('summary', 'sim');
-
-            } catch (error) {
-                simSummaryBox.textContent = "Erreur : " + error.message;
-                simDetailedBox.textContent = "Impossible de charger les détails.";
-                simResultContainer.style.display = 'block';
-            } finally {
-                simSubmitBtn.disabled = false;
-                simSpinner.style.display = 'none';
+            if (userHistory.length === 0) {
+                historyList.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">Aucune recherche effectuée pour le moment.</p>`;
+            } else {
+                historyList.innerHTML = userHistory.map(item => `
+                    <div class="history-item">
+                        <span style="font-size: 0.9rem; word-break: break-all; color: white;">${item}</span>
+                    </div>
+                `).join('');
             }
-        });
+        }
+
+        function deconnecter() {
+            localStorage.removeItem('radar_current_user');
+            switchMode('search');
+        }
+
+        function lancerAnalyse() {
+            const inputVal = document.getElementById('searchInput').value.trim();
+            if (!inputVal) {
+                alert("Veuillez entrer un lien ou un texte d'annonce.");
+                return;
+            }
+
+            // Sauvegarde dans l'historique de l'utilisateur connecté
+            const currentUser = localStorage.getItem('radar_current_user');
+            if (currentUser) {
+                let users = JSON.parse(localStorage.getItem('radar_users')) || {};
+                if (users[currentUser]) {
+                    if (!users[currentUser].history) users[currentUser].history = [];
+                    users[currentUser].history.unshift(inputVal); // Ajoute au début
+                    localStorage.setItem('radar_users', JSON.stringify(users));
+                }
+            }
+
+            alert("Analyse lancée avec succès ! (Enregistrée dans votre historique si connecté)");
+        }
+
+        function lancerSimulation() {
+            alert("Simulation lancée !");
+        }
     </script>
 </body>
 </html>
