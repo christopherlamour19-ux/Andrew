@@ -176,7 +176,7 @@
         .sample-hint span { color: var(--accent); cursor: pointer; text-decoration: none; font-weight: 500; border-bottom: 1px dashed var(--accent); transition: 0.3s; }
         .sample-hint span:hover { color: #fff; border-color: #fff; }
 
-        /* --- SIMULATEUR --- */
+        /* --- SIMULATEUR & DUEL --- */
         .simulator-form { display: none; padding: 35px; text-align: left; margin-bottom: 40px; }
         
         .form-grid { 
@@ -190,7 +190,7 @@
         .form-group label { font-size: 0.9rem; color: #cbd5e1; font-weight: 500; display: flex; align-items: center; gap: 8px; }
         .form-group label i { color: var(--accent); opacity: 0.8; }
         
-        .form-group select, .form-group input[type="number"] {
+        .form-group select, .form-group input[type="number"], .form-group input[type="text"] {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border-color);
             padding: 14px 15px;
@@ -202,12 +202,12 @@
             transition: all 0.3s;
             backdrop-filter: blur(5px);
         }
-        .form-group select:focus, .form-group input[type="number"]:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(255, 179, 0, 0.2); background: rgba(0, 0, 0, 0.5); }
+        .form-group select:focus, .form-group input[type="number"]:focus, .form-group input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(255, 179, 0, 0.2); background: rgba(0, 0, 0, 0.5); }
         
         .sim-submit-btn { width: 100%; padding: 18px; font-size: 1.05rem; margin-top: 10px; }
 
         /* --- RÉSULTATS --- */
-        .result-container, .simulator-result { display: none; text-align: left; margin-bottom: 40px; overflow: hidden; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+        .result-container, .simulator-result, .duel-result { display: none; text-align: left; margin-bottom: 40px; overflow: hidden; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
         
         @keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
 
@@ -347,6 +347,9 @@
             <button class="mode-btn" id="btn-mode-sim" onclick="switchMode('simulator')">
                 <i class="fa-solid fa-user-gear"></i> Simulateur "Idéal Moto"
             </button>
+            <button class="mode-btn" id="btn-mode-duel" onclick="switchMode('duel')">
+                <i class="fa-solid fa-scale-balanced"></i> Duel IA (Comparateur)
+            </button>
         </div>
 
         <!-- MODE 1 : ANNONCE -->
@@ -445,6 +448,29 @@
             </button>
         </form>
 
+        <!-- MODE 3 : DUEL DE MODÈLES -->
+        <form id="duel-form" class="simulator-form glass-panel">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label><i class="fa-solid fa-motorcycle"></i> Moto A (Première candidate)</label>
+                    <input type="text" id="duel-moto-1" placeholder="Ex: Yamaha MT-07 2022" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fa-solid fa-motorcycle"></i> Moto B (Seconde candidate)</label>
+                    <input type="text" id="duel-moto-2" placeholder="Ex: Kawasaki Z650 2022" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fa-solid fa-user-check"></i> Votre profil / Utilisation</label>
+                    <input type="text" id="duel-profile" placeholder="Ex: Permis A2, trajets quotidiens + balade weekend" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="sim-submit-btn" id="duel-submit-btn">
+                <span>Lancer le Duel IA</span>
+                <div class="spinner" id="duel-spinner"></div>
+            </button>
+        </form>
+
         <!-- RÉSULTAT ANNONCE -->
         <div class="result-container glass-panel" id="result-container">
             <div class="tabs-header">
@@ -463,6 +489,22 @@
             </div>
             <div id="sim-tab-summary" class="tab-content active"></div>
             <div id="sim-tab-detailed" class="tab-content"></div>
+        </div>
+
+        <!-- RÉSULTAT DUEL : MOTO 1 -->
+        <div class="duel-result glass-panel" id="duel-result-1" style="margin-bottom: 20px;">
+            <div class="tabs-header" style="background: rgba(255, 179, 0, 0.1);">
+                <span class="tab-btn active" style="cursor: default;"><i class="fa-solid fa-1"></i> Analyse Moto A</span>
+            </div>
+            <div id="duel-content-1" class="tab-content active"></div>
+        </div>
+
+        <!-- RÉSULTAT DUEL : MOTO 2 -->
+        <div class="duel-result glass-panel" id="duel-result-2">
+            <div class="tabs-header" style="background: rgba(0, 110, 255, 0.1);">
+                <span class="tab-btn active" style="cursor: default;"><i class="fa-solid fa-2"></i> Analyse Moto B</span>
+            </div>
+            <div id="duel-content-2" class="tab-content active"></div>
         </div>
     </section>
 
@@ -579,12 +621,26 @@
         function switchMode(mode) {
             document.getElementById('result-container').style.display = 'none';
             document.getElementById('simulator-result-container').style.display = 'none';
+            document.getElementById('duel-result-1').style.display = 'none';
+            document.getElementById('duel-result-2').style.display = 'none';
+
+            document.getElementById('btn-mode-ad').classList.remove('active');
+            document.getElementById('btn-mode-sim').classList.remove('active');
+            document.getElementById('btn-mode-duel').classList.remove('active');
+
+            document.getElementById('container-mode-ad').style.display = 'none';
+            document.getElementById('simulator-form').style.display = 'none';
+            document.getElementById('duel-form').style.display = 'none';
+
             if (mode === 'ad') {
-                document.getElementById('btn-mode-ad').classList.add('active'); document.getElementById('btn-mode-sim').classList.remove('active');
-                document.getElementById('container-mode-ad').style.display = 'block'; document.getElementById('simulator-form').style.display = 'none';
-            } else {
-                document.getElementById('btn-mode-sim').classList.add('active'); document.getElementById('btn-mode-ad').classList.remove('active');
-                document.getElementById('container-mode-ad').style.display = 'none'; document.getElementById('simulator-form').style.display = 'block';
+                document.getElementById('btn-mode-ad').classList.add('active');
+                document.getElementById('container-mode-ad').style.display = 'block';
+            } else if (mode === 'simulator') {
+                document.getElementById('btn-mode-sim').classList.add('active');
+                document.getElementById('simulator-form').style.display = 'block';
+            } else if (mode === 'duel') {
+                document.getElementById('btn-mode-duel').classList.add('active');
+                document.getElementById('duel-form').style.display = 'block';
             }
         }
 
@@ -647,7 +703,7 @@
                 experience: document.getElementById('sim-experience').value,
                 style: document.getElementById('sim-style').value, 
                 displacement: document.getElementById('sim-displacement').value,
-                engineType: document.getElementById('sim-engine-type').value, // Ajout du moteur transmis à l'API
+                engineType: document.getElementById('sim-engine-type').value,
                 budget: document.getElementById('sim-budget').value + " €"
             };
             const simSubmitBtn = document.getElementById('sim-submit-btn');
@@ -681,6 +737,49 @@
                 simSubmitBtn.disabled = false; 
                 simSubmitBtn.querySelector('span').textContent = "Trouver ma moto idéale"; 
                 simSpinner.style.display = 'none';
+            }
+        });
+
+        // Submit Duel
+        document.getElementById('duel-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const moto1 = document.getElementById('duel-moto-1').value;
+            const moto2 = document.getElementById('duel-moto-2').value;
+            const profile = document.getElementById('duel-profile').value;
+            
+            const btn = document.getElementById('duel-submit-btn');
+            const spinner = document.getElementById('duel-spinner');
+            const res1 = document.getElementById('duel-result-1');
+            const res2 = document.getElementById('duel-result-2');
+
+            btn.disabled = true;
+            spinner.style.display = 'inline-block';
+            res1.style.display = 'none';
+            res2.style.display = 'none';
+            btn.querySelector('span').textContent = "Duel en cours...";
+
+            try {
+                const response = await fetch('/api/duel', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ moto1, moto2, profile }) 
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
+
+                document.getElementById('duel-content-1').textContent = data.resultMoto1 || "Analyse indisponible pour la Moto A.";
+                document.getElementById('duel-content-2').textContent = data.resultMoto2 || "Analyse indisponible pour la Moto B.";
+
+                res1.style.display = 'block';
+                res2.style.display = 'block';
+                res1.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                alert("Erreur : " + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.querySelector('span').textContent = "Lancer le Duel IA";
+                spinner.style.display = 'none';
             }
         });
 
