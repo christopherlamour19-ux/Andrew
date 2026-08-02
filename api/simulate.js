@@ -22,7 +22,7 @@ export default async function handler(req, res) {
 
     const genAI = new GoogleGenerativeAI(apiKey);
     // Utilisation d'un modèle flash valide (ex: gemini-2.5-flash ou gemini-1.5-flash)
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 
     const simPrompt = `Tu es un conseiller expert en choix de moto intransigeant. Un utilisateur recherche sa moto idéale selon son profil précis :
     - Tranche d'âge : ${ageRange}
