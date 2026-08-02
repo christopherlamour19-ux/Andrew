@@ -10,12 +10,12 @@
     
     <style>
         :root {
-            --bg-main: #0B0F19; /* Fond très sombre */
+            --bg-main: #0B0F19;
             --bg-card: #111827;
             --bg-input: #1F2937;
             --text-main: #FFFFFF;
             --text-muted: #9CA3AF;
-            --accent: #F59E0B; /* Orange/Jaune de la capture */
+            --accent: #F59E0B;
             --accent-hover: #D97706;
             --border-color: #374151;
             --radius-md: 12px;
@@ -32,13 +32,13 @@
 
         body {
             background-color: var(--bg-main);
-            /* Effet de lueur radiale au centre comme sur l'image */
             background-image: radial-gradient(circle at 50% 30%, rgba(245, 158, 11, 0.08) 0%, transparent 50%);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
         /* En-tête */
@@ -66,6 +66,32 @@
             border-radius: 8px;
             padding: 6px;
             font-size: 1.1rem;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-comparator-toggle {
+            background: rgba(31, 41, 55, 0.8);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-comparator-toggle:hover {
+            border-color: var(--accent);
+            color: var(--accent);
         }
 
         .nav-badge {
@@ -98,7 +124,7 @@
             justify-content: flex-start;
             align-items: center;
             text-align: center;
-            padding: 80px 5% 60px 5%;
+            padding: 60px 5% 60px 5%;
         }
 
         .hero h1 {
@@ -254,9 +280,8 @@
             font-weight: 600;
         }
 
-        /* Champs Inputs et Selects */
-        .form-group select,
-        .form-group input[type="number"] {
+        /* Champs Inputs et Selects globaux */
+        select, input[type="text"], input[type="number"] {
             background: var(--bg-input);
             border: 1px solid var(--border-color);
             padding: 14px 16px;
@@ -268,7 +293,7 @@
             width: 100%;
         }
 
-        .form-group select {
+        select {
             cursor: pointer;
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239CA3AF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
@@ -277,22 +302,19 @@
             background-size: 16px;
         }
 
-        .form-group select:hover,
-        .form-group input[type="number"]:hover { 
+        select:hover, input:hover { 
             border-color: var(--text-muted);
         }
 
-        .form-group select:focus,
-        .form-group input[type="number"]:focus { 
+        select:focus, input:focus { 
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
         }
 
-        .form-group input::placeholder {
+        input::placeholder {
             color: #6B7280;
         }
 
-        /* Budget avec symbole */
         .input-currency-wrapper {
             position: relative;
             display: flex;
@@ -311,8 +333,8 @@
             pointer-events: none;
         }
 
-        /* Bouton de soumission simulateur */
-        .sim-submit-btn {
+        /* Boutons d'action */
+        .submit-btn {
             width: 100%;
             background: var(--accent);
             color: #000;
@@ -329,7 +351,7 @@
             gap: 10px;
         }
 
-        .sim-submit-btn:hover { background: var(--accent-hover); }
+        .submit-btn:hover { background: var(--accent-hover); }
 
         /* Conteneurs de Résultats */
         .result-container, .simulator-result {
@@ -383,7 +405,103 @@
 
         .tab-content.active { display: block; }
 
-        /* Spinner */
+        /* --- TIROIR COMPARATEUR (OVERLAY LATÉRAL) --- */
+        .comparator-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 480px;
+            height: 100vh;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border-color);
+            z-index: 9999;
+            transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .comparator-drawer.open {
+            right: 0;
+        }
+
+        .drawer-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-main);
+        }
+
+        .drawer-header h2 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .drawer-header h2 i { color: var(--accent); }
+
+        .close-drawer-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close-drawer-btn:hover { color: var(--text-main); }
+
+        .drawer-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Ligne Moto + Année côte à côte */
+        .moto-row {
+            display: grid;
+            grid-template-columns: 2.2fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .drawer-result {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--bg-input);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            color: #D1D5DB;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(2px);
+            z-index: 9998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .drawer-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
         .spinner {
             display: none;
             width: 18px;
@@ -405,7 +523,6 @@
             margin-top: auto;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2rem; }
             .form-grid { grid-template-columns: 1fr; gap: 16px; }
@@ -414,6 +531,9 @@
             .search-box button { padding: 16px; border-radius: var(--radius-md); justify-content: center; }
             .main-modes { flex-direction: column; border-radius: var(--radius-md); }
             .mode-btn { border-radius: 8px; justify-content: center; }
+            .nav-right { flex-direction: column-reverse; align-items: flex-end; gap: 10px; }
+            nav { align-items: flex-start; }
+            .comparator-drawer { max-width: 100%; }
         }
     </style>
 </head>
@@ -423,7 +543,12 @@
         <div class="logo">
             <i class="fa-solid fa-motorcycle"></i> Radar Moto
         </div>
-        <div class="nav-badge">christo.r7 le best</div>
+        <div class="nav-right">
+            <button class="btn-comparator-toggle" onclick="toggleComparator()">
+                <i class="fa-solid fa-code-compare"></i> Comparateur Libre
+            </button>
+            <div class="nav-badge">christo.r7 le best</div>
+        </div>
     </nav>
 
     <section class="hero">
@@ -453,11 +578,10 @@
             </div>
         </div>
 
-        <!-- MODE 2 : SIMULATEUR PROFIL ENRICHI -->
+        <!-- MODE 2 : SIMULATEUR PROFIL -->
         <form id="simulator-form" class="simulator-form">
             <div class="form-grid">
                 
-                <!-- Bloc 1 : Profil Basique -->
                 <div class="form-group">
                     <label>Tranche d'âge</label>
                     <select id="sim-age">
@@ -498,7 +622,6 @@
                     </select>
                 </div>
 
-                <!-- Bloc 2 : Nouvelles questions de précision -->
                 <div class="form-group">
                     <label>Usage principal de la moto</label>
                     <select id="sim-usage">
@@ -521,13 +644,12 @@
                 <div class="form-group">
                     <label>Besoins en bagagerie</label>
                     <select id="sim-luggage">
-                        <option value="Aucun besoin (juste un sac à dos)" selected>Aucun besoin (juste un sac à dos)</option>
+                        <option value="Aucun besoin" selected>Aucun besoin (juste un sac à dos)</option>
                         <option value="Léger (Top-case ou petite sacoche)">Léger (Top-case ou petite sacoche)</option>
                         <option value="Important (Valises latérales + Top-case)">Important (Valises + Top-case)</option>
                     </select>
                 </div>
 
-                <!-- Bloc 3 : Style & Cylindrée -->
                 <div class="form-group">
                     <label>Style de moto souhaité</label>
                     <select id="sim-style">
@@ -544,7 +666,7 @@
                 <div class="form-group full-width">
                     <label>Cylindrée visée</label>
                     <select id="sim-engine">
-                        <option value="Peu importe" selected>Peu importe</option>
+                        <option value="Peu importe" selected>Peu importe / Laissez l'IA choisir</option>
                         <option value="125cc">125cc</option>
                         <option value="300cc - 500cc">300cc à 500cc</option>
                         <option value="600cc - 800cc">600cc à 800cc (Mid-size)</option>
@@ -552,7 +674,6 @@
                     </select>
                 </div>
 
-                <!-- Bloc 4 : Budget (Libre) -->
                 <div class="form-group full-width">
                     <label>Budget maximal alloué pour la moto</label>
                     <div class="input-currency-wrapper">
@@ -562,13 +683,13 @@
                 </div>
             </div>
             
-            <button type="submit" class="sim-submit-btn" id="sim-submit-btn">
+            <button type="submit" class="submit-btn" id="sim-submit-btn">
                 <span id="sim-btn-text">Générer ma recommandation sur-mesure</span>
                 <div class="spinner" id="sim-spinner"></div>
             </button>
         </form>
 
-        <!-- RÉSULTAT ANNONCE -->
+        <!-- RÉSULTATS -->
         <div class="result-container" id="result-container">
             <div class="tabs-header">
                 <button class="tab-btn active" onclick="switchTab('summary', 'ad')">Résumé Rapide</button>
@@ -578,7 +699,6 @@
             <div id="tab-detailed" class="tab-content"></div>
         </div>
 
-        <!-- RÉSULTAT SIMULATEUR (Sans image) -->
         <div class="simulator-result" id="simulator-result-container">
             <div class="tabs-header">
                 <button class="tab-btn active" onclick="switchTab('summary', 'sim')">Le Match Parfait</button>
@@ -588,6 +708,55 @@
             <div id="sim-tab-detailed" class="tab-content"></div>
         </div>
     </section>
+
+    <!-- TIROIR COMPARATEUR AVEC MODÈLES ET ANNÉES -->
+    <div class="drawer-overlay" id="drawer-overlay" onclick="toggleComparator()"></div>
+    <div class="comparator-drawer" id="comparator-drawer">
+        <div class="drawer-header">
+            <h2><i class="fa-solid fa-scale-balanced"></i> Face à Face Libre</h2>
+            <button class="close-drawer-btn" onclick="toggleComparator()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <div class="drawer-body">
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Entrez n'importe quel modèle et son année (ex: <i>Yamaha MT-07 - 2021</i>).</p>
+            
+            <form id="comparator-form">
+                <!-- Moto 1 -->
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label>Moto #1 (Modèle & Année)</label>
+                    <div class="moto-row">
+                        <input type="text" id="comp-moto1" placeholder="Ex: Yamaha MT-07" required>
+                        <input type="text" id="comp-annee1" placeholder="Année" maxlength="4">
+                    </div>
+                </div>
+
+                <!-- Moto 2 -->
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label>Moto #2 (Modèle & Année)</label>
+                    <div class="moto-row">
+                        <input type="text" id="comp-moto2" placeholder="Ex: Honda CB750 Hornet" required>
+                        <input type="text" id="comp-annee2" placeholder="Année" maxlength="4">
+                    </div>
+                </div>
+
+                <!-- Moto 3 (Optionnel) -->
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label>Moto #3 (Optionnel)</label>
+                    <div class="moto-row">
+                        <input type="text" id="comp-moto3" placeholder="Ex: Kawasaki Z650">
+                        <input type="text" id="comp-annee3" placeholder="Année" maxlength="4">
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="comp-submit-btn">
+                    <span id="comp-btn-text">Lancer le comparatif</span>
+                    <div class="spinner" id="comp-spinner"></div>
+                </button>
+            </form>
+
+            <div class="drawer-result" id="comp-result-container"></div>
+        </div>
+    </div>
 
     <footer>
         &copy; 2026 RadarMoto. Outil d'aide à l'achat de motos d'occasion.
@@ -644,6 +813,13 @@
             }
         }
 
+        function toggleComparator() {
+            const drawer = document.getElementById('comparator-drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
         document.getElementById('fill-sample').addEventListener('click', function() {
             document.getElementById('prompt').value = "https://www.leboncoin.fr/ad/motos/3229286512";
         });
@@ -668,7 +844,6 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ prompt: promptInput })
                 });
-
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
 
@@ -701,8 +876,6 @@
         // Script Simulateur Profil
         document.getElementById('simulator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-
-            // Objet profil mis à jour avec les nouveaux champs (usage, passager, bagagerie)
             const profile = {
                 ageRange: document.getElementById('sim-age').value,
                 height: document.getElementById('sim-height').value,
@@ -736,7 +909,6 @@
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
 
-                // On supprime la balise photo si l'IA en génère une par erreur dans le texte
                 const fullText = data.result.replace(/PHOTO_QUERY:.*/g, '').trim();
                 let summaryPart = fullText;
                 let detailedPart = "Détails non disponibles.";
@@ -756,6 +928,59 @@
             } catch (error) {
                 document.getElementById('sim-tab-summary').textContent = "Erreur : " + error.message;
                 document.getElementById('sim-tab-detailed').textContent = "";
+                resultContainer.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                btnText.style.display = 'inline-block';
+                spinner.style.display = 'none';
+            }
+        });
+
+        // Script Comparateur Libre (Gère modèle + année)
+        document.getElementById('comparator-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const m1 = document.getElementById('comp-moto1').value.trim();
+            const a1 = document.getElementById('comp-annee1').value.trim();
+            const moto1Full = a1 ? `${m1} (${a1})` : m1;
+
+            const m2 = document.getElementById('comp-moto2').value.trim();
+            const a2 = document.getElementById('comp-annee2').value.trim();
+            const moto2Full = a2 ? `${m2} (${a2})` : m2;
+
+            const motosToCompare = [moto1Full, moto2Full];
+
+            const m3 = document.getElementById('comp-moto3').value.trim();
+            if (m3) {
+                const a3 = document.getElementById('comp-annee3').value.trim();
+                motosToCompare.push(a3 ? `${m3} (${a3})` : m3);
+            }
+
+            const submitBtn = document.getElementById('comp-submit-btn');
+            const btnText = document.getElementById('comp-btn-text');
+            const spinner = document.getElementById('comp-spinner');
+            const resultContainer = document.getElementById('comp-result-container');
+
+            submitBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            btnText.style.display = 'none';
+            resultContainer.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/compare', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ motos: motosToCompare })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Erreur lors de la comparaison.');
+
+                resultContainer.textContent = data.result;
+                resultContainer.style.display = 'block';
+
+            } catch (error) {
+                resultContainer.textContent = "Erreur : " + error.message + "\n(Vérifie ta route backend /api/compare).";
                 resultContainer.style.display = 'block';
             } finally {
                 submitBtn.disabled = false;
