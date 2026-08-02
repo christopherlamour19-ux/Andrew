@@ -8,9 +8,7 @@ export default async function handler(req, res) {
 
     try {
         const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) {
-            return res.status(500).json({ error: "La variable GEMINI_API_KEY est manquante." });
-        }
+        if (!apiKey) return res.status(500).json({ error: "Clé API manquante." });
 
         const { motos } = req.body;
         if (!motos || !Array.isArray(motos) || motos.length < 2) {
@@ -20,24 +18,41 @@ export default async function handler(req, res) {
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
+        // On demande à l'IA de répondre STRICTEMENT au format JSON
         const prompt = `
-        Agis en tant qu'expert motard. Fais un comparatif technique approfondi entre ces motos (avec leurs années) :
-        - ${motos[0]}
-        - ${motos[1]}
-        ${motos[2] ? `- ${motos[2]}` : ''}
-
-        IMPORTANT : Tu dois structurer l'essentiel de ton comparatif sous la forme d'un **tableau comparatif Markdown** (avec des colonnes pour les critères : Critères, ${motos[0]}, ${motos[1]}${motos[2] ? ', ' + motos[2] : ''}). 
-        Critères à inclure dans le tableau : Année, Type de moteur, Puissance, Poids, Hauteur de selle, Points forts, Points faibles, Note globale.
-        Ajoute juste en dessous un court paragraphe de verdict final.
+        Agis en tant qu'expert motard. Compare ces motos : ${motos.join(', ')}.
+        Tu dois retourner EXCLUSIVEMENT un objet JSON valide (sans texte autour, sans markdown \`\`\`json) avec cette structure exacte :
+        {
+          "motos": [
+            {
+              "nom": "Nom et année de la moto 1",
+              "prixEstime": "ex: ~8 500 €",
+              "moteur": "ex: 4 cylindres en ligne, 599cc",
+              "puissance": "ex: 120 ch",
+              "poids": "ex: 184 kg",
+              "hauteurSelle": "ex: 810 mm",
+              "pointsForts": "ex: Moteur rageur dans les tours, partie cycle incisive",
+              "pointsFaibles": "ex: Creux à bas régimes, confort ferme",
+              "verdict": "Excellente sur piste et sportive sur route."
+            }
+          ]
+        }
+        Remplis les données pour les ${motos.length} motos fournies.
         `;
 
         const result = await model.generateContent(prompt);
-        const response = await result.response;
+        let text = responseTextClean(await result.response.text());
         
-        return res.status(200).json({ result: response.text() });
+        // Nettoyage au cas où l'IA met des balises markdown
+        text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+
+        const jsonData = JSON.parse(text);
+        return res.status(200).json(jsonData);
 
     } catch (error) {
         console.error("Erreur:", error);
         return res.status(500).json({ error: error.message || 'Erreur serveur.' });
     }
 }
+
+function responseTextClean(text) { return text; }
