@@ -617,11 +617,14 @@
                 mainModes.style.display = 'none';
                 mainTitle.style.display = 'none';
                 mainSubtitle.style.display = 'none';
+                
                 const currentUser = JSON.parse(localStorage.getItem('radarmoto_current_user'));
+                
                 if (currentUser) {
                     dashboardContainer.style.display = 'block';
                     renderUserHistory();
                 } else {
+                    toggleAuthMode('login');
                     authContainer.style.display = 'block';
                 }
             }
@@ -703,7 +706,6 @@
             }
         }
 
-        // Gestion Inscription / Connexion avec LocalStorage
         document.getElementById('auth-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const email = document.getElementById('auth-email').value.trim().toLowerCase();
@@ -713,7 +715,6 @@
             let users = JSON.parse(localStorage.getItem('radarmoto_users')) || [];
 
             if (isRegisterMode) {
-                // Vérifier si l'email existe déjà
                 const existingUser = users.find(u => u.email === email);
                 if (existingUser) {
                     alert("Un compte existe déjà avec cet e-mail !");
@@ -726,7 +727,6 @@
                 localStorage.setItem('radarmoto_current_user', JSON.stringify(newUser));
                 alert("Compte créé avec succès !");
             } else {
-                // Connexion
                 const user = users.find(u => u.email === email && u.password === password);
                 if (!user) {
                     alert("E-mail ou mot de passe incorrect.");
@@ -764,10 +764,9 @@
             }
         }
 
-        // Sauvegarde de l'historique lié à l'e-mail de l'utilisateur
         function saveToUserHistory(promptText, summaryText) {
             const currentUser = JSON.parse(localStorage.getItem('radarmoto_current_user'));
-            if (!currentUser) return; // Si non connecté, pas d'enregistrement perso
+            if (!currentUser) return;
 
             const historyKey = `radarmoto_history_${currentUser.email}`;
             let history = JSON.parse(localStorage.getItem(historyKey)) || [];
@@ -821,7 +820,6 @@
             document.getElementById('prompt').value = "Voici une annonce intéressante https://www.leboncoin.fr/ad/motos/3229286512";
         });
 
-        // Script Analyse d'annonce
         document.getElementById('analyze-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const promptInput = document.getElementById('prompt').value;
@@ -872,7 +870,6 @@
                 resultContainer.style.display = 'block';
                 switchTab('summary', 'ad');
 
-                // Sauvegarde automatique dans le compte utilisateur connecté
                 saveToUserHistory(promptInput, summaryPart);
 
             } catch (error) {
@@ -888,7 +885,6 @@
             }
         });
 
-        // Script Simulateur Profil
         document.getElementById('simulator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -960,7 +956,6 @@
             }
         });
 
-        // Initialisation au chargement de la page
         document.addEventListener('DOMContentLoaded', () => {
             updateAuthUI();
         });
