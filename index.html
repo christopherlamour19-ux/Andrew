@@ -349,7 +349,20 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Style de l'historique dans le dashboard */
+        .auth-switch {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .auth-switch span {
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
         .history-item {
             background: rgba(11, 15, 25, 0.6);
             border: 1px solid var(--border-color);
@@ -500,15 +513,27 @@
 
         <!-- ESPACE CONNEXION / INSCRIPTION -->
         <div class="auth-container" id="auth-container">
-            <h2 style="margin-bottom: 20px; color: var(--accent);"><i class="fa-solid fa-user-circle"></i> Espace Compte</h2>
-            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;">Connectez-vous avec un pseudo pour retrouver l'historique de vos analyses sur cet appareil.</p>
+            <h2 id="auth-title" style="margin-bottom: 20px; color: var(--accent);"><i class="fa-solid fa-user-circle"></i> Connexion</h2>
+            
             <form id="auth-form">
-                <div class="form-group">
-                    <label>Votre Pseudo ou Nom</label>
-                    <input type="text" id="auth-pseudo" placeholder="Ex: christo.r7" required>
+                <div class="form-group" id="group-name" style="display: none;">
+                    <label>Votre Nom / Pseudo</label>
+                    <input type="text" id="auth-name" placeholder="Ex: Christo">
                 </div>
-                <button type="submit" class="auth-submit-btn">Se connecter / Créer mon compte</button>
+                <div class="form-group">
+                    <label>Adresse E-mail</label>
+                    <input type="email" id="auth-email" placeholder="votre@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" id="auth-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="auth-submit-btn" id="auth-submit-action">Se connecter</button>
             </form>
+
+            <div class="auth-switch" id="auth-switch-text">
+                Pas encore de compte ? <span onclick="toggleAuthMode('register')">Créer un compte</span>
+            </div>
         </div>
 
         <!-- ESPACE DASHBOARD / HISTORIQUE -->
@@ -517,7 +542,9 @@
                 <h2 style="color: var(--accent);"><i class="fa-solid fa-id-badge"></i> Mon Tableau de Bord</h2>
                 <button onclick="logoutUser()" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600;">Se déconnecter</button>
             </div>
-            <p style="color: var(--text-muted); margin-bottom: 20px;">Compte actif : <strong id="current-user-display" style="color: white;"></strong></p>
+            <p style="color: var(--text-muted); margin-bottom: 5px;">Connecté en tant que : <strong id="current-user-name" style="color: white;"></strong></p>
+            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.85rem;" id="current-user-email"></p>
+            
             <h3 style="font-size: 1.1rem; margin-bottom: 15px; color: white;">Historique de vos recherches d'annonces</h3>
             <div id="user-history-list">
                 <!-- Injecté dynamiquement en JS -->
@@ -559,7 +586,8 @@
     </footer>
 
     <script>
-        // Gestion des vues (Accueil, Simulateur, Auth, Dashboard)
+        let isRegisterMode = false;
+
         function switchMainView(view) {
             const containerAd = document.getElementById('container-mode-ad');
             const formSim = document.getElementById('simulator-form');
@@ -571,7 +599,6 @@
             const mainTitle = document.getElementById('main-title');
             const mainSubtitle = document.getElementById('main-subtitle');
 
-            // Cacher tout par défaut
             containerAd.style.display = 'none';
             formSim.style.display = 'none';
             authContainer.style.display = 'none';
@@ -590,7 +617,7 @@
                 mainModes.style.display = 'none';
                 mainTitle.style.display = 'none';
                 mainSubtitle.style.display = 'none';
-                const currentUser = localStorage.getItem('radarmoto_current_user');
+                const currentUser = JSON.parse(localStorage.getItem('radarmoto_current_user'));
                 if (currentUser) {
                     dashboardContainer.style.display = 'block';
                     renderUserHistory();
@@ -654,15 +681,62 @@
             switchMainView('auth');
         }
 
-        // Gestion Connexion/Inscription Locale
+        function toggleAuthMode(mode) {
+            isRegisterMode = (mode === 'register');
+            const authTitle = document.getElementById('auth-title');
+            const groupName = document.getElementById('group-name');
+            const submitAction = document.getElementById('auth-submit-action');
+            const switchText = document.getElementById('auth-switch-text');
+
+            if (isRegisterMode) {
+                authTitle.innerHTML = '<i class="fa-solid fa-user-plus"></i> Inscription';
+                groupName.style.display = 'flex';
+                document.getElementById('auth-name').required = true;
+                submitAction.textContent = "Créer mon compte";
+                switchText.innerHTML = 'Déjà un compte ? <span onclick="toggleAuthMode(\'login\')">Se connecter</span>';
+            } else {
+                authTitle.innerHTML = '<i class="fa-solid fa-user-circle"></i> Connexion';
+                groupName.style.display = 'none';
+                document.getElementById('auth-name').required = false;
+                submitAction.textContent = "Se connecter";
+                switchText.innerHTML = 'Pas encore de compte ? <span onclick="toggleAuthMode(\'register\')">Créer un compte</span>';
+            }
+        }
+
+        // Gestion Inscription / Connexion avec LocalStorage
         document.getElementById('auth-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            const pseudo = document.getElementById('auth-pseudo').value.trim();
-            if (pseudo) {
-                localStorage.setItem('radarmoto_current_user', pseudo);
-                updateAuthUI();
-                switchMainView('auth');
+            const email = document.getElementById('auth-email').value.trim().toLowerCase();
+            const password = document.getElementById('auth-password').value;
+            const name = document.getElementById('auth-name').value.trim();
+
+            let users = JSON.parse(localStorage.getItem('radarmoto_users')) || [];
+
+            if (isRegisterMode) {
+                // Vérifier si l'email existe déjà
+                const existingUser = users.find(u => u.email === email);
+                if (existingUser) {
+                    alert("Un compte existe déjà avec cet e-mail !");
+                    return;
+                }
+
+                const newUser = { name: name || "Pilote", email, password };
+                users.push(newUser);
+                localStorage.setItem('radarmoto_users', JSON.stringify(users));
+                localStorage.setItem('radarmoto_current_user', JSON.stringify(newUser));
+                alert("Compte créé avec succès !");
+            } else {
+                // Connexion
+                const user = users.find(u => u.email === email && u.password === password);
+                if (!user) {
+                    alert("E-mail ou mot de passe incorrect.");
+                    return;
+                }
+                localStorage.setItem('radarmoto_current_user', JSON.stringify(user));
             }
+
+            updateAuthUI();
+            switchMainView('auth');
         });
 
         function logoutUser() {
@@ -672,28 +746,30 @@
         }
 
         function updateAuthUI() {
-            const currentUser = localStorage.getItem('radarmoto_current_user');
+            const currentUser = JSON.parse(localStorage.getItem('radarmoto_current_user'));
             const badge = document.getElementById('user-badge');
             const authBtn = document.getElementById('auth-nav-btn');
-            const userDisplay = document.getElementById('current-user-display');
+            const userNameDisplay = document.getElementById('current-user-name');
+            const userEmailDisplay = document.getElementById('current-user-email');
 
             if (currentUser) {
                 badge.style.display = 'block';
-                badge.textContent = currentUser;
+                badge.textContent = currentUser.name;
                 authBtn.textContent = 'Mon Espace';
-                userDisplay.textContent = currentUser;
+                userNameDisplay.textContent = currentUser.name;
+                userEmailDisplay.textContent = currentUser.email;
             } else {
                 badge.style.display = 'none';
                 authBtn.textContent = 'Connexion / Inscription';
             }
         }
 
-        // Sauvegarder dans l'historique utilisateur
+        // Sauvegarde de l'historique lié à l'e-mail de l'utilisateur
         function saveToUserHistory(promptText, summaryText) {
-            const currentUser = localStorage.getItem('radarmoto_current_user');
-            if (!currentUser) return; // Si pas connecté, on n'enregistre pas dans l'espace perso
+            const currentUser = JSON.parse(localStorage.getItem('radarmoto_current_user'));
+            if (!currentUser) return; // Si non connecté, pas d'enregistrement perso
 
-            const historyKey = `radarmoto_history_${currentUser}`;
+            const historyKey = `radarmoto_history_${currentUser.email}`;
             let history = JSON.parse(localStorage.getItem(historyKey)) || [];
 
             history.unshift({
@@ -702,14 +778,16 @@
                 summary: summaryText
             });
 
-            if (history.length > 15) history.pop(); // Max 15 éléments
+            if (history.length > 15) history.pop();
             localStorage.setItem(historyKey, JSON.stringify(history));
         }
 
         function renderUserHistory() {
-            const currentUser = localStorage.getItem('radarmoto_current_user');
+            const currentUser = JSON.parse(localStorage.getItem('radarmoto_current_user'));
             const historyList = document.getElementById('user-history-list');
-            const historyKey = `radarmoto_history_${currentUser}`;
+            if (!currentUser) return;
+
+            const historyKey = `radarmoto_history_${currentUser.email}`;
             const history = JSON.parse(localStorage.getItem(historyKey)) || [];
 
             if (history.length === 0) {
@@ -794,7 +872,7 @@
                 resultContainer.style.display = 'block';
                 switchTab('summary', 'ad');
 
-                // Sauvegarde automatique dans le compte de l'utilisateur
+                // Sauvegarde automatique dans le compte utilisateur connecté
                 saveToUserHistory(promptInput, summaryPart);
 
             } catch (error) {
@@ -882,7 +960,7 @@
             }
         });
 
-        // Initialisation de l'interface utilisateur au chargement
+        // Initialisation au chargement de la page
         document.addEventListener('DOMContentLoaded', () => {
             updateAuthUI();
         });
