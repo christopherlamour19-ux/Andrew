@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     const { ageRange, height, style, license, budget } = profile || {};
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 
     const simPrompt = `Tu es un conseiller expert en choix de moto. Un utilisateur recherche sa moto idéale selon son profil précis :
     - Tranche d'âge : ${ageRange}
