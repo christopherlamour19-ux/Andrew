@@ -64,6 +64,16 @@
             gap: 15px;
         }
 
+        .nav-badge {
+            background: rgba(255, 179, 0, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(255, 179, 0, 0.3);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
         .auth-nav-btn {
             background: var(--accent);
             color: var(--bg-dark);
@@ -230,6 +240,109 @@
 
         .form-group select:focus, .form-group input:focus { border-color: var(--accent); }
 
+        .sim-submit-btn {
+            width: 100%;
+            background: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sim-submit-btn:hover { background: var(--accent-hover); }
+
+        .sample-hint {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .sample-hint span {
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: underline;
+            font-weight: 500;
+        }
+
+        .result-container, .simulator-result {
+            width: 100%;
+            max-width: 750px;
+            display: none;
+            text-align: left;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .tabs-header {
+            display: flex;
+            background: rgba(11, 15, 25, 0.6);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.02); }
+        .tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); background: rgba(255, 179, 0, 0.03); }
+
+        .tab-content {
+            display: none;
+            padding: 25px;
+            color: #E2E8F0;
+            line-height: 1.8;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+        }
+
+        .tab-content.active { display: block; }
+
+        .moto-preview-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .error-box { border-color: rgba(239, 68, 68, 0.4) !important; }
+
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(11, 15, 25, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--bg-dark);
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         .auth-switch {
             text-align: center;
             margin-top: 15px;
@@ -253,7 +366,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            cursor: pointer;
+            transition: border-color 0.3s;
         }
+        .history-item:hover { border-color: var(--accent); }
 
         footer {
             text-align: center;
@@ -262,6 +378,14 @@
             font-size: 0.85rem;
             border-top: 1px solid var(--border-color);
             background: rgba(11, 15, 25, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .search-box { flex-direction: column; background: transparent; border: none; box-shadow: none; }
+            .search-box input { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; padding: 15px; }
+            .search-box button { width: 100%; padding: 15px; justify-content: center; }
+            .main-modes { flex-direction: column; width: 100%; }
         }
     </style>
 </head>
@@ -289,7 +413,7 @@
             </button>
         </div>
 
-        <!-- Recherche d'annonce -->
+        <!-- Recherche d'annonce (Ton bloc d'origine) -->
         <div class="search-container" id="searchContainer" style="display: block;">
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Collez le lien de l'annonce (Leboncoin, etc.)...">
@@ -297,7 +421,7 @@
             </div>
         </div>
 
-        <!-- Simulateur (Conservé intact) -->
+        <!-- Simulateur (Ton bloc d'origine intact) -->
         <div class="simulator-form" id="simulatorForm">
             <div class="form-grid">
                 <div class="form-group">
@@ -312,7 +436,7 @@
             <button class="sim-submit-btn" onclick="lancerSimulation()">Lancer la simulation</button>
         </div>
 
-        <!-- Espace Connexion / Inscription -->
+        <!-- Espace Connexion / Inscription (Ajouté) -->
         <div class="auth-container" id="authContainer">
             <h2 id="authTitle" style="margin-bottom: 20px; color: var(--text-main);">Connexion</h2>
             <form id="authForm" onsubmit="handleAuth(event)">
@@ -333,14 +457,14 @@
             </div>
         </div>
 
-        <!-- Tableau de bord / Historique -->
+        <!-- Tableau de bord / Historique des analyses (Ajouté) -->
         <div class="dashboard-container" id="dashboardContainer">
             <h2 style="margin-bottom: 10px;">Mon Compte</h2>
             <p id="userEmailDisplay" style="color: var(--text-muted); margin-bottom: 20px;"></p>
             
-            <h3 style="margin-bottom: 15px; font-size: 1.1rem;">Mon historique de recherches</h3>
+            <h3 style="margin-bottom: 15px; font-size: 1.1rem;">Mes analyses effectuées</h3>
             <div id="historyList" style="max-height: 250px; overflow-y: auto; margin-bottom: 20px;">
-                <!-- Les recherches s'afficheront ici -->
+                <!-- Les analyses s'afficheront ici -->
             </div>
             
             <button class="auth-submit-btn" style="background: #ef4444; color: white;" onclick="deconnecter()">Se déconnecter</button>
@@ -429,7 +553,7 @@
             let historyList = document.getElementById('historyList');
 
             if (userHistory.length === 0) {
-                historyList.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">Aucune recherche effectuée pour le moment.</p>`;
+                historyList.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">Aucune analyse effectuée pour le moment.</p>`;
             } else {
                 historyList.innerHTML = userHistory.map(item => `
                     <div class="history-item">
@@ -451,18 +575,18 @@
                 return;
             }
 
-            // Sauvegarde dans l'historique de l'utilisateur connecté
+            // Enregistrement automatique dans l'historique du compte connecté
             const currentUser = localStorage.getItem('radar_current_user');
             if (currentUser) {
                 let users = JSON.parse(localStorage.getItem('radar_users')) || {};
                 if (users[currentUser]) {
                     if (!users[currentUser].history) users[currentUser].history = [];
-                    users[currentUser].history.unshift(inputVal); // Ajoute au début
+                    users[currentUser].history.unshift(inputVal);
                     localStorage.setItem('radar_users', JSON.stringify(users));
                 }
             }
 
-            alert("Analyse lancée avec succès ! (Enregistrée dans votre historique si connecté)");
+            alert("Analyse lancée avec succès !");
         }
 
         function lancerSimulation() {
