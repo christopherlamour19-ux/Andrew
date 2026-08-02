@@ -53,10 +53,17 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
         }
 
         .logo i { color: var(--accent); }
         .logo span { color: var(--accent); }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
         .nav-badge {
             background: rgba(255, 179, 0, 0.1);
@@ -67,6 +74,19 @@
             font-size: 0.85rem;
             font-weight: 600;
         }
+
+        .auth-nav-btn {
+            background: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .auth-nav-btn:hover { background: var(--accent-hover); }
 
         .hero {
             flex: 1;
@@ -123,10 +143,24 @@
             border-color: var(--accent);
         }
 
-        .search-container {
+        .search-container, .simulator-form, .auth-container, .dashboard-container {
             width: 100%;
             max-width: 750px;
-            margin-bottom: 15px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 30px;
+            text-align: left;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            margin-bottom: 40px;
+            display: none;
+        }
+
+        .search-container {
+            background: transparent;
+            border: none;
+            padding: 0;
+            box-shadow: none;
         }
 
         .search-box {
@@ -154,7 +188,7 @@
 
         .search-box input::placeholder { color: var(--text-muted); }
 
-        .search-box button {
+        .search-box button, .auth-submit-btn {
             background: var(--accent);
             color: var(--bg-dark);
             border: none;
@@ -166,25 +200,13 @@
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
         }
 
-        .search-box button:hover { background: var(--accent-hover); }
+        .auth-submit-btn { width: 100%; padding: 15px; margin-top: 10px; }
+        .search-box button:hover, .auth-submit-btn:hover { background: var(--accent-hover); }
 
-        .simulator-form {
-            display: none;
-            width: 100%;
-            max-width: 750px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 30px;
-            text-align: left;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            margin-bottom: 40px;
-        }
-
-        /* MODIFICATION ICI : Passage en 1 seule colonne 1 par 1 */
         .form-grid {
             display: flex;
             flex-direction: column;
@@ -204,7 +226,7 @@
             font-weight: 500;
         }
 
-        .form-group select, .form-group input[type="number"] {
+        .form-group select, .form-group input {
             background: rgba(11, 15, 25, 0.8);
             border: 1px solid var(--border-color);
             padding: 12px 15px;
@@ -215,7 +237,7 @@
             width: 100%;
         }
 
-        .form-group select:focus, .form-group input[type="number"]:focus { border-color: var(--accent); }
+        .form-group select:focus, .form-group input:focus { border-color: var(--accent); }
 
         .sim-submit-btn {
             width: 100%;
@@ -239,7 +261,9 @@
         .sample-hint {
             font-size: 0.9rem;
             color: var(--text-muted);
+            margin-top: 15px;
             margin-bottom: 40px;
+            text-align: center;
         }
 
         .sample-hint span {
@@ -325,6 +349,21 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* Style de l'historique dans le dashboard */
+        .history-item {
+            background: rgba(11, 15, 25, 0.6);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        .history-item:hover { border-color: var(--accent); }
+
         footer {
             text-align: center;
             padding: 20px;
@@ -346,17 +385,20 @@
 <body>
 
     <nav>
-        <div class="logo">
+        <div class="logo" onclick="switchMainView('home')">
             <i class="fa-solid fa-motorcycle"></i> Radar<span>Moto</span>
         </div>
-        <div class="nav-badge">christo.r7 le best</div>
+        <div class="nav-right">
+            <div class="nav-badge" id="user-badge" style="display:none;"></div>
+            <button class="auth-nav-btn" id="auth-nav-btn" onclick="openAuthModal()">Mon Compte</button>
+        </div>
     </nav>
 
-    <section class="hero">
-        <h1>Votre expert moto <span>intelligent</span></h1>
-        <p>Analysez une annonce Leboncoin ou trouvez la moto idéale adaptée à votre profil.</p>
+    <section class="hero" id="hero-section">
+        <h1 id="main-title">Votre expert moto <span>intelligent</span></h1>
+        <p id="main-subtitle">Analysez une annonce Leboncoin ou trouvez la moto idéale adaptée à votre profil.</p>
 
-        <div class="main-modes">
+        <div class="main-modes" id="main-modes-nav">
             <button class="mode-btn active" id="btn-mode-ad" onclick="switchMode('ad')">
                 <i class="fa-solid fa-magnifying-glass-dollar"></i> Analyseur d'Annonce
             </button>
@@ -366,7 +408,7 @@
         </div>
 
         <!-- MODE 1 : ANNONCE -->
-        <div class="search-container" id="container-mode-ad">
+        <div class="search-container" id="container-mode-ad" style="display: block;">
             <form id="analyze-form" class="search-box">
                 <input type="text" id="prompt" placeholder="Collez votre message ou lien LeBonCoin ici..." required>
                 <button type="submit" id="submit-btn">
@@ -456,6 +498,32 @@
             </button>
         </form>
 
+        <!-- ESPACE CONNEXION / INSCRIPTION -->
+        <div class="auth-container" id="auth-container">
+            <h2 style="margin-bottom: 20px; color: var(--accent);"><i class="fa-solid fa-user-circle"></i> Espace Compte</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;">Connectez-vous avec un pseudo pour retrouver l'historique de vos analyses sur cet appareil.</p>
+            <form id="auth-form">
+                <div class="form-group">
+                    <label>Votre Pseudo ou Nom</label>
+                    <input type="text" id="auth-pseudo" placeholder="Ex: christo.r7" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">Se connecter / Créer mon compte</button>
+            </form>
+        </div>
+
+        <!-- ESPACE DASHBOARD / HISTORIQUE -->
+        <div class="dashboard-container" id="dashboard-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color: var(--accent);"><i class="fa-solid fa-id-badge"></i> Mon Tableau de Bord</h2>
+                <button onclick="logoutUser()" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600;">Se déconnecter</button>
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Compte actif : <strong id="current-user-display" style="color: white;"></strong></p>
+            <h3 style="font-size: 1.1rem; margin-bottom: 15px; color: white;">Historique de vos recherches d'annonces</h3>
+            <div id="user-history-list">
+                <!-- Injecté dynamiquement en JS -->
+            </div>
+        </div>
+
         <!-- RÉSULTAT ANNONCE (Onglets) -->
         <div class="result-container" id="result-container">
             <div class="tabs-header">
@@ -491,6 +559,47 @@
     </footer>
 
     <script>
+        // Gestion des vues (Accueil, Simulateur, Auth, Dashboard)
+        function switchMainView(view) {
+            const containerAd = document.getElementById('container-mode-ad');
+            const formSim = document.getElementById('simulator-form');
+            const authContainer = document.getElementById('auth-container');
+            const dashboardContainer = document.getElementById('dashboard-container');
+            const resAd = document.getElementById('result-container');
+            const resSim = document.getElementById('simulator-result-container');
+            const mainModes = document.getElementById('main-modes-nav');
+            const mainTitle = document.getElementById('main-title');
+            const mainSubtitle = document.getElementById('main-subtitle');
+
+            // Cacher tout par défaut
+            containerAd.style.display = 'none';
+            formSim.style.display = 'none';
+            authContainer.style.display = 'none';
+            dashboardContainer.style.display = 'none';
+            resAd.style.display = 'none';
+            resSim.style.display = 'none';
+
+            if (view === 'home') {
+                mainModes.style.display = 'flex';
+                mainTitle.style.display = 'block';
+                mainSubtitle.style.display = 'block';
+                containerAd.style.display = 'block';
+                document.getElementById('btn-mode-ad').classList.add('active');
+                document.getElementById('btn-mode-sim').classList.remove('active');
+            } else if (view === 'auth') {
+                mainModes.style.display = 'none';
+                mainTitle.style.display = 'none';
+                mainSubtitle.style.display = 'none';
+                const currentUser = localStorage.getItem('radarmoto_current_user');
+                if (currentUser) {
+                    dashboardContainer.style.display = 'block';
+                    renderUserHistory();
+                } else {
+                    authContainer.style.display = 'block';
+                }
+            }
+        }
+
         function switchMode(mode) {
             const btnAd = document.getElementById('btn-mode-ad');
             const btnSim = document.getElementById('btn-mode-sim');
@@ -539,6 +648,95 @@
                     document.getElementById('sim-tab-detailed').classList.add('active');
                 }
             }
+        }
+
+        function openAuthModal() {
+            switchMainView('auth');
+        }
+
+        // Gestion Connexion/Inscription Locale
+        document.getElementById('auth-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const pseudo = document.getElementById('auth-pseudo').value.trim();
+            if (pseudo) {
+                localStorage.setItem('radarmoto_current_user', pseudo);
+                updateAuthUI();
+                switchMainView('auth');
+            }
+        });
+
+        function logoutUser() {
+            localStorage.removeItem('radarmoto_current_user');
+            updateAuthUI();
+            switchMainView('home');
+        }
+
+        function updateAuthUI() {
+            const currentUser = localStorage.getItem('radarmoto_current_user');
+            const badge = document.getElementById('user-badge');
+            const authBtn = document.getElementById('auth-nav-btn');
+            const userDisplay = document.getElementById('current-user-display');
+
+            if (currentUser) {
+                badge.style.display = 'block';
+                badge.textContent = currentUser;
+                authBtn.textContent = 'Mon Espace';
+                userDisplay.textContent = currentUser;
+            } else {
+                badge.style.display = 'none';
+                authBtn.textContent = 'Connexion / Inscription';
+            }
+        }
+
+        // Sauvegarder dans l'historique utilisateur
+        function saveToUserHistory(promptText, summaryText) {
+            const currentUser = localStorage.getItem('radarmoto_current_user');
+            if (!currentUser) return; // Si pas connecté, on n'enregistre pas dans l'espace perso
+
+            const historyKey = `radarmoto_history_${currentUser}`;
+            let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+
+            history.unshift({
+                date: new Date().toLocaleDateString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+                prompt: promptText,
+                summary: summaryText
+            });
+
+            if (history.length > 15) history.pop(); // Max 15 éléments
+            localStorage.setItem(historyKey, JSON.stringify(history));
+        }
+
+        function renderUserHistory() {
+            const currentUser = localStorage.getItem('radarmoto_current_user');
+            const historyList = document.getElementById('user-history-list');
+            const historyKey = `radarmoto_history_${currentUser}`;
+            const history = JSON.parse(localStorage.getItem(historyKey)) || [];
+
+            if (history.length === 0) {
+                historyList.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">Aucune recherche enregistrée pour le moment.</p>';
+                return;
+            }
+
+            historyList.innerHTML = '';
+            history.forEach((item) => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--accent);">${item.date}</span>
+                        <p style="font-size: 0.9rem; color: white; margin-top: 4px;">${item.prompt}</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 0.8rem;"></i>
+                `;
+                div.addEventListener('click', () => {
+                    switchMainView('home');
+                    document.getElementById('prompt').value = item.prompt;
+                    document.getElementById('tab-summary').textContent = item.summary;
+                    document.getElementById('result-container').style.display = 'block';
+                    switchTab('summary', 'ad');
+                });
+                historyList.appendChild(div);
+            });
         }
 
         document.getElementById('fill-sample').addEventListener('click', function() {
@@ -595,6 +793,9 @@
                 detailedBox.textContent = detailedPart;
                 resultContainer.style.display = 'block';
                 switchTab('summary', 'ad');
+
+                // Sauvegarde automatique dans le compte de l'utilisateur
+                saveToUserHistory(promptInput, summaryPart);
 
             } catch (error) {
                 clearInterval(interval);
@@ -679,6 +880,11 @@
                 simSubmitBtn.disabled = false;
                 simSpinner.style.display = 'none';
             }
+        });
+
+        // Initialisation de l'interface utilisateur au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAuthUI();
         });
     </script>
 </body>
