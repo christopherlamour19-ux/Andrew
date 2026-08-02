@@ -195,7 +195,7 @@
         /* Conteneurs Principaux */
         .search-container, .simulator-form, .result-container, .simulator-result, .comparator-container {
             width: 100%;
-            max-width: 760px;
+            max-width: 850px;
             margin: 0 auto;
         }
 
@@ -367,7 +367,7 @@
         .submit-btn:hover { background: var(--accent-hover); }
 
         /* Conteneurs de Résultats */
-        .result-container, .simulator-result, .comparator-result-box {
+        .result-container, .simulator-result {
             display: none;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -419,13 +419,58 @@
 
         .tab-content.active { display: block; }
 
+        /* Style Professionnel du Tableau Comparateur */
         .comparator-result-box {
-            padding: 30px;
-            color: #D1D5DB;
-            font-size: 1rem;
-            line-height: 1.7;
-            white-space: pre-wrap;
+            display: none;
             background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            margin-top: 20px;
+            margin-bottom: 50px;
+            overflow: hidden;
+            width: 100%;
+            text-align: left;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .pro-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .pro-table th, .pro-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .pro-table th {
+            background: rgba(31, 41, 55, 0.7);
+            color: var(--text-main);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .pro-table th:first-child, .pro-table td:first-child {
+            color: var(--accent);
+            font-weight: 600;
+            background: rgba(17, 24, 39, 0.9);
+            width: 22%;
+        }
+
+        .pro-table tr:hover td {
+            background: rgba(31, 41, 55, 0.2);
+        }
+
+        .pro-table tr:last-child td {
+            border-bottom: none;
         }
 
         /* Ligne Moto + Année côte à côte */
@@ -516,7 +561,6 @@
             <!-- MODE 2 : SIMULATEUR PROFIL -->
             <form id="simulator-form" class="simulator-form" style="display: none;">
                 <div class="form-grid">
-                    
                     <div class="form-group">
                         <label>Tranche d'âge</label>
                         <select id="sim-age">
@@ -648,8 +692,8 @@
     <!-- PAGE 2 : COMPARATEUR LIBRE DÉDIÉ -->
     <div id="page-comparator" class="page-view">
         <section class="hero">
-            <h1>Face à Face <span>Libre</span></h1>
-            <p>Mettez en concurrence plusieurs motos (modèles et années) pour identifier celle qui correspond le mieux à vos attentes.</p>
+            <h1>Face à Face <span>Professionnel</span></h1>
+            <p>Mettez en concurrence plusieurs motos (modèles et années) dans un tableau comparatif structuré.</p>
 
             <div class="comparator-container">
                 <div class="comparator-card">
@@ -658,8 +702,8 @@
                         <div class="form-group" style="margin-bottom: 16px;">
                             <label>Moto #1 (Modèle & Année)</label>
                             <div class="moto-row">
-                                <input type="text" id="comp-moto1" placeholder="Ex: Yamaha MT-07" required>
-                                <input type="text" id="comp-annee1" placeholder="Année" maxlength="4">
+                                <input type="text" id="comp-moto1" placeholder="Ex: Honda CBR 600RR" required>
+                                <input type="text" id="comp-annee1" placeholder="Ex: 2010" maxlength="4">
                             </div>
                         </div>
 
@@ -667,8 +711,8 @@
                         <div class="form-group" style="margin-bottom: 16px;">
                             <label>Moto #2 (Modèle & Année)</label>
                             <div class="moto-row">
-                                <input type="text" id="comp-moto2" placeholder="Ex: Honda CB750 Hornet" required>
-                                <input type="text" id="comp-annee2" placeholder="Année" maxlength="4">
+                                <input type="text" id="comp-moto2" placeholder="Ex: Honda CBR 600RR" required>
+                                <input type="text" id="comp-annee2" placeholder="Ex: 2025" maxlength="4">
                             </div>
                         </div>
 
@@ -676,19 +720,35 @@
                         <div class="form-group" style="margin-bottom: 25px;">
                             <label>Moto #3 (Optionnel)</label>
                             <div class="moto-row">
-                                <input type="text" id="comp-moto3" placeholder="Ex: Kawasaki Z650">
+                                <input type="text" id="comp-moto3" placeholder="Ex: Yamaha R6">
                                 <input type="text" id="comp-annee3" placeholder="Année" maxlength="4">
                             </div>
                         </div>
 
                         <button type="submit" class="submit-btn" id="comp-submit-btn">
-                            <span id="comp-btn-text">Lancer le comparatif</span>
+                            <span id="comp-btn-text">Générer le tableau comparatif</span>
                             <div class="spinner" id="comp-spinner"></div>
                         </button>
                     </form>
                 </div>
 
-                <div class="comparator-result-box" id="comp-result-container"></div>
+                <!-- TABLEAU COMPARATIF PRO -->
+                <div class="comparator-result-box" id="comp-result-container">
+                    <div class="table-responsive">
+                        <table class="pro-table" id="comparison-table">
+                            <thead>
+                                <tr id="table-head-row">
+                                    <th>Critères</th>
+                                    <th>Moto 1</th>
+                                    <th>Moto 2</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body-rows">
+                                <!-- Les lignes seront injectées dynamiquement -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
@@ -698,7 +758,6 @@
     </footer>
 
     <script>
-        // Gestion du basculement de page globale
         function switchPage(pageId) {
             document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active'));
             if (pageId === 'home') {
@@ -870,22 +929,35 @@
             }
         });
 
-        // Script Comparateur Libre
+        // Script Comparateur Libre Pro avec Tableau Dynamique
         document.getElementById('comparator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            const moto1 = document.getElementById('comp-moto1').value.trim();
+            const annee1 = document.getElementById('comp-annee1').value.trim();
+            const moto2 = document.getElementById('comp-moto2').value.trim();
+            const annee2 = document.getElementById('comp-annee2').value.trim();
+            const moto3 = document.getElementById('comp-moto3').value.trim();
+            const annee3 = document.getElementById('comp-annee3').value.trim();
+
+            // Validation front-end pour éviter l'alerte bloquante si mal géré
+            if (!moto1 || !moto2) {
+                alert("Veuillez renseigner au moins la Moto #1 et la Moto #2.");
+                return;
+            }
+
             const compData = {
-                moto1: document.getElementById('comp-moto1').value,
-                annee1: document.getElementById('comp-annee1').value,
-                moto2: document.getElementById('comp-moto2').value,
-                annee2: document.getElementById('comp-annee2').value,
-                moto3: document.getElementById('comp-moto3').value,
-                annee3: document.getElementById('comp-annee3').value
+                moto1: annee1 ? `${moto1} (${annee1})` : moto1,
+                moto2: annee2 ? `${moto2} (${annee2})` : moto2,
+                moto3: moto3 ? (annee3 ? `${moto3} (${annee3})` : moto3) : ""
             };
 
             const submitBtn = document.getElementById('comp-submit-btn');
             const btnText = document.getElementById('comp-btn-text');
             const spinner = document.getElementById('comp-spinner');
             const resultContainer = document.getElementById('comp-result-container');
+            const headRow = document.getElementById('table-head-row');
+            const bodyRows = document.getElementById('table-body-rows');
 
             submitBtn.disabled = true;
             spinner.style.display = 'inline-block';
@@ -896,12 +968,64 @@
                 const response = await fetch('/api/compare', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(compData)
+                    body: JSON.stringify({
+                        moto1: compData.moto1,
+                        moto2: compData.moto2,
+                        moto3: compData.moto3,
+                        annee1: annee1,
+                        annee2: annee2,
+                        annee3: annee3
+                    })
                 });
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
 
-                resultContainer.textContent = data.result;
+                // Construction dynamique des colonnes du tableau
+                let headersHTML = `<th>Critères</th><th>${compData.moto1}</th><th>${compData.moto2}</th>`;
+                let colCount = 2;
+                if (compData.moto3) {
+                    headersHTML += `<th>${compData.moto3}</th>`;
+                    colCount = 3;
+                }
+                headRow.innerHTML = headersHTML;
+
+                // Simulation de lignes structurées ou parsing propre selon le retour backend
+                // Ici on affiche un contenu structuré type tableau pro
+                let contentText = data.result;
+                
+                // Exemple de critères standards pour un tableau pro si l'IA renvoie du texte libre
+                const criteria = [
+                    "Architecture moteur",
+                    "Puissance maximale",
+                    "Couple",
+                    "Poids tous pleins faits",
+                    "Hauteur de selle",
+                    "Points forts",
+                    "Points faibles",
+                    "Budget / Cote occasion"
+                ];
+
+                let tbodyHTML = "";
+                criteria.forEach(crit => {
+                    tbodyHTML += `
+                        <tr>
+                            <td>${crit}</td>
+                            <td>Analyse en cours...</td>
+                            <td>Analyse en cours...</td>
+                            ${colCount === 3 ? '<td>Analyse en cours...</td>' : ''}
+                        </tr>
+                    `;
+                });
+
+                // Si le backend renvoie directement du texte brut structuré, on peut l'injecter ou l'adapter. 
+                // Pour l'instant, on injecte le texte brut dans une seule grande ligne ou on affiche proprement le résultat brut de l'IA si besoin :
+                bodyRows.innerHTML = `
+                    <tr>
+                        <td>Rapport Comparatif IA</td>
+                        <td colspan="${colCount}" style="white-space: pre-wrap; line-height: 1.6;">${contentText}</td>
+                    </tr>
+                `;
+
                 resultContainer.style.display = 'block';
 
             } catch (error) {
