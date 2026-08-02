@@ -184,9 +184,10 @@
             margin-bottom: 40px;
         }
 
+        /* MODIFICATION ICI : Passage en 1 seule colonne 1 par 1 */
         .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
+            flex-direction: column;
             gap: 20px;
             margin-bottom: 25px;
         }
@@ -203,7 +204,7 @@
             font-weight: 500;
         }
 
-        .form-group select {
+        .form-group select, .form-group input[type="number"] {
             background: rgba(11, 15, 25, 0.8);
             border: 1px solid var(--border-color);
             padding: 12px 15px;
@@ -211,10 +212,10 @@
             color: white;
             font-size: 0.95rem;
             outline: none;
-            cursor: pointer;
+            width: 100%;
         }
 
-        .form-group select:focus { border-color: var(--accent); }
+        .form-group select:focus, .form-group input[type="number"]:focus { border-color: var(--accent); }
 
         .sim-submit-btn {
             width: 100%;
@@ -335,7 +336,6 @@
 
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.2rem; }
-            .form-grid { grid-template-columns: 1fr; }
             .search-box { flex-direction: column; background: transparent; border: none; box-shadow: none; }
             .search-box input { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; padding: 15px; }
             .search-box button { width: 100%; padding: 15px; justify-content: center; }
@@ -397,8 +397,9 @@
                     <select id="sim-height">
                         <option value="Moins de 1m65">Moins de 1m65</option>
                         <option value="1m65 à 1m75">1m65 à 1m75</option>
-                        <option value="1m75 à 1m85" selected>1m75 à 1m85</option>
-                        <option value="Plus de 4,00m (Grand gabarit)">Plus de 4,00m (Grand gabarit)</option>
+                        <option value="1m75 à 1m85">1m75 à 1m85</option>
+                        <option value="1m85 à 2m" selected>1m85 à 2m (Grand gabarit)</option>
+                        <option value="Plus de 2m">Plus de 2m (Très grand gabarit)</option>
                     </select>
                 </div>
 
@@ -433,13 +434,19 @@
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fa-solid fa-wallet"></i> Budget maximum</label>
-                    <select id="sim-budget">
-                        <option value="Moins de 3 000 €">Moins de 3 000 €</option>
-                        <option value="3 000 € à 5 000 €">3 000 € à 5 000 €</option>
-                        <option value="5 000 € à 8 000 €" selected>5 000 € à 8 000 €</option>
-                        <option value="Plus de 8 000 €">Plus de 8 000 €</option>
+                    <label><i class="fa-solid fa-gauge-high"></i> Gamme de cylindrée</label>
+                    <select id="sim-displacement">
+                        <option value="Peu importe">Peu importe / Laisser l'IA juger</option>
+                        <option value="125cc">125cc</option>
+                        <option value="A2 (300cc - 500cc)">A2 intermédiaire (300cc - 500cc)</option>
+                        <option value="Moyenne cylindrée (600cc - 900cc)">Moyenne cylindrée (600cc - 900cc)</option>
+                        <option value="Grosse cylindrée (1000cc et +)">Grosse cylindrée (1000cc et +)</option>
                     </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-wallet"></i> Budget maximum (€)</label>
+                    <input type="number" id="sim-budget" placeholder="Ex: 6500" min="500" step="100" value="6500" required>
                 </div>
             </div>
             
@@ -612,7 +619,8 @@
                 license: document.getElementById('sim-license').value,
                 experience: document.getElementById('sim-experience').value,
                 style: document.getElementById('sim-style').value,
-                budget: document.getElementById('sim-budget').value
+                displacement: document.getElementById('sim-displacement').value,
+                budget: document.getElementById('sim-budget').value + " €"
             };
 
             const simSubmitBtn = document.getElementById('sim-submit-btn');
@@ -636,7 +644,7 @@
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
 
-                const fullText = data.result.replace(/PHOTO_QUERY:.*/g, '').trim();
+                const fullText = (data.result || "").replace(/PHOTO_QUERY:.*/g, '').trim();
                 let summaryPart = fullText;
                 let detailedPart = "Rapport détaillé non disponible.";
 
@@ -644,11 +652,21 @@
                     const parts = fullText.split("---RAPPORT_DETAILLE---");
                     summaryPart = parts[0].replace("---RESUME_IDEAL---", "").trim();
                     detailedPart = parts[1].trim();
+                } else if (fullText.includes("---RESUME_RAPIDE---") && fullText.includes("---RAPPORT_DETAILLE---")) {
+                    const parts = fullText.split("---RAPPORT_DETAILLE---");
+                    summaryPart = parts[0].replace("---RESUME_RAPIDE---", "").trim();
+                    detailedPart = parts[1].trim();
                 }
 
-                simSummaryBox.textContent = summaryPart;
+                simSummaryBox.textContent = summaryPart || "Aucun résumé généré.";
                 simDetailedBox.textContent = detailedPart;
-                motoImg.src = data.imageUrl;
+                
+                if (data.imageUrl) {
+                    motoImg.src = data.imageUrl;
+                    motoImg.style.display = 'block';
+                } else {
+                    motoImg.style.display = 'none';
+                }
                 
                 simResultContainer.style.display = 'block';
                 switchTab('summary', 'sim');
