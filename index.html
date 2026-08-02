@@ -422,7 +422,6 @@
                         <option value="Grosse cylindrée (1000cc et +)">Grosse cylindrée (1000cc et +)</option>
                     </select>
                 </div>
-                <!-- NOUVEAU CHAMP : Type de cylindre / moteur -->
                 <div class="form-group">
                     <label><i class="fa-solid fa-gears"></i> Type de moteur / Architecture</label>
                     <select id="sim-engine-type">
@@ -534,61 +533,49 @@
 
         function logout() { currentUser = null; localStorage.removeItem('currentUser'); updateNav(); }
 
-        // SOUMISSION DU SIMULATEUR AVEC LE NOUVEAU CHAMP ENGINE-TYPE
-        document.getElementById('simulator-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const btn = document.getElementById('sim-submit-btn');
-            const spinner = document.getElementById('sim-spinner');
-            const resultContainer = document.getElementById('simulator-result-container');
-            
-            const profile = {
-                ageRange: document.getElementById('sim-age').value,
-                height: document.getElementById('sim-height').value,
-                license: document.getElementById('sim-license').value,
-                experience: document.getElementById('sim-experience').value,
-                style: document.getElementById('sim-style').value,
-                displacement: document.getElementById('sim-displacement').value,
-                engineType: document.getElementById('sim-engine-type').value, // Récupération du type de moteur
-                budget: document.getElementById('sim-budget').value
-            };
+        function saveToHistory(prompt, summary, detailed) {
+            if (!currentUser) return;
+            let users = JSON.parse(localStorage.getItem('users')) || {};
+            if (!users[currentUser]) return;
+            users[currentUser].history.unshift({
+                id: Date.now(),
+                date: new Date().toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit' }),
+                prompt: prompt, summary: summary, detailed: detailed
+            }); 
+            localStorage.setItem('users', JSON.stringify(users));
+        }
 
-            btn.disabled = true;
-            spinner.style.display = 'inline-block';
-            resultContainer.style.display = 'none';
+        function openHistoryModal() {
+            const listEl = document.getElementById('history-list');
+            listEl.innerHTML = '';
+            let users = JSON.parse(localStorage.getItem('users')) || {};
+            let history = users[currentUser]?.history || [];
 
-            try {
-                const response = await fetch('/api/simulate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ profile })
+            if (history.length === 0) {
+                listEl.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Aucune analyse enregistrée.</p>';
+            } else {
+                history.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'history-item';
+                    div.innerHTML = `<div class="history-item-date"><i class="fa-regular fa-clock"></i> ${item.date}</div><div class="history-item-title">${item.prompt}</div>`;
+                    div.onclick = () => loadHistoryItem(item);
+                    listEl.appendChild(div);
                 });
-
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.error || 'Erreur lors de la simulation');
-
-                const fullText = data.result;
-                const imageUrl = data.imageUrl;
-
-                // Affichage avec l'image générée
-                const formattedHtml = `<div style="text-align: center; margin-bottom: 20px;">
-                    <img src="${imageUrl}" alt="Moto Idéale" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
-                </div>` + `<p style="white-space: pre-wrap;">${fullText}</p>`;
-
-                document.getElementById('sim-tab-summary').innerHTML = formattedHtml;
-                document.getElementById('sim-tab-detailed').innerHTML = `<p style="white-space: pre-wrap;">${fullText}</p>`;
-
-                resultContainer.style.display = 'block';
-                resultContainer.scrollIntoView({ behavior: 'smooth' });
-
-            } catch (error) {
-                alert("Erreur : " + error.message);
-            } finally {
-                btn.disabled = false;
-                spinner.style.display = 'none';
             }
-        });
+            openModal('history-modal');
+        }
 
+        function loadHistoryItem(item) {
+            closeModal('history-modal'); switchMode('ad'); 
+            document.getElementById('prompt').value = item.prompt;
+            document.getElementById('tab-summary').textContent = item.summary;
+            document.getElementById('tab-detailed').textContent = item.detailed;
+            document.getElementById('result-container').style.display = 'block';
+            switchTab('summary', 'ad');
+            document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // LOGIQUE ONGLET ET REQUÊTES
         function switchMode(mode) {
             document.getElementById('result-container').style.display = 'none';
             document.getElementById('simulator-result-container').style.display = 'none';
@@ -603,20 +590,101 @@
 
         function switchTab(tabName, type) {
             const containerId = type === 'ad' ? 'result-container' : 'simulator-result-container';
+            const prefix = type === 'ad' ? 'tab' : 'sim-tab';
             document.querySelectorAll(`#${containerId} .tab-btn`).forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll(`#${containerId} .tab-content`).forEach(content => content.classList.remove('active'));
-            
-            // Logique basique de bascule d'onglets
-            if(tabName === 'summary') {
-                document.querySelector(`#${containerId} .tabs-header button:nth-child(1)`).classList.add('active');
-                document.querySelector(`#${containerId} #${type === 'ad' ? 'tab-summary' : 'sim-tab-summary'}`).classList.add('active');
-            } else {
-                document.querySelector(`#${containerId} .tabs-header button:nth-child(2)`).classList.add('active');
-                document.querySelector(`#${containerId} #${type === 'ad' ? 'tab-detailed' : 'sim-tab-detailed'}`).classList.add('active');
-            }
+            document.querySelector(`#${containerId} .tab-btn:nth-child(${tabName === 'summary' ? 1 : 2})`).classList.add('active');
+            document.getElementById(`${prefix}-${tabName}`).classList.add('active');
         }
 
-        initAuth();
+        document.getElementById('fill-sample').addEventListener('click', () => { document.getElementById('prompt').value = "Voici une annonce : https://www.leboncoin.fr/ad/motos/3229286512"; });
+
+        // Submit Analyse
+        document.getElementById('analyze-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const promptInput = document.getElementById('prompt').value;
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            const spinner = document.getElementById('spinner');
+            const resultContainer = document.getElementById('result-container');
+            
+            submitBtn.disabled = true; spinner.style.display = 'inline-block';
+            resultContainer.style.display = 'none';
+            btnText.textContent = "Analyse IA en cours...";
+            
+            try {
+                const response = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: promptInput }) });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
+                
+                let summaryPart = data.result, detailedPart = "Détails non disponibles.";
+                if (data.result.includes("---RESUME_RAPIDE---") && data.result.includes("---RAPPORT_DETAILLE---")) {
+                    const parts = data.result.split("---RAPPORT_DETAILLE---");
+                    summaryPart = parts[0].replace("---RESUME_RAPIDE---", "").trim(); detailedPart = parts[1].trim();
+                }
+                
+                document.getElementById('tab-summary').textContent = summaryPart;
+                document.getElementById('tab-detailed').textContent = detailedPart;
+                resultContainer.style.display = 'block';
+                switchTab('summary', 'ad');
+                saveToHistory(promptInput, summaryPart, detailedPart);
+            } catch (error) {
+                document.getElementById('tab-summary').textContent = "Erreur : " + error.message;
+                document.getElementById('tab-detailed').textContent = "Échec de l'analyse.";
+                resultContainer.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false; btnText.textContent = "Lancer l'audit"; spinner.style.display = 'none';
+            }
+        });
+
+        // Submit Simulateur
+        document.getElementById('simulator-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const profile = {
+                ageRange: document.getElementById('sim-age').value, 
+                height: document.getElementById('sim-height').value,
+                license: document.getElementById('sim-license').value, 
+                experience: document.getElementById('sim-experience').value,
+                style: document.getElementById('sim-style').value, 
+                displacement: document.getElementById('sim-displacement').value,
+                engineType: document.getElementById('sim-engine-type').value, // Ajout du moteur transmis à l'API
+                budget: document.getElementById('sim-budget').value + " €"
+            };
+            const simSubmitBtn = document.getElementById('sim-submit-btn');
+            const simSpinner = document.getElementById('sim-spinner');
+            const simResultContainer = document.getElementById('simulator-result-container');
+
+            simSubmitBtn.disabled = true; simSpinner.style.display = 'inline-block'; simResultContainer.style.display = 'none';
+            simSubmitBtn.querySelector('span').textContent = "Recherche en cours...";
+
+            try {
+                const response = await fetch('/api/simulate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ profile: profile }) });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
+
+                const fullText = (data.result || "").replace(/PHOTO_QUERY:.*/g, '').trim();
+                let summaryPart = fullText, detailedPart = "Rapport non disponible.";
+
+                if (fullText.includes("---RESUME_IDEAL---") && fullText.includes("---RAPPORT_DETAILLE---")) {
+                    const parts = fullText.split("---RAPPORT_DETAILLE---");
+                    summaryPart = parts[0].replace("---RESUME_IDEAL---", "").trim(); detailedPart = parts[1].trim();
+                }
+
+                document.getElementById('sim-tab-summary').textContent = summaryPart || "Aucun résumé.";
+                document.getElementById('sim-tab-detailed').textContent = detailedPart;
+                simResultContainer.style.display = 'block';
+                switchTab('summary', 'sim');
+            } catch (error) {
+                document.getElementById('sim-tab-summary').textContent = "Erreur : " + error.message;
+                simResultContainer.style.display = 'block';
+            } finally {
+                simSubmitBtn.disabled = false; 
+                simSubmitBtn.querySelector('span').textContent = "Trouver ma moto idéale"; 
+                simSpinner.style.display = 'none';
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', initAuth);
     </script>
 </body>
 </html>
