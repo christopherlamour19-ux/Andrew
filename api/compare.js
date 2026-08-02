@@ -14,7 +14,7 @@ export default async function handler(req, res) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 
     const duelPrompt = `Tu es un expert en moto. Fais un comparatif direct (duel) entre ces deux motos :
     - Moto A : ${motoA}
