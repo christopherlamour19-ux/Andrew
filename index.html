@@ -203,7 +203,7 @@
             font-weight: 500;
         }
 
-        .form-group select {
+        .form-group select, .form-group input[type="number"] {
             background: rgba(11, 15, 25, 0.8);
             border: 1px solid var(--border-color);
             padding: 12px 15px;
@@ -211,10 +211,10 @@
             color: white;
             font-size: 0.95rem;
             outline: none;
-            cursor: pointer;
+            width: 100%;
         }
 
-        .form-group select:focus { border-color: var(--accent); }
+        .form-group select:focus, .form-group input[type="number"]:focus { border-color: var(--accent); }
 
         .sim-submit-btn {
             width: 100%;
@@ -397,8 +397,9 @@
                     <select id="sim-height">
                         <option value="Moins de 1m65">Moins de 1m65</option>
                         <option value="1m65 à 1m75">1m65 à 1m75</option>
-                        <option value="1m75 à 1m85" selected>1m75 à 1m85</option>
-                        <option value="Plus de 1m85">Plus de 1m85</option>
+                        <option value="1m75 à 1m85">1m75 à 1m85</option>
+                        <option value="1m85 à 2m" selected>1m85 à 2m (Grand gabarit)</option>
+                        <option value="Plus de 2m">Plus de 2m (Très grand gabarit)</option>
                     </select>
                 </div>
 
@@ -433,13 +434,19 @@
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fa-solid fa-wallet"></i> Budget maximum</label>
-                    <select id="sim-budget">
-                        <option value="Moins de 3 000 €">Moins de 3 000 €</option>
-                        <option value="3 000 € à 5 000 €">3 000 € à 5 000 €</option>
-                        <option value="5 000 € à 8 000 €" selected>5 000 € à 8 000 €</option>
-                        <option value="Plus de 8 000 €">Plus de 8 000 €</option>
+                    <label><i class="fa-solid fa-gauge-high"></i> Gamme de cylindrée</label>
+                    <select id="sim-displacement">
+                        <option value="Peu importe">Peu importe / Laisser l'IA juger</option>
+                        <option value="125cc">125cc</option>
+                        <option value="A2 (300cc - 500cc)">A2 intermédiaire (300cc - 500cc)</option>
+                        <option value="Moyenne cylindrée (600cc - 800cc)">Moyenne cylindrée (600cc - 800cc)</option>
+                        <option value="Grosse cylindrée (1000cc et +)">Grosse cylindrée (1000cc et +)</option>
                     </select>
+                </div>
+
+                <div class="form-group" style="grid-column: span 2;">
+                    <label><i class="fa-solid fa-wallet"></i> Budget maximum (€)</label>
+                    <input type="number" id="sim-budget" placeholder="Ex: 6500" min="500" step="100" value="6500" required>
                 </div>
             </div>
             
@@ -602,7 +609,7 @@
             }
         });
 
-        // Script Simulateur Profil (Corrigé et sécurisé)
+        // Script Simulateur Profil
         document.getElementById('simulator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -612,7 +619,8 @@
                 license: document.getElementById('sim-license').value,
                 experience: document.getElementById('sim-experience').value,
                 style: document.getElementById('sim-style').value,
-                budget: document.getElementById('sim-budget').value
+                displacement: document.getElementById('sim-displacement').value,
+                budget: document.getElementById('sim-budget').value + " €"
             };
 
             const simSubmitBtn = document.getElementById('sim-submit-btn');
@@ -645,7 +653,6 @@
                     summaryPart = parts[0].replace("---RESUME_IDEAL---", "").trim();
                     detailedPart = parts[1].trim();
                 } else if (fullText.includes("---RESUME_RAPIDE---") && fullText.includes("---RAPPORT_DETAILLE---")) {
-                    // Sécurité au cas où le backend renvoie les mauvais tags
                     const parts = fullText.split("---RAPPORT_DETAILLE---");
                     summaryPart = parts[0].replace("---RESUME_RAPIDE---", "").trim();
                     detailedPart = parts[1].trim();
