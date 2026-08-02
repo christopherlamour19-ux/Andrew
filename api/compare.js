@@ -10,49 +10,55 @@ export default async function handler(req, res) {
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) return res.status(500).json({ error: "Clé API manquante." });
 
-        const { motos } = req.body;
-        if (!motos || !Array.isArray(motos) || motos.length < 2) {
-            return res.status(400).json({ error: 'Veuillez fournir au moins deux motos.' });
+        // Récupération des données envoyées par le front-end pour le duel
+        const { moto1, moto2, profile } = req.body;
+        if (!moto1 || !moto2) {
+            return res.status(400).json({ error: 'Veuillez fournir deux motos à comparer.' });
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
+        // Utilisation d'un modèle Gemini valide (ex: gemini-2.5-flash ou gemini-1.5-pro selon ta config)
         const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
-        // On demande à l'IA de répondre STRICTEMENT au format JSON
         const prompt = `
-        Agis en tant qu'expert motard. Compare ces motos : ${motos.join(', ')}.
-        Tu dois retourner EXCLUSIVEMENT un objet JSON valide (sans texte autour, sans markdown \`\`\`json) avec cette structure exacte :
-        {
-          "motos": [
-            {
-              "nom": "Nom et année de la moto 1",
-              "prixEstime": "ex: ~8 500 €",
-              "moteur": "ex: 4 cylindres en ligne, 599cc",
-              "puissance": "ex: 120 ch",
-              "poids": "ex: 184 kg",
-              "hauteurSelle": "ex: 810 mm",
-              "pointsForts": "ex: Moteur rageur dans les tours, partie cycle incisive",
-              "pointsFaibles": "ex: Creux à bas régimes, confort ferme",
-              "verdict": "Excellente sur piste et sportive sur route."
-            }
-          ]
-        }
-        Remplis les données pour les ${motos.length} motos fournies.
+        Agis en tant qu'expert motard chevronné. 
+        Fais une analyse comparative détaillée sous forme de duel entre ces deux motos :
+        - Moto 1 : ${moto1}
+        - Moto 2 : ${moto2}
+        Profil et utilisation de l'utilisateur : ${profile || "Non précisé"}
+
+        Structure ta réponse en séparant clairement l'analyse de chaque moto pour qu'elle s'intègre parfaitement dans deux blocs distincts.
+        Utilise exactement ce format de séparation dans ton texte :
+
+        ---MOTO_1---
+        Rédige ici l'analyse complète de la ${moto1} (points forts, points faibles, moteur, comportement, et si elle correspond au profil).
+
+        ---MOTO_2---
+        Rédige ici l'analyse complète de la ${moto2} (points forts, points faibles, moteur, comportement, et si elle correspond au profil).
         `;
 
         const result = await model.generateContent(prompt);
-        let text = responseTextClean(await result.response.text());
+        let text = await result.response.text();
         
-        // Nettoyage au cas où l'IA met des balises markdown
-        text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+        let resultMoto1 = "Analyse non disponible.";
+        let resultMoto2 = "Analyse non disponible.";
 
-        const jsonData = JSON.parse(text);
-        return res.status(200).json(jsonData);
+        // Découpage de la réponse de l'IA pour alimenter les deux blocs séparés du front-end
+        if (text.includes("---MOTO_1---") && text.includes("---MOTO_2---")) {
+            const parts = text.split("---MOTO_2---");
+            resultMoto1 = parts[0].replace("---MOTO_1---", "").trim();
+            resultMoto2 = parts[1].trim();
+        } else {
+            resultMoto1 = text;
+        }
+
+        return res.status(200).json({ 
+            resultMoto1, 
+            resultMoto2 
+        });
 
     } catch (error) {
-        console.error("Erreur:", error);
+        console.error("Erreur Duel:", error);
         return res.status(500).json({ error: error.message || 'Erreur serveur.' });
     }
 }
-
-function responseTextClean(text) { return text; }
