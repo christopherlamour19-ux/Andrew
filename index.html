@@ -149,7 +149,7 @@
 
         .mode-btn.active {
             background: var(--accent);
-            color: #000; /* Texte noir sur fond orange pour un fort contraste */
+            color: #000;
         }
 
         /* Conteneurs Principaux */
@@ -383,13 +383,6 @@
 
         .tab-content.active { display: block; }
 
-        .moto-preview-img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-bottom: 1px solid var(--border-color);
-        }
-
         /* Spinner */
         .spinner {
             display: none;
@@ -460,9 +453,11 @@
             </div>
         </div>
 
-        <!-- MODE 2 : SIMULATEUR PROFIL -->
+        <!-- MODE 2 : SIMULATEUR PROFIL ENRICHI -->
         <form id="simulator-form" class="simulator-form">
             <div class="form-grid">
+                
+                <!-- Bloc 1 : Profil Basique -->
                 <div class="form-group">
                     <label>Tranche d'âge</label>
                     <select id="sim-age">
@@ -494,7 +489,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Expérience</label>
+                    <label>Expérience de conduite</label>
                     <select id="sim-experience">
                         <option value="Débutant total (Jamais roulé)">Débutant total</option>
                         <option value="Moins d'un an d'expérience" selected>Moins d'un an</option>
@@ -503,21 +498,53 @@
                     </select>
                 </div>
 
+                <!-- Bloc 2 : Nouvelles questions de précision -->
                 <div class="form-group">
-                    <label>Style de moto</label>
-                    <select id="sim-style">
-                        <option value="Roadster">Roadster</option>
-                        <option value="Sportive">Sportive</option>
-                        <option value="Trail / Adventure">Trail / Adventure</option>
-                        <option value="Custom / Café Racer">Custom / Néo-Rétro</option>
+                    <label>Usage principal de la moto</label>
+                    <select id="sim-usage">
+                        <option value="Trajets quotidiens (Boulot/Dodo)">Trajets quotidiens (Boulot/Dodo)</option>
+                        <option value="Balades le week-end" selected>Balades le week-end</option>
+                        <option value="Longs voyages / Roadtrips">Longs voyages / Roadtrips</option>
+                        <option value="Piste / Utilisation très sportive">Piste / Compétition</option>
                     </select>
                 </div>
 
-                <!-- NOUVEAU CHAMP : CYLINDRÉE -->
                 <div class="form-group">
-                    <label>Cylindrée souhaitée</label>
+                    <label>Passager (Duo)</label>
+                    <select id="sim-passenger">
+                        <option value="Principalement en solo" selected>Principalement en solo</option>
+                        <option value="Occasionnellement à deux">Occasionnellement à deux</option>
+                        <option value="Fréquemment à deux">Fréquemment à deux (confort requis)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Besoins en bagagerie</label>
+                    <select id="sim-luggage">
+                        <option value="Aucun besoin (juste un sac à dos)" selected>Aucun besoin (juste un sac à dos)</option>
+                        <option value="Léger (Top-case ou petite sacoche)">Léger (Top-case ou petite sacoche)</option>
+                        <option value="Important (Valises latérales + Top-case)">Important (Valises + Top-case)</option>
+                    </select>
+                </div>
+
+                <!-- Bloc 3 : Style & Cylindrée -->
+                <div class="form-group">
+                    <label>Style de moto souhaité</label>
+                    <select id="sim-style">
+                        <option value="Peu importe">Peu importe / À l'IA de choisir</option>
+                        <option value="Roadster" selected>Roadster</option>
+                        <option value="Sportive">Sportive</option>
+                        <option value="Trail / Adventure">Trail / Adventure</option>
+                        <option value="Custom / Cruiser">Custom / Cruiser</option>
+                        <option value="Néo-Rétro / Café Racer">Néo-Rétro / Café Racer</option>
+                        <option value="Routière / GT">Routière / GT</option>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Cylindrée visée</label>
                     <select id="sim-engine">
-                        <option value="Peu importe" selected>Peu importe / Laissez l'IA choisir</option>
+                        <option value="Peu importe" selected>Peu importe / Laissez l'IA choisir le plus adapté</option>
                         <option value="125cc">125cc</option>
                         <option value="300cc - 500cc">300cc à 500cc</option>
                         <option value="600cc - 800cc">600cc à 800cc (Mid-size)</option>
@@ -525,9 +552,9 @@
                     </select>
                 </div>
 
-                <!-- NOUVEAU CHAMP : BUDGET MANUEL -->
+                <!-- Bloc 4 : Budget (Libre) -->
                 <div class="form-group full-width">
-                    <label>Budget maximal alloué</label>
+                    <label>Budget maximal alloué pour la moto</label>
                     <div class="input-currency-wrapper">
                         <input type="number" id="sim-budget" placeholder="Exemple : 6500" min="500" step="100" required>
                         <span class="currency-symbol">€</span>
@@ -536,7 +563,7 @@
             </div>
             
             <button type="submit" class="sim-submit-btn" id="sim-submit-btn">
-                <span id="sim-btn-text">Générer ma recommandation</span>
+                <span id="sim-btn-text">Générer ma recommandation sur-mesure</span>
                 <div class="spinner" id="sim-spinner"></div>
             </button>
         </form>
@@ -551,9 +578,8 @@
             <div id="tab-detailed" class="tab-content"></div>
         </div>
 
-        <!-- RÉSULTAT SIMULATEUR -->
+        <!-- RÉSULTAT SIMULATEUR (Sans image) -->
         <div class="simulator-result" id="simulator-result-container">
-            <img id="moto-img" class="moto-preview-img" src="" alt="Moto recommandée" style="display:none;">
             <div class="tabs-header">
                 <button class="tab-btn active" onclick="switchTab('summary', 'sim')">Le Match Parfait</button>
                 <button class="tab-btn" onclick="switchTab('detailed', 'sim')">Détails Techniques</button>
@@ -676,11 +702,15 @@
         document.getElementById('simulator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
+            // Objet profil mis à jour avec les nouveaux champs (usage, passager, bagagerie)
             const profile = {
                 ageRange: document.getElementById('sim-age').value,
                 height: document.getElementById('sim-height').value,
                 license: document.getElementById('sim-license').value,
                 experience: document.getElementById('sim-experience').value,
+                usage: document.getElementById('sim-usage').value,
+                passenger: document.getElementById('sim-passenger').value,
+                luggage: document.getElementById('sim-luggage').value,
                 style: document.getElementById('sim-style').value,
                 engine: document.getElementById('sim-engine').value,
                 budget: document.getElementById('sim-budget').value + " €"
@@ -690,13 +720,11 @@
             const btnText = document.getElementById('sim-btn-text');
             const spinner = document.getElementById('sim-spinner');
             const resultContainer = document.getElementById('simulator-result-container');
-            const motoImg = document.getElementById('moto-img');
 
             submitBtn.disabled = true;
             spinner.style.display = 'inline-block';
             btnText.style.display = 'none';
             resultContainer.style.display = 'none';
-            motoImg.style.display = 'none';
 
             try {
                 const response = await fetch('/api/simulate', {
@@ -708,6 +736,7 @@
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
 
+                // On supprime la balise photo si l'IA en génère une par erreur dans le texte
                 const fullText = data.result.replace(/PHOTO_QUERY:.*/g, '').trim();
                 let summaryPart = fullText;
                 let detailedPart = "Détails non disponibles.";
@@ -720,11 +749,6 @@
 
                 document.getElementById('sim-tab-summary').textContent = summaryPart;
                 document.getElementById('sim-tab-detailed').textContent = detailedPart;
-                
-                if (data.imageUrl) {
-                    motoImg.src = data.imageUrl;
-                    motoImg.style.display = 'block';
-                }
                 
                 resultContainer.style.display = 'block';
                 switchTab('summary', 'sim');
