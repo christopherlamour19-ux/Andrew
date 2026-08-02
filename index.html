@@ -9,13 +9,14 @@
     
     <style>
         :root {
-            --bg-dark: #0B0F19;
-            --bg-card: #151C2C;
+            --bg-dark: #070a13; /* Plus sombre pour faire ressortir les halos */
+            --bg-card: rgba(21, 28, 44, 0.65); /* Glassmorphism */
             --accent: #FFB300;
-            --accent-hover: #FFA000;
+            --accent-hover: #ffc133;
+            --accent-glow: rgba(255, 179, 0, 0.4);
             --text-main: #FFFFFF;
             --text-muted: #94A3B8;
-            --border-color: rgba(255, 255, 255, 0.1);
+            --border-color: rgba(255, 255, 255, 0.08);
         }
 
         * {
@@ -31,38 +32,48 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
         }
 
+        /* --- ARRIÈRE-PLAN DYNAMIQUE (GLOWING ORBS) --- */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            opacity: 0.6;
+            animation: float 12s infinite ease-in-out alternate;
+        }
+        .orb-1 { top: -10%; left: -10%; width: 500px; height: 500px; background: rgba(255, 179, 0, 0.15); }
+        .orb-2 { bottom: -10%; right: -5%; width: 600px; height: 600px; background: rgba(0, 110, 255, 0.12); animation-delay: -5s; }
+        .orb-3 { top: 40%; left: 40%; width: 400px; height: 400px; background: rgba(255, 0, 102, 0.08); animation-duration: 15s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, 60px) scale(1.1); }
+        }
+
+        /* --- NAVIGATION --- */
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 5%;
-            background: rgba(11, 15, 25, 0.85);
-            backdrop-filter: blur(15px);
+            background: rgba(7, 10, 19, 0.7);
+            backdrop-filter: blur(20px);
             position: fixed;
             width: 100%;
             z-index: 100;
             border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo i { color: var(--accent); }
-        .logo span { color: var(--accent); }
+        .logo-container { display: flex; align-items: center; gap: 20px; }
+        .logo { font-size: 24px; font-weight: 800; letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: transform 0.3s; }
+        .logo:hover { transform: scale(1.02); }
+        .logo i { color: var(--accent); filter: drop-shadow(0 0 8px var(--accent-glow)); }
+        .logo span { background: linear-gradient(135deg, #FFB300, #ff6a00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         .nav-badge {
             background: rgba(255, 179, 0, 0.1);
@@ -72,231 +83,207 @@
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
-            display: none; /* Masqué sur mobile par défaut, on l'affiche sur desktop via media query */
+            display: none;
+            box-shadow: 0 0 10px rgba(255, 179, 0, 0.1);
         }
 
-        /* --- SYSTÈME DE CONNEXION / NAV DROITE --- */
-        .auth-nav {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+        .auth-nav { display: flex; align-items: center; gap: 15px; }
 
         .nav-btn {
-            background: transparent;
-            border: 1px solid var(--accent);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 179, 0, 0.5);
             color: var(--accent);
             padding: 8px 18px;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 0.9rem;
+            backdrop-filter: blur(10px);
         }
 
         .nav-btn:hover {
             background: var(--accent);
-            color: var(--bg-dark);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-glow);
+            transform: translateY(-2px);
         }
         
-        .user-greeting {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            display: none;
-        }
-
+        .user-greeting { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); display: none; }
         .user-greeting span { color: var(--text-main); }
 
-        /* --- FENÊTRES MODALES --- */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            animation: fadeInModal 0.3s forwards;
+        /* --- HERO SECTION --- */
+        .hero { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 140px 5% 60px 5%; z-index: 10; }
+        
+        .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 20px; letter-spacing: -1px; line-height: 1.2; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .hero h1 span { 
+            background: linear-gradient(135deg, #FFB300, #ff5e00);
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            position: relative;
         }
 
+        .hero p { font-size: 1.15rem; color: var(--text-muted); margin-bottom: 35px; max-width: 650px; line-height: 1.6; }
+
+        /* --- SÉLECTEUR DE MODE --- */
+        .main-modes { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 16px; border: 1px solid var(--border-color); backdrop-filter: blur(10px); }
+        
+        .mode-btn { background: transparent; border: none; color: var(--text-muted); padding: 12px 25px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.4s ease; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .mode-btn:hover { color: white; }
+        .mode-btn.active { background: var(--accent); color: #000; box-shadow: 0 5px 15px var(--accent-glow); transform: scale(1.02); }
+
+        /* --- COMPOSANTS DE VERRE (GLASSMORPHISM) --- */
+        .glass-panel {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 750px;
+        }
+
+        /* --- ANALYSEUR --- */
+        .search-container { width: 100%; max-width: 750px; margin-bottom: 15px; }
+        .search-box { display: flex; padding: 10px; transition: transform 0.3s, border-color 0.3s; }
+        .search-box:focus-within { border-color: rgba(255, 179, 0, 0.5); transform: translateY(-2px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 179, 0, 0.15); }
+        
+        .search-box input { flex: 1; background: transparent; border: none; padding: 15px 20px; color: white; font-size: 1rem; outline: none; }
+        .search-box input::placeholder { color: var(--text-muted); }
+        
+        .search-box button, .sim-submit-btn, .submit-btn {
+            background: linear-gradient(135deg, #FFB300, #F59E0B);
+            color: #000;
+            border: none;
+            padding: 0 35px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .search-box button:hover, .sim-submit-btn:hover, .submit-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 25px var(--accent-glow); }
+        .search-box button:active, .sim-submit-btn:active { transform: translateY(1px); }
+
+        .sample-hint { font-size: 0.9rem; color: var(--text-muted); margin-top: 15px; margin-bottom: 40px; }
+        .sample-hint span { color: var(--accent); cursor: pointer; text-decoration: none; font-weight: 500; border-bottom: 1px dashed var(--accent); transition: 0.3s; }
+        .sample-hint span:hover { color: #fff; border-color: #fff; }
+
+        /* --- SIMULATEUR --- */
+        .simulator-form { display: none; padding: 35px; text-align: left; margin-bottom: 40px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 0.9rem; color: #cbd5e1; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+        .form-group label i { color: var(--accent); opacity: 0.8; }
+        
+        .form-group select, .form-group input[type="number"] {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            padding: 14px 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            width: 100%;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        .form-group select:focus, .form-group input[type="number"]:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(255, 179, 0, 0.2); background: rgba(0, 0, 0, 0.5); }
+        
+        .sim-submit-btn { width: 100%; padding: 18px; font-size: 1.05rem; }
+
+        /* --- RÉSULTATS --- */
+        .result-container, .simulator-result { display: none; text-align: left; margin-bottom: 40px; overflow: hidden; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+        
+        @keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
+
+        .tabs-header { display: flex; background: rgba(0, 0, 0, 0.2); border-bottom: 1px solid var(--border-color); }
+        .tab-btn { flex: 1; padding: 18px; background: transparent; border: none; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; }
+        .tab-btn::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 2px; background: var(--accent); transform: scaleX(0); transition: transform 0.3s ease; }
+        .tab-btn:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.02); }
+        .tab-btn.active { color: var(--accent); background: linear-gradient(to top, rgba(255, 179, 0, 0.05), transparent); }
+        .tab-btn.active::after { transform: scaleX(1); }
+
+        .tab-content { display: none; padding: 30px; color: #E2E8F0; line-height: 1.8; font-size: 1rem; white-space: pre-wrap; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- MODALES --- */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; opacity: 0; animation: fadeInModal 0.3s forwards; }
         @keyframes fadeInModal { to { opacity: 1; } }
 
         .modal-content {
             background: var(--bg-card);
-            padding: 35px;
-            border-radius: 14px;
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 20px;
             width: 90%;
             max-width: 420px;
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(255,255,255,0.1);
             position: relative;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            transform: scale(0.95) translateY(20px);
+            animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .close-modal {
-            position: absolute;
-            top: 15px; right: 15px;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: 0.3s;
-        }
+        @keyframes modalPop { to { transform: scale(1) translateY(0); } }
 
-        .close-modal:hover { color: white; }
+        .close-modal { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.05); border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .close-modal:hover { background: rgba(239, 68, 68, 0.2); color: #ef4444; transform: rotate(90deg); }
 
-        .modal-content h2 {
-            margin-bottom: 25px;
-            font-size: 1.5rem;
-            text-align: center;
-        }
+        .modal-content h2 { margin-bottom: 30px; font-size: 1.6rem; text-align: center; background: linear-gradient(135deg, #fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .modal-content input { width: 100%; margin-bottom: 20px; padding: 15px; border-radius: 12px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-color); color: white; font-size: 1rem; transition: 0.3s; }
+        .modal-content input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(255, 179, 0, 0.15); }
+        .modal-content .submit-btn { width: 100%; padding: 15px; margin-bottom: 20px; }
+        .toggle-auth { color: var(--accent); cursor: pointer; font-size: 0.95rem; text-align: center; display: block; opacity: 0.9; transition: 0.3s; }
+        .toggle-auth:hover { opacity: 1; text-shadow: 0 0 8px var(--accent-glow); }
 
-        .modal-content input {
-            width: 100%;
-            margin-bottom: 15px;
-            padding: 14px;
-            border-radius: 10px;
-            background: rgba(11, 15, 25, 0.8);
-            border: 1px solid var(--border-color);
-            color: white;
-            font-size: 0.95rem;
-            outline: none;
-        }
-
-        .modal-content input:focus { border-color: var(--accent); }
-
-        .modal-content button.submit-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            background: var(--accent);
-            color: var(--bg-dark);
-            font-weight: 700;
-            font-size: 1rem;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-bottom: 15px;
-            transition: 0.3s;
-        }
-
-        .modal-content button.submit-btn:hover { background: var(--accent-hover); }
-
-        .toggle-auth {
-            color: var(--accent);
-            cursor: pointer;
-            font-size: 0.9rem;
-            text-decoration: underline;
-            text-align: center;
-            display: block;
-        }
-
-        /* Liste d'historique */
-        .history-list {
-            max-height: 350px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding-right: 5px;
-        }
-
+        .history-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 5px; }
         .history-list::-webkit-scrollbar { width: 6px; }
         .history-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-
-        .history-item {
-            background: rgba(255,255,255,0.03);
-            padding: 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            border: 1px solid var(--border-color);
-            transition: all 0.2s;
-        }
-
-        .history-item:hover {
-            border-color: var(--accent);
-            background: rgba(255, 179, 0, 0.05);
-        }
-
-        .history-item-date {
-            font-size: 0.75rem;
-            color: var(--accent);
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-
-        .history-item-title {
-            font-weight: 500;
-            font-size: 0.9rem;
-            color: white;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* --- RESTE DU STYLE (Inchangé) --- */
-        .hero { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 130px 5% 60px 5%; background: radial-gradient(circle at 50% 25%, rgba(255, 179, 0, 0.06), transparent 60%); }
-        .hero h1 { font-size: 3.2rem; font-weight: 800; margin-bottom: 15px; letter-spacing: -1px; line-height: 1.2; }
-        .hero h1 span { color: var(--accent); }
-        .hero p { font-size: 1.15rem; color: var(--text-muted); margin-bottom: 25px; max-width: 650px; }
-        .main-modes { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
-        .mode-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); padding: 12px 25px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
-        .mode-btn.active { background: var(--accent); color: var(--bg-dark); border-color: var(--accent); }
         
-        .search-container { width: 100%; max-width: 750px; margin-bottom: 15px; }
-        .search-box { display: flex; background: var(--bg-card); border: 1px solid var(--border-color); backdrop-filter: blur(20px); padding: 8px; border-radius: 14px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); transition: border-color 0.3s; }
-        .search-box:focus-within { border-color: var(--accent); }
-        .search-box input { flex: 1; background: transparent; border: none; padding: 15px 20px; color: white; font-size: 1rem; outline: none; }
-        .search-box input::placeholder { color: var(--text-muted); }
-        .search-box button { background: var(--accent); color: var(--bg-dark); border: none; padding: 0 35px; font-size: 1rem; font-weight: 700; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; }
-        .search-box button:hover { background: var(--accent-hover); }
+        .history-item { background: rgba(0, 0, 0, 0.3); padding: 18px; border-radius: 12px; cursor: pointer; border: 1px solid transparent; transition: all 0.3s; display: flex; flex-direction: column; gap: 6px; }
+        .history-item:hover { border-color: var(--accent); background: rgba(255, 179, 0, 0.05); transform: translateX(5px); }
+        .history-item-date { font-size: 0.8rem; color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .history-item-title { font-weight: 500; font-size: 0.95rem; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .simulator-form { display: none; width: 100%; max-width: 750px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 30px; text-align: left; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); margin-bottom: 40px; }
-        .form-grid { display: flex; flex-direction: column; gap: 20px; margin-bottom: 25px; }
-        .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .form-group label { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
-        .form-group select, .form-group input[type="number"] { background: rgba(11, 15, 25, 0.8); border: 1px solid var(--border-color); padding: 12px 15px; border-radius: 10px; color: white; font-size: 0.95rem; outline: none; width: 100%; }
-        .form-group select:focus, .form-group input[type="number"]:focus { border-color: var(--accent); }
-        .sim-submit-btn { width: 100%; background: var(--accent); color: var(--bg-dark); border: none; padding: 15px; font-size: 1rem; font-weight: 700; border-radius: 10px; cursor: pointer; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        .sim-submit-btn:hover { background: var(--accent-hover); }
-
-        .sample-hint { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 40px; }
-        .sample-hint span { color: var(--accent); cursor: pointer; text-decoration: underline; font-weight: 500; }
-
-        .result-container, .simulator-result { width: 100%; max-width: 750px; display: none; text-align: left; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); animation: fadeIn 0.4s ease; margin-bottom: 40px; overflow: hidden; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .tabs-header { display: flex; background: rgba(11, 15, 25, 0.6); border-bottom: 1px solid var(--border-color); }
-        .tab-btn { flex: 1; padding: 15px; background: transparent; border: none; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .tab-btn:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.02); }
-        .tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); background: rgba(255, 179, 0, 0.03); }
-        .tab-content { display: none; padding: 25px; color: #E2E8F0; line-height: 1.8; font-size: 0.95rem; white-space: pre-wrap; }
-        .tab-content.active { display: block; }
-        .error-box { border-color: rgba(239, 68, 68, 0.4) !important; }
-        
-        .spinner { display: none; width: 18px; height: 18px; border: 3px solid rgba(11, 15, 25, 0.3); border-radius: 50%; border-top-color: var(--bg-dark); animation: spin 0.8s linear infinite; }
+        /* --- SPINNER --- */
+        .spinner { display: none; width: 20px; height: 20px; border: 3px solid rgba(0, 0, 0, 0.2); border-radius: 50%; border-top-color: #000; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        
+        footer { text-align: center; padding: 25px; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--border-color); background: rgba(7, 10, 19, 0.8); backdrop-filter: blur(10px); margin-top: auto; z-index: 10; }
 
-        footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--border-color); background: rgba(11, 15, 25, 0.5); }
-
-        @media (min-width: 769px) {
-            .nav-badge { display: inline-block; }
-        }
-
+        /* --- RESPONSIVE --- */
+        @media (min-width: 769px) { .nav-badge { display: inline-block; } }
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.2rem; }
-            .search-box { flex-direction: column; background: transparent; border: none; box-shadow: none; }
-            .search-box input { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; padding: 15px; }
-            .search-box button { width: 100%; padding: 15px; justify-content: center; }
-            .main-modes { flex-direction: column; width: 100%; }
-            .nav-btn { padding: 6px 12px; font-size: 0.8rem; }
-            .user-greeting { display: none !important; } /* Cacher le nom sur mobile pour gagner de la place */
+            .hero h1 { font-size: 2.4rem; }
+            .hero { padding: 120px 5% 40px 5%; }
+            .search-box { flex-direction: column; background: transparent; border: none; box-shadow: none; padding: 0; }
+            .search-box input { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 12px; padding: 16px; backdrop-filter: blur(10px); }
+            .search-box button { width: 100%; padding: 18px; }
+            .main-modes { flex-direction: column; width: 100%; background: transparent; border: none; padding: 0; gap: 10px; }
+            .mode-btn { background: var(--bg-card); border: 1px solid var(--border-color); justify-content: center; }
+            .nav-btn { padding: 8px 14px; font-size: 0.85rem; }
+            .user-greeting { display: none !important; }
+            .form-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
+
+    <!-- Arrière-plan dynamique -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
 
     <nav>
         <div class="logo-container">
@@ -307,23 +294,20 @@
         </div>
         
         <div class="auth-nav" id="auth-nav">
-            <!-- Non connecté -->
             <button class="nav-btn" id="btn-login-modal" onclick="openModal('auth-modal')">
                 <i class="fa-solid fa-user"></i> Connexion
             </button>
-            
-            <!-- Connecté -->
             <div class="user-greeting" id="user-greeting">Salut, <span id="display-username"></span></div>
             <button class="nav-btn" id="btn-history" style="display: none;" onclick="openHistoryModal()">
                 <i class="fa-solid fa-clock-rotate-left"></i> Historique
             </button>
-            <button class="nav-btn" id="btn-logout" style="display: none;" onclick="logout()" style="border-color: #ef4444; color: #ef4444;">
+            <button class="nav-btn" id="btn-logout" style="display: none;" onclick="logout()" style="border-color: rgba(239, 68, 68, 0.5); color: #ef4444;">
                 <i class="fa-solid fa-power-off"></i>
             </button>
         </div>
     </nav>
 
-    <!-- Modal d'authentification -->
+    <!-- Modal Authentification -->
     <div class="modal-overlay" id="auth-modal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal('auth-modal')"><i class="fa-solid fa-xmark"></i></button>
@@ -338,20 +322,18 @@
         </div>
     </div>
 
-    <!-- Modal d'Historique -->
+    <!-- Modal Historique -->
     <div class="modal-overlay" id="history-modal">
-        <div class="modal-content" style="max-width: 550px;">
+        <div class="modal-content" style="max-width: 600px;">
             <button class="close-modal" onclick="closeModal('history-modal')"><i class="fa-solid fa-xmark"></i></button>
             <h2>Mes Analyses Précédentes</h2>
-            <div class="history-list" id="history-list">
-                <!-- Les éléments d'historique s'afficheront ici -->
-            </div>
+            <div class="history-list" id="history-list"></div>
         </div>
     </div>
 
     <section class="hero">
         <h1>Votre expert moto <span>intelligent</span></h1>
-        <p>Analysez une annonce Leboncoin ou trouvez la moto idéale adaptée à votre profil.</p>
+        <p>Analysez une annonce Leboncoin pour éviter les arnaques ou laissez l'IA trouver la moto parfaitement adaptée à votre profil.</p>
 
         <div class="main-modes">
             <button class="mode-btn active" id="btn-mode-ad" onclick="switchMode('ad')">
@@ -364,20 +346,20 @@
 
         <!-- MODE 1 : ANNONCE -->
         <div class="search-container" id="container-mode-ad">
-            <form id="analyze-form" class="search-box">
-                <input type="text" id="prompt" placeholder="Collez votre message ou lien LeBonCoin ici..." required>
+            <form id="analyze-form" class="search-box glass-panel">
+                <input type="text" id="prompt" placeholder="Collez votre lien ou description LeBonCoin ici..." required>
                 <button type="submit" id="submit-btn">
                     <span id="btn-text">Lancer l'audit</span>
                     <div class="spinner" id="spinner"></div>
                 </button>
             </form>
             <div class="sample-hint">
-                Besoin d'un test rapide ? <span id="fill-sample">Cliquez ici pour insérer un lien exemple</span>
+                Besoin d'un test rapide ? <span id="fill-sample">Insérer une annonce exemple</span>
             </div>
         </div>
 
-        <!-- MODE 2 : SIMULATEUR PROFIL -->
-        <form id="simulator-form" class="simulator-form">
+        <!-- MODE 2 : SIMULATEUR -->
+        <form id="simulator-form" class="simulator-form glass-panel">
             <div class="form-grid">
                 <div class="form-group">
                     <label><i class="fa-solid fa-cake-candles"></i> Tranche d'âge</label>
@@ -447,50 +429,35 @@
             </button>
         </form>
 
-        <!-- RÉSULTAT ANNONCE (Onglets) -->
-        <div class="result-container" id="result-container">
+        <!-- RÉSULTAT ANNONCE -->
+        <div class="result-container glass-panel" id="result-container">
             <div class="tabs-header">
-                <button class="tab-btn active" onclick="switchTab('summary', 'ad')">
-                    <i class="fa-solid fa-bolt"></i> Résumé Rapide
-                </button>
-                <button class="tab-btn" onclick="switchTab('detailed', 'ad')">
-                    <i class="fa-solid fa-file-lines"></i> Rapport Technique Détaillé
-                </button>
+                <button class="tab-btn active" onclick="switchTab('summary', 'ad')"><i class="fa-solid fa-bolt"></i> Résumé Rapide</button>
+                <button class="tab-btn" onclick="switchTab('detailed', 'ad')"><i class="fa-solid fa-file-lines"></i> Rapport Technique</button>
             </div>
             <div id="tab-summary" class="tab-content active"></div>
             <div id="tab-detailed" class="tab-content"></div>
         </div>
 
-        <!-- RÉSULTAT SIMULATEUR (Onglets sans image) -->
-        <div class="simulator-result" id="simulator-result-container">
+        <!-- RÉSULTAT SIMULATEUR -->
+        <div class="simulator-result glass-panel" id="simulator-result-container">
             <div class="tabs-header">
-                <button class="tab-btn active" onclick="switchTab('summary', 'sim')">
-                    <i class="fa-solid fa-bolt"></i> Résumé Idéal
-                </button>
-                <button class="tab-btn" onclick="switchTab('detailed', 'sim')">
-                    <i class="fa-solid fa-file-lines"></i> Rapport Détaillé
-                </button>
+                <button class="tab-btn active" onclick="switchTab('summary', 'sim')"><i class="fa-solid fa-bullseye"></i> Moto Idéale</button>
+                <button class="tab-btn" onclick="switchTab('detailed', 'sim')"><i class="fa-solid fa-list-check"></i> Pourquoi ce choix ?</button>
             </div>
             <div id="sim-tab-summary" class="tab-content active"></div>
             <div id="sim-tab-detailed" class="tab-content"></div>
         </div>
     </section>
 
-    <footer>
-        &copy; 2026 RadarMoto. Outil d'aide à l'achat de motos d'occasion.
-    </footer>
+    <footer>&copy; 2026 RadarMoto. Outil d'aide à l'achat propulsé par l'IA.</footer>
 
     <script>
-        // ==========================================
-        // GESTION UTILISATEUR & AUTHENTIFICATION
-        // ==========================================
+        // LOGIQUE UTILISATEUR & AUTHENTIFICATION
         let isLoginMode = true;
         let currentUser = null;
 
-        function initAuth() {
-            currentUser = localStorage.getItem('currentUser');
-            updateNav();
-        }
+        function initAuth() { currentUser = localStorage.getItem('currentUser'); updateNav(); }
 
         function updateNav() {
             const btnLogin = document.getElementById('btn-login-modal');
@@ -514,11 +481,7 @@
         }
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        
-        function closeModal(id) { 
-            document.getElementById(id).style.display = 'none'; 
-            if(id === 'auth-modal') document.getElementById('auth-error').style.display = 'none';
-        }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; if(id === 'auth-modal') document.getElementById('auth-error').style.display = 'none'; }
 
         function toggleAuthMode() {
             isLoginMode = !isLoginMode;
@@ -533,81 +496,52 @@
             const user = document.getElementById('auth-username').value.trim();
             const pass = document.getElementById('auth-password').value.trim();
             const errorEl = document.getElementById('auth-error');
-
             if (!user || !pass) return;
-
             let users = JSON.parse(localStorage.getItem('users')) || {};
 
             if (isLoginMode) {
                 if (users[user] && users[user].password === pass) {
-                    currentUser = user;
-                    localStorage.setItem('currentUser', user);
-                    closeModal('auth-modal');
-                    updateNav();
-                    this.reset();
-                } else {
-                    errorEl.textContent = "Identifiants incorrects.";
-                    errorEl.style.display = 'block';
-                }
+                    currentUser = user; localStorage.setItem('currentUser', user);
+                    closeModal('auth-modal'); updateNav(); this.reset();
+                } else { errorEl.textContent = "Identifiants incorrects."; errorEl.style.display = 'block'; }
             } else {
-                if (users[user]) {
-                    errorEl.textContent = "Ce nom d'utilisateur existe déjà.";
-                    errorEl.style.display = 'block';
-                } else {
-                    // Création compte
+                if (users[user]) { errorEl.textContent = "Ce nom d'utilisateur existe déjà."; errorEl.style.display = 'block'; } 
+                else {
                     users[user] = { password: pass, history: [] };
                     localStorage.setItem('users', JSON.stringify(users));
-                    currentUser = user;
-                    localStorage.setItem('currentUser', user);
-                    closeModal('auth-modal');
-                    updateNav();
-                    this.reset();
+                    currentUser = user; localStorage.setItem('currentUser', user);
+                    closeModal('auth-modal'); updateNav(); this.reset();
                 }
             }
         });
 
-        function logout() {
-            currentUser = null;
-            localStorage.removeItem('currentUser');
-            updateNav();
-        }
+        function logout() { currentUser = null; localStorage.removeItem('currentUser'); updateNav(); }
 
         function saveToHistory(prompt, summary, detailed) {
-            if (!currentUser) return; // Si non connecté, on ne sauvegarde pas
-            
+            if (!currentUser) return;
             let users = JSON.parse(localStorage.getItem('users')) || {};
             if (!users[currentUser]) return;
-
-            const newItem = {
+            users[currentUser].history.unshift({
                 id: Date.now(),
                 date: new Date().toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit' }),
-                prompt: prompt,
-                summary: summary,
-                detailed: detailed
-            };
-
-            // Ajoute au début du tableau d'historique
-            users[currentUser].history.unshift(newItem); 
+                prompt: prompt, summary: summary, detailed: detailed
+            }); 
             localStorage.setItem('users', JSON.stringify(users));
         }
 
         function openHistoryModal() {
             const listEl = document.getElementById('history-list');
             listEl.innerHTML = '';
-            
             let users = JSON.parse(localStorage.getItem('users')) || {};
             let history = users[currentUser]?.history || [];
 
             if (history.length === 0) {
-                listEl.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Aucune analyse enregistrée pour le moment.</p>';
+                listEl.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Aucune analyse enregistrée.</p>';
             } else {
                 history.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'history-item';
-                    div.innerHTML = `
-                        <div class="history-item-date"><i class="fa-regular fa-clock"></i> ${item.date}</div>
-                        <div class="history-item-title">${item.prompt}</div>
-                    `;
+                    div.innerHTML = `<div class="history-item-date"><i class="fa-regular fa-clock"></i> ${item.date}</div><div class="history-item-title">${item.prompt}</div>`;
                     div.onclick = () => loadHistoryItem(item);
                     listEl.appendChild(div);
                 });
@@ -616,80 +550,40 @@
         }
 
         function loadHistoryItem(item) {
-            closeModal('history-modal');
-            switchMode('ad'); 
-
-            // Réinjecte les données dans l'interface
+            closeModal('history-modal'); switchMode('ad'); 
             document.getElementById('prompt').value = item.prompt;
             document.getElementById('tab-summary').textContent = item.summary;
             document.getElementById('tab-detailed').textContent = item.detailed;
-            
             document.getElementById('result-container').style.display = 'block';
             switchTab('summary', 'ad');
-            
-            // Fait défiler la vue vers le résultat
             document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' });
         }
 
-
-        // ==========================================
-        // UI ET REQUÊTES (API / ONGLETS)
-        // ==========================================
+        // LOGIQUE ONGLET ET REQUÊTES
         function switchMode(mode) {
-            const btnAd = document.getElementById('btn-mode-ad');
-            const btnSim = document.getElementById('btn-mode-sim');
-            const containerAd = document.getElementById('container-mode-ad');
-            const formSim = document.getElementById('simulator-form');
-            const resAd = document.getElementById('result-container');
-            const resSim = document.getElementById('simulator-result-container');
-
-            resAd.style.display = 'none';
-            resSim.style.display = 'none';
-
+            document.getElementById('result-container').style.display = 'none';
+            document.getElementById('simulator-result-container').style.display = 'none';
             if (mode === 'ad') {
-                btnAd.classList.add('active');
-                btnSim.classList.remove('active');
-                containerAd.style.display = 'block';
-                formSim.style.display = 'none';
+                document.getElementById('btn-mode-ad').classList.add('active'); document.getElementById('btn-mode-sim').classList.remove('active');
+                document.getElementById('container-mode-ad').style.display = 'block'; document.getElementById('simulator-form').style.display = 'none';
             } else {
-                btnSim.classList.add('active');
-                btnAd.classList.remove('active');
-                containerAd.style.display = 'none';
-                formSim.style.display = 'block';
+                document.getElementById('btn-mode-sim').classList.add('active'); document.getElementById('btn-mode-ad').classList.remove('active');
+                document.getElementById('container-mode-ad').style.display = 'none'; document.getElementById('simulator-form').style.display = 'block';
             }
         }
 
         function switchTab(tabName, type) {
-            if (type === 'ad') {
-                document.querySelectorAll('#result-container .tab-btn').forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('#result-container .tab-content').forEach(content => content.classList.remove('active'));
-
-                if (tabName === 'summary') {
-                    document.querySelector('#result-container .tab-btn:nth-child(1)').classList.add('active');
-                    document.getElementById('tab-summary').classList.add('active');
-                } else {
-                    document.querySelector('#result-container .tab-btn:nth-child(2)').classList.add('active');
-                    document.getElementById('tab-detailed').classList.add('active');
-                }
-            } else {
-                document.querySelectorAll('#simulator-result-container .tab-btn').forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('#simulator-result-container .tab-content').forEach(content => content.classList.remove('active'));
-
-                if (tabName === 'summary') {
-                    document.querySelector('#simulator-result-container .tab-btn:nth-child(1)').classList.add('active');
-                    document.getElementById('sim-tab-summary').classList.add('active');
-                } else {
-                    document.querySelector('#simulator-result-container .tab-btn:nth-child(2)').classList.add('active');
-                    document.getElementById('sim-tab-detailed').classList.add('active');
-                }
-            }
+            const containerId = type === 'ad' ? 'result-container' : 'simulator-result-container';
+            const prefix = type === 'ad' ? 'tab' : 'sim-tab';
+            document.querySelectorAll(`#${containerId} .tab-btn`).forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll(`#${containerId} .tab-content`).forEach(content => content.classList.remove('active'));
+            document.querySelector(`#${containerId} .tab-btn:nth-child(${tabName === 'summary' ? 1 : 2})`).classList.add('active');
+            document.getElementById(`${prefix}-${tabName}`).classList.add('active');
         }
 
-        document.getElementById('fill-sample').addEventListener('click', function() {
-            document.getElementById('prompt').value = "Voici une annonce intéressante https://www.leboncoin.fr/ad/motos/3229286512";
-        });
+        document.getElementById('fill-sample').addEventListener('click', () => { document.getElementById('prompt').value = "Voici une annonce : https://www.leboncoin.fr/ad/motos/3229286512"; });
 
-        // Formulaire Analyse
+        // Submit Analyse
         document.getElementById('analyze-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const promptInput = document.getElementById('prompt').value;
@@ -697,130 +591,79 @@
             const btnText = document.getElementById('btn-text');
             const spinner = document.getElementById('spinner');
             const resultContainer = document.getElementById('result-container');
-            const summaryBox = document.getElementById('tab-summary');
-            const detailedBox = document.getElementById('tab-detailed');
-
-            submitBtn.disabled = true;
-            spinner.style.display = 'inline-block';
-            resultContainer.style.display = 'none';
-            resultContainer.classList.remove('error-box');
-
-            const steps = ["Connexion à l'annonce...", "Extraction des données...", "Génération des rapports..."];
-            let stepIdx = 0;
-            btnText.textContent = steps[0];
             
-            const interval = setInterval(() => {
-                stepIdx++;
-                if (stepIdx < steps.length) btnText.textContent = steps[stepIdx];
-            }, 1200);
-
+            submitBtn.disabled = true; spinner.style.display = 'inline-block';
+            resultContainer.style.display = 'none';
+            btnText.textContent = "Analyse IA en cours...";
+            
             try {
-                const response = await fetch('/api/analyze', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: promptInput })
-                });
-
-                clearInterval(interval);
+                const response = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: promptInput }) });
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
-
-                const fullText = data.result;
-                let summaryPart = fullText;
-                let detailedPart = "Rapport détaillé non disponible.";
-
-                if (fullText.includes("---RESUME_RAPIDE---") && fullText.includes("---RAPPORT_DETAILLE---")) {
-                    const parts = fullText.split("---RAPPORT_DETAILLE---");
-                    summaryPart = parts[0].replace("---RESUME_RAPIDE---", "").trim();
-                    detailedPart = parts[1].trim();
+                
+                let summaryPart = data.result, detailedPart = "Détails non disponibles.";
+                if (data.result.includes("---RESUME_RAPIDE---") && data.result.includes("---RAPPORT_DETAILLE---")) {
+                    const parts = data.result.split("---RAPPORT_DETAILLE---");
+                    summaryPart = parts[0].replace("---RESUME_RAPIDE---", "").trim(); detailedPart = parts[1].trim();
                 }
-
-                summaryBox.textContent = summaryPart;
-                detailedBox.textContent = detailedPart;
+                
+                document.getElementById('tab-summary').textContent = summaryPart;
+                document.getElementById('tab-detailed').textContent = detailedPart;
                 resultContainer.style.display = 'block';
                 switchTab('summary', 'ad');
-                
-                // SAUVEGARDE DANS L'HISTORIQUE ICI
                 saveToHistory(promptInput, summaryPart, detailedPart);
-
             } catch (error) {
-                clearInterval(interval);
-                resultContainer.classList.add('error-box');
-                summaryBox.textContent = "Erreur : " + error.message;
-                detailedBox.textContent = "Impossible de charger le rapport détaillé.";
+                document.getElementById('tab-summary').textContent = "Erreur : " + error.message;
+                document.getElementById('tab-detailed').textContent = "Échec de l'analyse.";
                 resultContainer.style.display = 'block';
             } finally {
-                submitBtn.disabled = false;
-                btnText.textContent = "Lancer l'audit";
-                spinner.style.display = 'none';
+                submitBtn.disabled = false; btnText.textContent = "Lancer l'audit"; spinner.style.display = 'none';
             }
         });
 
-        // Formulaire Simulateur
+        // Submit Simulateur
         document.getElementById('simulator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-
             const profile = {
-                ageRange: document.getElementById('sim-age').value,
-                height: document.getElementById('sim-height').value,
-                license: document.getElementById('sim-license').value,
-                experience: document.getElementById('sim-experience').value,
-                style: document.getElementById('sim-style').value,
-                displacement: document.getElementById('sim-displacement').value,
+                ageRange: document.getElementById('sim-age').value, height: document.getElementById('sim-height').value,
+                license: document.getElementById('sim-license').value, experience: document.getElementById('sim-experience').value,
+                style: document.getElementById('sim-style').value, displacement: document.getElementById('sim-displacement').value,
                 budget: document.getElementById('sim-budget').value + " €"
             };
-
             const simSubmitBtn = document.getElementById('sim-submit-btn');
             const simSpinner = document.getElementById('sim-spinner');
             const simResultContainer = document.getElementById('simulator-result-container');
-            const simSummaryBox = document.getElementById('sim-tab-summary');
-            const simDetailedBox = document.getElementById('sim-tab-detailed');
 
-            simSubmitBtn.disabled = true;
-            simSpinner.style.display = 'inline-block';
-            simResultContainer.style.display = 'none';
+            simSubmitBtn.disabled = true; simSpinner.style.display = 'inline-block'; simResultContainer.style.display = 'none';
+            simSubmitBtn.querySelector('span').textContent = "Recherche en cours...";
 
             try {
-                const response = await fetch('/api/simulate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ profile: profile })
-                });
-
+                const response = await fetch('/api/simulate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ profile: profile }) });
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
 
                 const fullText = (data.result || "").replace(/PHOTO_QUERY:.*/g, '').trim();
-                let summaryPart = fullText;
-                let detailedPart = "Rapport détaillé non disponible.";
+                let summaryPart = fullText, detailedPart = "Rapport non disponible.";
 
                 if (fullText.includes("---RESUME_IDEAL---") && fullText.includes("---RAPPORT_DETAILLE---")) {
                     const parts = fullText.split("---RAPPORT_DETAILLE---");
-                    summaryPart = parts[0].replace("---RESUME_IDEAL---", "").trim();
-                    detailedPart = parts[1].trim();
-                } else if (fullText.includes("---RESUME_RAPIDE---") && fullText.includes("---RAPPORT_DETAILLE---")) {
-                    const parts = fullText.split("---RAPPORT_DETAILLE---");
-                    summaryPart = parts[0].replace("---RESUME_RAPIDE---", "").trim();
-                    detailedPart = parts[1].trim();
+                    summaryPart = parts[0].replace("---RESUME_IDEAL---", "").trim(); detailedPart = parts[1].trim();
                 }
 
-                simSummaryBox.textContent = summaryPart || "Aucun résumé généré.";
-                simDetailedBox.textContent = detailedPart;
-                
+                document.getElementById('sim-tab-summary').textContent = summaryPart || "Aucun résumé.";
+                document.getElementById('sim-tab-detailed').textContent = detailedPart;
                 simResultContainer.style.display = 'block';
                 switchTab('summary', 'sim');
-
             } catch (error) {
-                simSummaryBox.textContent = "Erreur : " + error.message;
-                simDetailedBox.textContent = "Impossible de charger les détails.";
+                document.getElementById('sim-tab-summary').textContent = "Erreur : " + error.message;
                 simResultContainer.style.display = 'block';
             } finally {
-                simSubmitBtn.disabled = false;
+                simSubmitBtn.disabled = false; 
+                simSubmitBtn.querySelector('span').textContent = "Trouver ma moto idéale"; 
                 simSpinner.style.display = 'none';
             }
         });
 
-        // INITIALISATION AU CHARGEMENT DE LA PAGE
         window.addEventListener('DOMContentLoaded', initAuth);
     </script>
 </body>
