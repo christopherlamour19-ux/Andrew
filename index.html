@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RadarMoto | Votre expert moto intelligent</title>
+    <title>RadarMoto | Comparateur Libre</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -58,6 +58,7 @@
             align-items: center;
             gap: 10px;
             color: var(--text-main);
+            text-decoration: none;
         }
 
         .logo i { 
@@ -87,6 +88,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            text-decoration: none;
         }
 
         .btn-comparator-toggle:hover {
@@ -116,15 +118,27 @@
             border-radius: 50%;
         }
 
+        /* Vues (Pages) */
+        .page-view {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .page-view.active {
+            display: flex;
+        }
+
         /* Section Principale (Hero) */
         .hero {
-            flex: 1;
+            width: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
             align-items: center;
             text-align: center;
-            padding: 60px 5% 60px 5%;
+            padding: 40px 5% 60px 5%;
         }
 
         .hero h1 {
@@ -179,7 +193,7 @@
         }
 
         /* Conteneurs Principaux */
-        .search-container, .simulator-form, .result-container, .simulator-result {
+        .search-container, .simulator-form, .result-container, .simulator-result, .comparator-container {
             width: 100%;
             max-width: 760px;
             margin: 0 auto;
@@ -246,9 +260,8 @@
         
         .sample-hint span:hover { text-decoration-color: var(--accent); }
 
-        /* Simulateur (Formulaire Sombre) */
-        .simulator-form {
-            display: none;
+        /* Simulateur & Page Comparateur (Formulaires) */
+        .simulator-form, .comparator-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
@@ -354,7 +367,7 @@
         .submit-btn:hover { background: var(--accent-hover); }
 
         /* Conteneurs de Résultats */
-        .result-container, .simulator-result {
+        .result-container, .simulator-result, .comparator-result-box {
             display: none;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -363,6 +376,7 @@
             margin-bottom: 50px;
             overflow: hidden;
             text-align: left;
+            width: 100%;
         }
 
         .tabs-header {
@@ -405,61 +419,13 @@
 
         .tab-content.active { display: block; }
 
-        /* --- TIROIR COMPARATEUR (OVERLAY LATÉRAL) --- */
-        .comparator-drawer {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 100%;
-            max-width: 480px;
-            height: 100vh;
+        .comparator-result-box {
+            padding: 30px;
+            color: #D1D5DB;
+            font-size: 1rem;
+            line-height: 1.7;
+            white-space: pre-wrap;
             background: var(--bg-card);
-            border-left: 1px solid var(--border-color);
-            z-index: 9999;
-            transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            display: flex;
-            flex-direction: column;
-            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.7);
-        }
-
-        .comparator-drawer.open {
-            right: 0;
-        }
-
-        .drawer-header {
-            padding: 24px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg-main);
-        }
-
-        .drawer-header h2 {
-            font-size: 1.3rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .drawer-header h2 i { color: var(--accent); }
-
-        .close-drawer-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .close-drawer-btn:hover { color: var(--text-main); }
-
-        .drawer-body {
-            padding: 24px;
-            overflow-y: auto;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
         }
 
         /* Ligne Moto + Année côte à côte */
@@ -468,38 +434,6 @@
             grid-template-columns: 2.2fr 1fr;
             gap: 10px;
             margin-bottom: 15px;
-        }
-
-        .drawer-result {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            background: var(--bg-input);
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border-color);
-            color: #D1D5DB;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            white-space: pre-wrap;
-        }
-
-        .drawer-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(2px);
-            z-index: 9998;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-        }
-
-        .drawer-overlay.open {
-            opacity: 1;
-            visibility: visible;
         }
 
         .spinner {
@@ -533,229 +467,230 @@
             .mode-btn { border-radius: 8px; justify-content: center; }
             .nav-right { flex-direction: column-reverse; align-items: flex-end; gap: 10px; }
             nav { align-items: flex-start; }
-            .comparator-drawer { max-width: 100%; }
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">
+        <a href="#" class="logo" onclick="switchPage('home'); return false;">
             <i class="fa-solid fa-motorcycle"></i> Radar Moto
-        </div>
+        </a>
         <div class="nav-right">
-            <button class="btn-comparator-toggle" onclick="toggleComparator()">
+            <button class="btn-comparator-toggle" onclick="switchPage('comparator')">
                 <i class="fa-solid fa-code-compare"></i> Comparateur Libre
             </button>
             <div class="nav-badge">christo.r7 le best</div>
         </div>
     </nav>
 
-    <section class="hero">
-        <h1>Votre expert moto <span>intelligent</span></h1>
-        <p>Analysez instantanément une annonce Leboncoin ou utilisez notre simulateur de pointe pour dénicher la monture de vos rêves.</p>
+    <!-- PAGE 1 : ACCUEIL / ANALYSE & SIMULATEUR -->
+    <div id="page-home" class="page-view active">
+        <section class="hero">
+            <h1>Votre expert moto <span>intelligent</span></h1>
+            <p>Analysez instantanément une annonce Leboncoin ou utilisez notre simulateur de pointe pour dénicher la monture de vos rêves.</p>
 
-        <div class="main-modes">
-            <button class="mode-btn active" id="btn-mode-ad" onclick="switchMode('ad')">
-                <i class="fa-solid fa-search"></i> Analyseur d'Annonce
-            </button>
-            <button class="mode-btn" id="btn-mode-sim" onclick="switchMode('simulator')">
-                <i class="fa-solid fa-user-astronaut"></i> Simulateur "Idéal Moto"
-            </button>
-        </div>
-
-        <!-- MODE 1 : ANNONCE -->
-        <div class="search-container" id="container-mode-ad">
-            <form id="analyze-form" class="search-box">
-                <input type="text" id="prompt" placeholder="Collez votre message ou lien LeBonCoin ici..." required>
-                <button type="submit" id="submit-btn">
-                    <span id="btn-text">Lancer l'audit</span>
-                    <div class="spinner" id="spinner"></div>
+            <div class="main-modes">
+                <button class="mode-btn active" id="btn-mode-ad" onclick="switchMode('ad')">
+                    <i class="fa-solid fa-search"></i> Analyseur d'Annonce
                 </button>
-            </form>
-            <div class="sample-hint">
-                Besoin d'un test rapide ? <span id="fill-sample">Cliquez ici pour insérer un lien exemple</span>
+                <button class="mode-btn" id="btn-mode-sim" onclick="switchMode('simulator')">
+                    <i class="fa-solid fa-user-astronaut"></i> Simulateur "Idéal Moto"
+                </button>
             </div>
-        </div>
 
-        <!-- MODE 2 : SIMULATEUR PROFIL -->
-        <form id="simulator-form" class="simulator-form">
-            <div class="form-grid">
+            <!-- MODE 1 : ANNONCE -->
+            <div class="search-container" id="container-mode-ad">
+                <form id="analyze-form" class="search-box">
+                    <input type="text" id="prompt" placeholder="Collez votre message ou lien LeBonCoin ici..." required>
+                    <button type="submit" id="submit-btn">
+                        <span id="btn-text">Lancer l'audit</span>
+                        <div class="spinner" id="spinner"></div>
+                    </button>
+                </form>
+                <div class="sample-hint">
+                    Besoin d'un test rapide ? <span id="fill-sample">Cliquez ici pour insérer un lien exemple</span>
+                </div>
+            </div>
+
+            <!-- MODE 2 : SIMULATEUR PROFIL -->
+            <form id="simulator-form" class="simulator-form" style="display: none;">
+                <div class="form-grid">
+                    
+                    <div class="form-group">
+                        <label>Tranche d'âge</label>
+                        <select id="sim-age">
+                            <option value="18-24 ans">18-24 ans</option>
+                            <option value="25-35 ans" selected>25-35 ans</option>
+                            <option value="36-50 ans">36-50 ans</option>
+                            <option value="50 ans et plus">50 ans et plus</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Taille du pilote</label>
+                        <select id="sim-height">
+                            <option value="Moins de 1m65">Moins de 1m65</option>
+                            <option value="1m65 à 1m75">1m65 à 1m75</option>
+                            <option value="1m75 à 1m85" selected>1m75 à 1m85</option>
+                            <option value="1m85 à 2m">1m85 à 2m</option>
+                            <option value="Plus de 2m">Plus de 2m</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Permis moto</label>
+                        <select id="sim-license">
+                            <option value="Permis A2">Permis A2 (Jeune permis)</option>
+                            <option value="Permis A (Full)">Permis A (Full)</option>
+                            <option value="Permis A1 (125cc)">Permis A1 (125cc)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Expérience de conduite</label>
+                        <select id="sim-experience">
+                            <option value="Débutant total (Jamais roulé)">Débutant total</option>
+                            <option value="Moins d'un an d'expérience" selected>Moins d'un an</option>
+                            <option value="1 à 3 ans d'expérience">1 à 3 ans</option>
+                            <option value="Plus de 3 ans d'expérience">Plus de 3 ans</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Usage principal de la moto</label>
+                        <select id="sim-usage">
+                            <option value="Trajets quotidiens (Boulot/Dodo)">Trajets quotidiens (Boulot/Dodo)</option>
+                            <option value="Balades le week-end" selected>Balades le week-end</option>
+                            <option value="Longs voyages / Roadtrips">Longs voyages / Roadtrips</option>
+                            <option value="Piste / Utilisation très sportive">Piste / Compétition</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Passager (Duo)</label>
+                        <select id="sim-passenger">
+                            <option value="Principalement en solo" selected>Principalement en solo</option>
+                            <option value="Occasionnellement à deux">Occasionnellement à deux</option>
+                            <option value="Fréquemment à deux">Fréquemment à deux (confort requis)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Besoins en bagagerie</label>
+                        <select id="sim-luggage">
+                            <option value="Aucun besoin" selected>Aucun besoin (juste un sac à dos)</option>
+                            <option value="Léger (Top-case ou petite sacoche)">Léger (Top-case ou petite sacoche)</option>
+                            <option value="Important (Valises latérales + Top-case)">Important (Valises + Top-case)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Style de moto souhaité</label>
+                        <select id="sim-style">
+                            <option value="Peu importe">Peu importe / À l'IA de choisir</option>
+                            <option value="Roadster" selected>Roadster</option>
+                            <option value="Sportive">Sportive</option>
+                            <option value="Trail / Adventure">Trail / Adventure</option>
+                            <option value="Custom / Cruiser">Custom / Cruiser</option>
+                            <option value="Néo-Rétro / Café Racer">Néo-Rétro / Café Racer</option>
+                            <option value="Routière / GT">Routière / GT</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Cylindrée visée</label>
+                        <select id="sim-engine">
+                            <option value="Peu importe" selected>Peu importe / Laissez l'IA choisir</option>
+                            <option value="125cc">125cc</option>
+                            <option value="300cc - 500cc">300cc à 500cc</option>
+                            <option value="600cc - 800cc">600cc à 800cc (Mid-size)</option>
+                            <option value="900cc et plus">900cc et plus (Gros cube)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Budget maximal alloué pour la moto</label>
+                        <div class="input-currency-wrapper">
+                            <input type="number" id="sim-budget" placeholder="Exemple : 6500" min="500" step="100">
+                            <span class="currency-symbol">€</span>
+                        </div>
+                    </div>
+                </div>
                 
-                <div class="form-group">
-                    <label>Tranche d'âge</label>
-                    <select id="sim-age">
-                        <option value="18-24 ans">18-24 ans</option>
-                        <option value="25-35 ans" selected>25-35 ans</option>
-                        <option value="36-50 ans">36-50 ans</option>
-                        <option value="50 ans et plus">50 ans et plus</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Taille du pilote</label>
-                    <select id="sim-height">
-                        <option value="Moins de 1m65">Moins de 1m65</option>
-                        <option value="1m65 à 1m75">1m65 à 1m75</option>
-                        <option value="1m75 à 1m85" selected>1m75 à 1m85</option>
-                        <option value="1m85 à 2m">1m85 à 2m</option>
-                        <option value="Plus de 2m">Plus de 2m</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Permis moto</label>
-                    <select id="sim-license">
-                        <option value="Permis A2">Permis A2 (Jeune permis)</option>
-                        <option value="Permis A (Full)">Permis A (Full)</option>
-                        <option value="Permis A1 (125cc)">Permis A1 (125cc)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Expérience de conduite</label>
-                    <select id="sim-experience">
-                        <option value="Débutant total (Jamais roulé)">Débutant total</option>
-                        <option value="Moins d'un an d'expérience" selected>Moins d'un an</option>
-                        <option value="1 à 3 ans d'expérience">1 à 3 ans</option>
-                        <option value="Plus de 3 ans d'expérience">Plus de 3 ans</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Usage principal de la moto</label>
-                    <select id="sim-usage">
-                        <option value="Trajets quotidiens (Boulot/Dodo)">Trajets quotidiens (Boulot/Dodo)</option>
-                        <option value="Balades le week-end" selected>Balades le week-end</option>
-                        <option value="Longs voyages / Roadtrips">Longs voyages / Roadtrips</option>
-                        <option value="Piste / Utilisation très sportive">Piste / Compétition</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Passager (Duo)</label>
-                    <select id="sim-passenger">
-                        <option value="Principalement en solo" selected>Principalement en solo</option>
-                        <option value="Occasionnellement à deux">Occasionnellement à deux</option>
-                        <option value="Fréquemment à deux">Fréquemment à deux (confort requis)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Besoins en bagagerie</label>
-                    <select id="sim-luggage">
-                        <option value="Aucun besoin" selected>Aucun besoin (juste un sac à dos)</option>
-                        <option value="Léger (Top-case ou petite sacoche)">Léger (Top-case ou petite sacoche)</option>
-                        <option value="Important (Valises latérales + Top-case)">Important (Valises + Top-case)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Style de moto souhaité</label>
-                    <select id="sim-style">
-                        <option value="Peu importe">Peu importe / À l'IA de choisir</option>
-                        <option value="Roadster" selected>Roadster</option>
-                        <option value="Sportive">Sportive</option>
-                        <option value="Trail / Adventure">Trail / Adventure</option>
-                        <option value="Custom / Cruiser">Custom / Cruiser</option>
-                        <option value="Néo-Rétro / Café Racer">Néo-Rétro / Café Racer</option>
-                        <option value="Routière / GT">Routière / GT</option>
-                    </select>
-                </div>
-
-                <div class="form-group full-width">
-                    <label>Cylindrée visée</label>
-                    <select id="sim-engine">
-                        <option value="Peu importe" selected>Peu importe / Laissez l'IA choisir</option>
-                        <option value="125cc">125cc</option>
-                        <option value="300cc - 500cc">300cc à 500cc</option>
-                        <option value="600cc - 800cc">600cc à 800cc (Mid-size)</option>
-                        <option value="900cc et plus">900cc et plus (Gros cube)</option>
-                    </select>
-                </div>
-
-                <div class="form-group full-width">
-                    <label>Budget maximal alloué pour la moto</label>
-                    <div class="input-currency-wrapper">
-                        <input type="number" id="sim-budget" placeholder="Exemple : 6500" min="500" step="100" required>
-                        <span class="currency-symbol">€</span>
-                    </div>
-                </div>
-            </div>
-            
-            <button type="submit" class="submit-btn" id="sim-submit-btn">
-                <span id="sim-btn-text">Générer ma recommandation sur-mesure</span>
-                <div class="spinner" id="sim-spinner"></div>
-            </button>
-        </form>
-
-        <!-- RÉSULTATS -->
-        <div class="result-container" id="result-container">
-            <div class="tabs-header">
-                <button class="tab-btn active" onclick="switchTab('summary', 'ad')">Résumé Rapide</button>
-                <button class="tab-btn" onclick="switchTab('detailed', 'ad')">Rapport Détaillé</button>
-            </div>
-            <div id="tab-summary" class="tab-content active"></div>
-            <div id="tab-detailed" class="tab-content"></div>
-        </div>
-
-        <div class="simulator-result" id="simulator-result-container">
-            <div class="tabs-header">
-                <button class="tab-btn active" onclick="switchTab('summary', 'sim')">Le Match Parfait</button>
-                <button class="tab-btn" onclick="switchTab('detailed', 'sim')">Détails Techniques</button>
-            </div>
-            <div id="sim-tab-summary" class="tab-content active"></div>
-            <div id="sim-tab-detailed" class="tab-content"></div>
-        </div>
-    </section>
-
-    <!-- TIROIR COMPARATEUR AVEC MODÈLES ET ANNÉES -->
-    <div class="drawer-overlay" id="drawer-overlay" onclick="toggleComparator()"></div>
-    <div class="comparator-drawer" id="comparator-drawer">
-        <div class="drawer-header">
-            <h2><i class="fa-solid fa-scale-balanced"></i> Face à Face Libre</h2>
-            <button class="close-drawer-btn" onclick="toggleComparator()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        
-        <div class="drawer-body">
-            <p style="color: var(--text-muted); font-size: 0.95rem;">Entrez n'importe quel modèle et son année (ex: <i>Yamaha MT-07 - 2021</i>).</p>
-            
-            <form id="comparator-form">
-                <!-- Moto 1 -->
-                <div class="form-group" style="margin-bottom: 12px;">
-                    <label>Moto #1 (Modèle & Année)</label>
-                    <div class="moto-row">
-                        <input type="text" id="comp-moto1" placeholder="Ex: Yamaha MT-07" required>
-                        <input type="text" id="comp-annee1" placeholder="Année" maxlength="4">
-                    </div>
-                </div>
-
-                <!-- Moto 2 -->
-                <div class="form-group" style="margin-bottom: 12px;">
-                    <label>Moto #2 (Modèle & Année)</label>
-                    <div class="moto-row">
-                        <input type="text" id="comp-moto2" placeholder="Ex: Honda CB750 Hornet" required>
-                        <input type="text" id="comp-annee2" placeholder="Année" maxlength="4">
-                    </div>
-                </div>
-
-                <!-- Moto 3 (Optionnel) -->
-                <div class="form-group" style="margin-bottom: 25px;">
-                    <label>Moto #3 (Optionnel)</label>
-                    <div class="moto-row">
-                        <input type="text" id="comp-moto3" placeholder="Ex: Kawasaki Z650">
-                        <input type="text" id="comp-annee3" placeholder="Année" maxlength="4">
-                    </div>
-                </div>
-
-                <button type="submit" class="submit-btn" id="comp-submit-btn">
-                    <span id="comp-btn-text">Lancer le comparatif</span>
-                    <div class="spinner" id="comp-spinner"></div>
+                <button type="submit" class="submit-btn" id="sim-submit-btn">
+                    <span id="sim-btn-text">Générer ma recommandation sur-mesure</span>
+                    <div class="spinner" id="sim-spinner"></div>
                 </button>
             </form>
 
-            <div class="drawer-result" id="comp-result-container"></div>
-        </div>
+            <!-- RÉSULTATS -->
+            <div class="result-container" id="result-container">
+                <div class="tabs-header">
+                    <button class="tab-btn active" onclick="switchTab('summary', 'ad')">Résumé Rapide</button>
+                    <button class="tab-btn" onclick="switchTab('detailed', 'ad')">Rapport Détaillé</button>
+                </div>
+                <div id="tab-summary" class="tab-content active"></div>
+                <div id="tab-detailed" class="tab-content"></div>
+            </div>
+
+            <div class="simulator-result" id="simulator-result-container">
+                <div class="tabs-header">
+                    <button class="tab-btn active" onclick="switchTab('summary', 'sim')">Le Match Parfait</button>
+                    <button class="tab-btn" onclick="switchTab('detailed', 'sim')">Détails Techniques</button>
+                </div>
+                <div id="sim-tab-summary" class="tab-content active"></div>
+                <div id="sim-tab-detailed" class="tab-content"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- PAGE 2 : COMPARATEUR LIBRE DÉDIÉ -->
+    <div id="page-comparator" class="page-view">
+        <section class="hero">
+            <h1>Face à Face <span>Libre</span></h1>
+            <p>Mettez en concurrence plusieurs motos (modèles et années) pour identifier celle qui correspond le mieux à vos attentes.</p>
+
+            <div class="comparator-container">
+                <div class="comparator-card">
+                    <form id="comparator-form">
+                        <!-- Moto 1 -->
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <label>Moto #1 (Modèle & Année)</label>
+                            <div class="moto-row">
+                                <input type="text" id="comp-moto1" placeholder="Ex: Yamaha MT-07" required>
+                                <input type="text" id="comp-annee1" placeholder="Année" maxlength="4">
+                            </div>
+                        </div>
+
+                        <!-- Moto 2 -->
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <label>Moto #2 (Modèle & Année)</label>
+                            <div class="moto-row">
+                                <input type="text" id="comp-moto2" placeholder="Ex: Honda CB750 Hornet" required>
+                                <input type="text" id="comp-annee2" placeholder="Année" maxlength="4">
+                            </div>
+                        </div>
+
+                        <!-- Moto 3 (Optionnel) -->
+                        <div class="form-group" style="margin-bottom: 25px;">
+                            <label>Moto #3 (Optionnel)</label>
+                            <div class="moto-row">
+                                <input type="text" id="comp-moto3" placeholder="Ex: Kawasaki Z650">
+                                <input type="text" id="comp-annee3" placeholder="Année" maxlength="4">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-btn" id="comp-submit-btn">
+                            <span id="comp-btn-text">Lancer le comparatif</span>
+                            <div class="spinner" id="comp-spinner"></div>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="comparator-result-box" id="comp-result-container"></div>
+            </div>
+        </section>
     </div>
 
     <footer>
@@ -763,6 +698,18 @@
     </footer>
 
     <script>
+        // Gestion du basculement de page globale
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active'));
+            if (pageId === 'home') {
+                document.getElementById('page-home').classList.add('active');
+                window.scrollTo(0, 0);
+            } else if (pageId === 'comparator') {
+                document.getElementById('page-comparator').classList.add('active');
+                window.scrollTo(0, 0);
+            }
+        }
+
         function switchMode(mode) {
             const btnAd = document.getElementById('btn-mode-ad');
             const btnSim = document.getElementById('btn-mode-sim');
@@ -811,13 +758,6 @@
                     document.getElementById('sim-tab-detailed').classList.add('active');
                 }
             }
-        }
-
-        function toggleComparator() {
-            const drawer = document.getElementById('comparator-drawer');
-            const overlay = document.getElementById('drawer-overlay');
-            drawer.classList.toggle('open');
-            overlay.classList.toggle('open');
         }
 
         document.getElementById('fill-sample').addEventListener('click', function() {
