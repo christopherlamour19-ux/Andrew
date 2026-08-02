@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RadarMoto | Comparateur Professionnel</title>
+    <title>RadarMoto | Plateforme Intelligente</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -329,7 +329,7 @@
 
         .tabs-header {
             display: flex;
-            border-bottom: 1px style var(--border-color);
+            border-bottom: 1px solid var(--border-color);
             background: rgba(31, 41, 55, 0.3);
         }
 
@@ -354,7 +354,7 @@
         }
         .tab-content.active { display: block; }
 
-        /* --- STYLE DU COMPARATEUR TYPE "GRID COLONNES" PRO --- */
+        /* --- COMPARATEUR PRO EN COLONNES --- */
         .comparator-setup-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -391,7 +391,6 @@
             gap: 8px;
         }
 
-        /* Grille comparative type tableau colonnes (façon image 2) */
         .matrix-container {
             display: none;
             background: var(--bg-card);
@@ -414,9 +413,7 @@
             flex-direction: column;
         }
 
-        .matrix-col:last-child {
-            border-right: none;
-        }
+        .matrix-col:last-child { border-right: none; }
 
         .matrix-header-card {
             padding: 25px 20px;
@@ -480,9 +477,7 @@
             justify-content: center;
         }
 
-        .matrix-row-item:last-child {
-            border-bottom: none;
-        }
+        .matrix-row-item:last-child { border-bottom: none; }
 
         .row-label-mini {
             font-size: 0.75rem;
@@ -567,6 +562,7 @@
                 </div>
             </div>
 
+            <!-- SIMULATEUR AVEC TOUS LES CHAMPS RESTAURÉS -->
             <form id="simulator-form" class="simulator-form" style="display: none;">
                 <div class="form-grid">
                     <div class="form-group">
@@ -575,18 +571,72 @@
                             <option value="18-24 ans">18-24 ans</option>
                             <option value="25-35 ans" selected>25-35 ans</option>
                             <option value="36-50 ans">36-50 ans</option>
+                            <option value="50 ans et plus">50 ans et plus</option>
                         </select>
                     </div>
+
                     <div class="form-group">
+                        <label>Taille du pilote</label>
+                        <select id="sim-height">
+                            <option value="Moins de 1m65">Moins de 1m65</option>
+                            <option value="1m65 à 1m75">1m65 à 1m75</option>
+                            <option value="1m75 à 1m85" selected>1m75 à 1m85</option>
+                            <option value="1m85 à 2m">1m85 à 2m</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Permis moto</label>
+                        <select id="sim-license">
+                            <option value="Permis A2">Permis A2 (Jeune permis)</option>
+                            <option value="Permis A (Full)">Permis A (Full)</option>
+                            <option value="Permis A1 (125cc)">Permis A1 (125cc)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Expérience de conduite</label>
+                        <select id="sim-experience">
+                            <option value="Débutant total">Débutant total</option>
+                            <option value="Moins d'un an" selected>Moins d'un an</option>
+                            <option value="1 à 3 ans">1 à 3 ans</option>
+                            <option value="Plus de 3 ans">Plus de 3 ans</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Usage principal</label>
+                        <select id="sim-usage">
+                            <option value="Trajets quotidiens">Trajets quotidiens (Boulot/Dodo)</option>
+                            <option value="Balades le week-end" selected>Balades le week-end</option>
+                            <option value="Longs voyages">Longs voyages / Roadtrips</option>
+                            <option value="Piste">Piste / Sport</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Style de moto souhaité</label>
+                        <select id="sim-style">
+                            <option value="Peu importe">Peu importe / L'IA choisit</option>
+                            <option value="Roadster" selected>Roadster</option>
+                            <option value="Sportive">Sportive</option>
+                            <option value="Trail">Trail / Adventure</option>
+                            <option value="Custom">Custom / Cruiser</option>
+                            <option value="Néo-Rétro">Néo-Rétro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
                         <label>Budget maximal (€)</label>
                         <div class="input-currency-wrapper">
-                            <input type="number" id="sim-budget" placeholder="Ex: 6500">
+                            <input type="number" id="sim-budget" placeholder="Ex: 6500" value="6500">
                             <span class="currency-symbol">€</span>
                         </div>
                     </div>
                 </div>
+                
                 <button type="submit" class="submit-btn" id="sim-submit-btn">
-                    <span id="sim-btn-text">Générer ma recommandation</span>
+                    <span id="sim-btn-text">Générer ma recommandation sur-mesure</span>
                     <div class="spinner" id="sim-spinner"></div>
                 </button>
             </form>
@@ -611,7 +661,7 @@
         </section>
     </div>
 
-    <!-- PAGE 2 : COMPARATEUR PRO EN COLONNES (Style photo 2) -->
+    <!-- PAGE 2 : COMPARATEUR PRO EN COLONNES -->
     <div id="page-comparator" class="page-view">
         <section class="hero">
             <h1>Comparatif <span>Multi-Motos</span></h1>
@@ -651,11 +701,8 @@
                     </form>
                 </div>
 
-                <!-- CONTENEUR DU TABLEAU EN COLONNES (Style image 2) -->
                 <div class="matrix-container" id="matrix-container">
-                    <div class="matrix-grid" id="matrix-grid-content">
-                        <!-- Généré dynamiquement en JS -->
-                    </div>
+                    <div class="matrix-grid" id="matrix-grid-content"></div>
                 </div>
             </div>
         </section>
@@ -712,7 +759,7 @@
             document.getElementById('prompt').value = "https://www.leboncoin.fr/ad/motos/3229286512";
         });
 
-        // Script Analyse d'annonce
+        // Analyse d'annonce
         document.getElementById('analyze-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const promptInput = document.getElementById('prompt').value;
@@ -756,7 +803,60 @@
             }
         });
 
-        // Script Comparateur Pro en Colonnes (Style image 2)
+        // Simulateur Idéal Moto
+        document.getElementById('simulator-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const simData = {
+                age: document.getElementById('sim-age').value,
+                height: document.getElementById('sim-height').value,
+                license: document.getElementById('sim-license').value,
+                experience: document.getElementById('sim-experience').value,
+                usage: document.getElementById('sim-usage').value,
+                style: document.getElementById('sim-style').value,
+                budget: document.getElementById('sim-budget').value
+            };
+
+            const submitBtn = document.getElementById('sim-submit-btn');
+            const btnText = document.getElementById('sim-btn-text');
+            const spinner = document.getElementById('sim-spinner');
+            const resultContainer = document.getElementById('simulator-result-container');
+
+            submitBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            btnText.style.display = 'none';
+            resultContainer.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/simulate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(simData)
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
+
+                const fullText = data.result;
+                let summaryPart = fullText, detailedPart = "Détails techniques non disponibles.";
+                if (fullText.includes("---MATCH_PARFAIT---") && fullText.includes("---DETAILS_TECHNIQUES---")) {
+                    const parts = fullText.split("---DETAILS_TECHNIQUES---");
+                    summaryPart = parts[0].replace("---MATCH_PARFAIT---", "").trim();
+                    detailedPart = parts[1].trim();
+                }
+
+                document.getElementById('sim-tab-summary').textContent = summaryPart;
+                document.getElementById('sim-tab-detailed').textContent = detailedPart;
+                resultContainer.style.display = 'block';
+                switchTab('summary', 'sim');
+            } catch (error) {
+                alert("Erreur : " + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                spinner.style.display = 'none';
+                btnText.style.display = 'inline';
+            }
+        });
+
+        // Comparateur Pro en Colonnes
         document.getElementById('comparator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -796,18 +896,16 @@
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
 
-                // Critères comparatifs divisés pour correspondre au design en colonnes
                 const criteriaKeys = [
-                    { label: "Architecture Moteur", key: "moteur" },
-                    { label: "Puissance Maximale", key: "puissance" },
-                    { label: "Couple Moteur", key: "couple" },
-                    { label: "Poids Tous Pleins Faits", key: "poids" },
-                    { label: "Hauteur de Selle", key: "selle" },
-                    { label: "Points Forts", key: "forts" },
-                    { label: "Estimation Cote Occasion", key: "budget" }
+                    { label: "Architecture Moteur" },
+                    { label: "Puissance Maximale" },
+                    { label: "Couple Moteur" },
+                    { label: "Poids Tous Pleins Faits" },
+                    { label: "Hauteur de Selle" },
+                    { label: "Points Forts" },
+                    { label: "Estimation Cote Occasion" }
                 ];
 
-                // Construction dynamique des colonnes de la grille
                 let columnsHTML = '';
 
                 // Colonne 1
@@ -822,7 +920,7 @@
                         ${criteriaKeys.map(c => `
                             <div class="matrix-row-item">
                                 <span class="row-label-mini">${c.label}</span>
-                                <span class="row-value-main">Analyse IA en cours...</span>
+                                <span class="row-value-main">${data.result || "Chargement..."}</span>
                             </div>
                         `).join('')}
                     </div>
@@ -840,13 +938,13 @@
                         ${criteriaKeys.map(c => `
                             <div class="matrix-row-item">
                                 <span class="row-label-mini">${c.label}</span>
-                                <span class="row-value-main">Analyse IA en cours...</span>
+                                <span class="row-value-main">Voir analyse globale</span>
                             </div>
                         `).join('')}
                     </div>
                 `;
 
-                // Colonne 3 (Soit Moto 3, soit la carte "Ajouter un véhicule" comme sur la photo 2)
+                // Colonne 3 (Moto 3 ou bouton d'ajout)
                 if (moto3Str) {
                     columnsHTML += `
                         <div class="matrix-col">
@@ -859,7 +957,7 @@
                             ${criteriaKeys.map(c => `
                                 <div class="matrix-row-item">
                                     <span class="row-label-mini">${c.label}</span>
-                                    <span class="row-value-main">Analyse IA en cours...</span>
+                                    <span class="row-value-main">Voir analyse globale</span>
                                 </div>
                             `).join('')}
                         </div>
@@ -870,24 +968,18 @@
                             <div class="matrix-header-card add-card" onclick="document.getElementById('comp-moto3').focus(); window.scrollTo({top: 0, behavior: 'smooth'});">
                                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
                                     <div class="add-icon-circle"><i class="fa-solid fa-plus"></i></div>
-                                    <div style="font-weight: 700; color: var(--text-main); font-size: 0.95rem;">Ajouter une moto</div>
+                                    <div style="font-weight: 700; color: var(--text-main); font-size: 0.95rem;">Ajouter un véhicule</div>
                                 </div>
                             </div>
-                            ${criteriaKeys.map(c => `
-                                <div class="matrix-row-item" style="justify-content: center; color: var(--text-muted); text-align: center;">
-                                    -
-                                </div>
+                            ${criteriaKeys.map(() => `
+                                <div class="matrix-row-item" style="justify-content: center; color: var(--text-muted); text-align: center;">-</div>
                             `).join('')}
                         </div>
                     `;
                 }
 
                 matrixGrid.innerHTML = columnsHTML;
-                matrixGrid.style.gridTemplateColumns = moto3Str ? 'repeat(3, 1fr)' : 'repeat(3, 1fr)';
                 matrixContainer.style.display = 'block';
-
-                // Si le backend renvoie le texte global, on peut l'adapter ou l'afficher proprement dans les lignes
-                // (Ici la structure de grille s'affiche instantanément avec le design pro demandé)
 
             } catch (error) {
                 alert("Erreur : " + error.message);
