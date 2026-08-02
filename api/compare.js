@@ -31,6 +31,80 @@ export default async function handler(req, res) {
 
     Analyse et compare ces deux motos point par point de manière objective et percutante. Ta réponse doit suivre strictement cette structure :
 
+async function lancerDuel() {
+    const motoA = document.getElementById('compare-moto-a').value.trim();
+    const motoB = document.getElementById('compare-moto-b').value.trim();
+    const btn = document.getElementById('compare-submit-btn');
+    const spinner = document.getElementById('compare-spinner');
+    const resultContainer = document.getElementById('compare-result-container');
+    const contentEl = document.getElementById('compare-tab-content');
+
+    if (!motoA || !motoB) {
+        alert("Veuillez renseigner les deux motos à comparer.");
+        return;
+    }
+
+    btn.disabled = true;
+    spinner.style.display = 'inline-block';
+    resultContainer.style.display = 'none';
+
+    // On récupère si possible les infos de profil si l'utilisateur a rempli le simulateur
+    const userProfile = {
+        height: document.getElementById('sim-height')?.value || 'Standard',
+        license: document.getElementById('sim-license')?.value || 'A2',
+        experience: document.getElementById('sim-experience')?.value || 'Moyenne',
+        style: document.getElementById('sim-style')?.value || 'Polyvalent'
+    };
+
+    try {
+        const response = await fetch('/api/compare', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ motoA, motoB, userProfile })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
+
+        contentEl.textContent = data.result;
+        resultContainer.style.display = 'block';
+        resultContainer.scrollIntoView({ behavior: 'smooth' });
+
+    } catch (error) {
+        contentEl.textContent = "Erreur : " + error.message;
+        resultContainer.style.display = 'block';
+    } finally {
+        btn.disabled = false;
+        spinner.style.display = 'none';
+    }
+}
+
+// Adapte ta fonction switchMode existante pour inclure 'compare'
+function switchMode(mode) {
+    document.getElementById('result-container').style.display = 'none';
+    document.getElementById('simulator-result-container').style.display = 'none';
+    document.getElementById('compare-result-container').style.display = 'none';
+
+    document.getElementById('container-mode-ad').style.display = 'none';
+    document.getElementById('simulator-form').style.display = 'none';
+    document.getElementById('container-mode-compare').style.display = 'none';
+
+    document.getElementById('btn-mode-ad').classList.remove('active');
+    document.getElementById('btn-mode-sim').classList.remove('active');
+    document.getElementById('btn-mode-compare').classList.remove('active');
+
+    if (mode === 'ad') {
+        document.getElementById('btn-mode-ad').classList.add('active');
+        document.getElementById('container-mode-ad').style.display = 'block';
+    } else if (mode === 'simulator') {
+        document.getElementById('btn-mode-sim').classList.add('active');
+        document.getElementById('simulator-form').style.display = 'block';
+    } else if (mode === 'compare') {
+        document.getElementById('btn-mode-compare').classList.add('active');
+        document.getElementById('container-mode-compare').style.display = 'block';
+    }
+}
+
     ---VERDICT_GLOBAL---
     [Dis clairement quelle moto gagne le duel pour ce profil en 2-3 phrases.]
 
