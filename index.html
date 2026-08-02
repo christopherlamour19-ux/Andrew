@@ -863,21 +863,19 @@
                 switchTab('summary', 'ad');
 
             } catch (error) {
-                document.getElementById('tab-summary').textContent = "Erreur : " + error.message;
-                document.getElementById('tab-detailed').textContent = "";
-                resultContainer.style.display = 'block';
+                alert("Erreur : " + error.message);
             } finally {
                 submitBtn.disabled = false;
-                btnText.style.display = 'inline-block';
                 spinner.style.display = 'none';
+                btnText.style.display = 'inline';
             }
         });
 
-        // Script Simulateur Profil
+        // Script Simulateur "Idéal Moto"
         document.getElementById('simulator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const profile = {
-                ageRange: document.getElementById('sim-age').value,
+            const simData = {
+                age: document.getElementById('sim-age').value,
                 height: document.getElementById('sim-height').value,
                 license: document.getElementById('sim-license').value,
                 experience: document.getElementById('sim-experience').value,
@@ -886,7 +884,7 @@
                 luggage: document.getElementById('sim-luggage').value,
                 style: document.getElementById('sim-style').value,
                 engine: document.getElementById('sim-engine').value,
-                budget: document.getElementById('sim-budget').value + " €"
+                budget: document.getElementById('sim-budget').value
             };
 
             const submitBtn = document.getElementById('sim-submit-btn');
@@ -903,58 +901,46 @@
                 const response = await fetch('/api/simulate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ profile: profile })
+                    body: JSON.stringify(simData)
                 });
-
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
 
-                const fullText = data.result.replace(/PHOTO_QUERY:.*/g, '').trim();
+                const fullText = data.result;
                 let summaryPart = fullText;
-                let detailedPart = "Détails non disponibles.";
+                let detailedPart = "Détails techniques non disponibles.";
 
-                if (fullText.includes("---RESUME_IDEAL---") && fullText.includes("---RAPPORT_DETAILLE---")) {
-                    const parts = fullText.split("---RAPPORT_DETAILLE---");
-                    summaryPart = parts[0].replace("---RESUME_IDEAL---", "").trim();
+                if (fullText.includes("---MATCH_PARFAIT---") && fullText.includes("---DETAILS_TECHNIQUES---")) {
+                    const parts = fullText.split("---DETAILS_TECHNIQUES---");
+                    summaryPart = parts[0].replace("---MATCH_PARFAIT---", "").trim();
                     detailedPart = parts[1].trim();
                 }
 
                 document.getElementById('sim-tab-summary').textContent = summaryPart;
                 document.getElementById('sim-tab-detailed').textContent = detailedPart;
-                
                 resultContainer.style.display = 'block';
                 switchTab('summary', 'sim');
 
             } catch (error) {
-                document.getElementById('sim-tab-summary').textContent = "Erreur : " + error.message;
-                document.getElementById('sim-tab-detailed').textContent = "";
-                resultContainer.style.display = 'block';
+                alert("Erreur : " + error.message);
             } finally {
                 submitBtn.disabled = false;
-                btnText.style.display = 'inline-block';
                 spinner.style.display = 'none';
+                btnText.style.display = 'inline';
             }
         });
 
-        // Script Comparateur Libre (Gère modèle + année)
+        // Script Comparateur Libre
         document.getElementById('comparator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-
-            const m1 = document.getElementById('comp-moto1').value.trim();
-            const a1 = document.getElementById('comp-annee1').value.trim();
-            const moto1Full = a1 ? `${m1} (${a1})` : m1;
-
-            const m2 = document.getElementById('comp-moto2').value.trim();
-            const a2 = document.getElementById('comp-annee2').value.trim();
-            const moto2Full = a2 ? `${m2} (${a2})` : m2;
-
-            const motosToCompare = [moto1Full, moto2Full];
-
-            const m3 = document.getElementById('comp-moto3').value.trim();
-            if (m3) {
-                const a3 = document.getElementById('comp-annee3').value.trim();
-                motosToCompare.push(a3 ? `${m3} (${a3})` : m3);
-            }
+            const compData = {
+                moto1: document.getElementById('comp-moto1').value,
+                annee1: document.getElementById('comp-annee1').value,
+                moto2: document.getElementById('comp-moto2').value,
+                annee2: document.getElementById('comp-annee2').value,
+                moto3: document.getElementById('comp-moto3').value,
+                annee3: document.getElementById('comp-annee3').value
+            };
 
             const submitBtn = document.getElementById('comp-submit-btn');
             const btnText = document.getElementById('comp-btn-text');
@@ -970,22 +956,20 @@
                 const response = await fetch('/api/compare', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ motos: motosToCompare })
+                    body: JSON.stringify(compData)
                 });
-
                 const data = await response.json();
-                if (!response.ok) throw new Error(data.error || 'Erreur lors de la comparaison.');
+                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
 
                 resultContainer.textContent = data.result;
                 resultContainer.style.display = 'block';
 
             } catch (error) {
-                resultContainer.textContent = "Erreur : " + error.message + "\n(Vérifie ta route backend /api/compare).";
-                resultContainer.style.display = 'block';
+                alert("Erreur : " + error.message);
             } finally {
                 submitBtn.disabled = false;
-                btnText.style.display = 'inline-block';
                 spinner.style.display = 'none';
+                btnText.style.display = 'inline';
             }
         });
     </script>
