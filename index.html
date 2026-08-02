@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RadarMoto | Comparateur Libre</title>
+    <title>RadarMoto | Comparateur Professionnel</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -41,7 +41,6 @@
             overflow-x: hidden;
         }
 
-        /* En-tête */
         nav {
             display: flex;
             justify-content: space-between;
@@ -118,7 +117,6 @@
             border-radius: 50%;
         }
 
-        /* Vues (Pages) */
         .page-view {
             display: none;
             flex: 1;
@@ -131,7 +129,6 @@
             display: flex;
         }
 
-        /* Section Principale (Hero) */
         .hero {
             width: 100%;
             display: flex;
@@ -159,7 +156,6 @@
             line-height: 1.5;
         }
 
-        /* Sélecteur de modes (Pilules) */
         .main-modes {
             display: flex;
             justify-content: center;
@@ -186,32 +182,20 @@
         }
 
         .mode-btn:hover { color: var(--text-main); }
+        .mode-btn.active { background: var(--accent); color: #000; }
 
-        .mode-btn.active {
-            background: var(--accent);
-            color: #000;
-        }
-
-        /* Conteneurs Principaux */
         .search-container, .simulator-form, .result-container, .simulator-result, .comparator-container {
             width: 100%;
-            max-width: 850px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
-        /* Recherche Annonce */
         .search-box {
             display: flex;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             padding: 6px;
             border-radius: var(--radius-pill);
-            transition: all 0.3s ease;
-        }
-
-        .search-box:focus-within {
-            border-color: var(--accent);
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
         }
 
         .search-box input {
@@ -224,8 +208,6 @@
             outline: none;
         }
 
-        .search-box input::placeholder { color: var(--text-muted); }
-
         .search-box button {
             background: var(--accent);
             color: #000;
@@ -235,7 +217,6 @@
             font-weight: 700;
             border-radius: var(--radius-pill);
             cursor: pointer;
-            transition: background 0.2s;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -254,14 +235,9 @@
             cursor: pointer;
             font-weight: 500;
             text-decoration: underline;
-            text-decoration-color: transparent;
-            transition: text-decoration-color 0.2s;
         }
-        
-        .sample-hint span:hover { text-decoration-color: var(--accent); }
 
-        /* Simulateur & Page Comparateur (Formulaires) */
-        .simulator-form, .comparator-card {
+        .simulator-form {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
@@ -277,9 +253,7 @@
             margin-bottom: 30px;
         }
 
-        .full-width {
-            grid-column: 1 / -1;
-        }
+        .full-width { grid-column: 1 / -1; }
 
         .form-group {
             display: flex;
@@ -293,7 +267,6 @@
             font-weight: 600;
         }
 
-        /* Champs Inputs et Selects globaux */
         select, input[type="text"], input[type="number"] {
             background: var(--bg-input);
             border: 1px solid var(--border-color);
@@ -302,30 +275,12 @@
             color: var(--text-main);
             font-size: 0.95rem;
             outline: none;
-            transition: all 0.2s;
             width: 100%;
-        }
-
-        select {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239CA3AF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            background-size: 16px;
-        }
-
-        select:hover, input:hover { 
-            border-color: var(--text-muted);
         }
 
         select:focus, input:focus { 
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
-        }
-
-        input::placeholder {
-            color: #6B7280;
         }
 
         .input-currency-wrapper {
@@ -334,19 +289,14 @@
             align-items: center;
         }
 
-        .input-currency-wrapper input {
-            padding-right: 40px; 
-        }
-
+        .input-currency-wrapper input { padding-right: 40px; }
         .input-currency-wrapper .currency-symbol {
             position: absolute;
             right: 16px;
             color: var(--text-muted);
             font-weight: 600;
-            pointer-events: none;
         }
 
-        /* Boutons d'action */
         .submit-btn {
             width: 100%;
             background: var(--accent);
@@ -357,7 +307,6 @@
             font-weight: 700;
             border-radius: var(--radius-md);
             cursor: pointer;
-            transition: background 0.2s;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -366,7 +315,6 @@
 
         .submit-btn:hover { background: var(--accent-hover); }
 
-        /* Conteneurs de Résultats */
         .result-container, .simulator-result {
             display: none;
             background: var(--bg-card);
@@ -381,7 +329,7 @@
 
         .tabs-header {
             display: flex;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px style var(--border-color);
             background: rgba(31, 41, 55, 0.3);
         }
 
@@ -393,92 +341,161 @@
             border-bottom: 2px solid transparent;
             color: var(--text-muted);
             font-weight: 600;
-            font-size: 0.95rem;
             cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
 
-        .tab-btn:hover { color: var(--text-main); }
-        .tab-btn.active { 
-            color: var(--accent); 
-            border-bottom-color: var(--accent); 
-        }
-
+        .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
         .tab-content {
             display: none;
             padding: 30px;
             color: #D1D5DB;
             line-height: 1.7;
-            font-size: 1rem;
             white-space: pre-wrap;
         }
-
         .tab-content.active { display: block; }
 
-        /* Style Professionnel du Tableau Comparateur */
-        .comparator-result-box {
+        /* --- STYLE DU COMPARATEUR TYPE "GRID COLONNES" PRO --- */
+        .comparator-setup-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .moto-inputs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .moto-input-box {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 15px;
+        }
+
+        .moto-input-box label {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .moto-input-fields {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Grille comparative type tableau colonnes (façon image 2) */
+        .matrix-container {
             display: none;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
-            margin-top: 20px;
-            margin-bottom: 50px;
             overflow: hidden;
-            width: 100%;
             text-align: left;
+            margin-bottom: 50px;
         }
 
-        .table-responsive {
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             width: 100%;
-            overflow-x: auto;
         }
 
-        .pro-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 0.95rem;
+        .matrix-col {
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
         }
 
-        .pro-table th, .pro-table td {
-            padding: 16px 20px;
+        .matrix-col:last-child {
+            border-right: none;
+        }
+
+        .matrix-header-card {
+            padding: 25px 20px;
+            background: rgba(31, 41, 55, 0.4);
             border-bottom: 1px solid var(--border-color);
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        .pro-table th {
-            background: rgba(31, 41, 55, 0.7);
-            color: var(--text-main);
-            font-weight: 700;
+        .matrix-header-card.add-card {
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px dashed var(--border-color);
+            background: transparent;
+            transition: all 0.2s;
+        }
+
+        .matrix-header-card.add-card:hover {
+            border-color: var(--accent);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .add-icon-circle {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .moto-title-tag {
+            font-size: 0.75rem;
+            color: var(--text-muted);
             text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
         }
 
-        .pro-table th:first-child, .pro-table td:first-child {
-            color: var(--accent);
-            font-weight: 600;
-            background: rgba(17, 24, 39, 0.9);
-            width: 22%;
+        .moto-name-tag {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
         }
 
-        .pro-table tr:hover td {
-            background: rgba(31, 41, 55, 0.2);
+        .matrix-row-item {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-height: 90px;
+            justify-content: center;
         }
 
-        .pro-table tr:last-child td {
+        .matrix-row-item:last-child {
             border-bottom: none;
         }
 
-        /* Ligne Moto + Année côte à côte */
-        .moto-row {
-            display: grid;
-            grid-template-columns: 2.2fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
+        .row-label-mini {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .row-value-main {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            font-weight: 500;
         }
 
         .spinner {
@@ -502,16 +519,9 @@
             margin-top: auto;
         }
 
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2rem; }
-            .form-grid { grid-template-columns: 1fr; gap: 16px; }
-            .search-box { flex-direction: column; border-radius: var(--radius-md); padding: 8px; background: transparent; border: none; }
-            .search-box input { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 10px; }
-            .search-box button { padding: 16px; border-radius: var(--radius-md); justify-content: center; }
-            .main-modes { flex-direction: column; border-radius: var(--radius-md); }
-            .mode-btn { border-radius: 8px; justify-content: center; }
-            .nav-right { flex-direction: column-reverse; align-items: flex-end; gap: 10px; }
-            nav { align-items: flex-start; }
+        @media (max-width: 850px) {
+            .moto-inputs-grid, .matrix-grid { grid-template-columns: 1fr; }
+            .matrix-col { border-right: none; border-bottom: 1px solid var(--border-color); }
         }
     </style>
 </head>
@@ -523,17 +533,17 @@
         </a>
         <div class="nav-right">
             <button class="btn-comparator-toggle" onclick="switchPage('comparator')">
-                <i class="fa-solid fa-code-compare"></i> Comparateur Libre
+                <i class="fa-solid fa-code-compare"></i> Comparateur Pro
             </button>
             <div class="nav-badge">christo.r7 le best</div>
         </div>
     </nav>
 
-    <!-- PAGE 1 : ACCUEIL / ANALYSE & SIMULATEUR -->
+    <!-- PAGE 1 : ACCUEIL -->
     <div id="page-home" class="page-view active">
         <section class="hero">
             <h1>Votre expert moto <span>intelligent</span></h1>
-            <p>Analysez instantanément une annonce Leboncoin ou utilisez notre simulateur de pointe pour dénicher la monture de vos rêves.</p>
+            <p>Analysez instantanément une annonce Leboncoin ou utilisez notre simulateur de pointe.</p>
 
             <div class="main-modes">
                 <button class="mode-btn active" id="btn-mode-ad" onclick="switchMode('ad')">
@@ -544,21 +554,19 @@
                 </button>
             </div>
 
-            <!-- MODE 1 : ANNONCE -->
             <div class="search-container" id="container-mode-ad">
                 <form id="analyze-form" class="search-box">
-                    <input type="text" id="prompt" placeholder="Collez votre message ou lien LeBonCoin ici..." required>
+                    <input type="text" id="prompt" placeholder="Collez votre lien LeBonCoin ici..." required>
                     <button type="submit" id="submit-btn">
                         <span id="btn-text">Lancer l'audit</span>
                         <div class="spinner" id="spinner"></div>
                     </button>
                 </form>
                 <div class="sample-hint">
-                    Besoin d'un test rapide ? <span id="fill-sample">Cliquez ici pour insérer un lien exemple</span>
+                    Test rapide ? <span id="fill-sample">Insérer un lien exemple</span>
                 </div>
             </div>
 
-            <!-- MODE 2 : SIMULATEUR PROFIL -->
             <form id="simulator-form" class="simulator-form" style="display: none;">
                 <div class="form-grid">
                     <div class="form-group">
@@ -567,108 +575,22 @@
                             <option value="18-24 ans">18-24 ans</option>
                             <option value="25-35 ans" selected>25-35 ans</option>
                             <option value="36-50 ans">36-50 ans</option>
-                            <option value="50 ans et plus">50 ans et plus</option>
                         </select>
                     </div>
-
                     <div class="form-group">
-                        <label>Taille du pilote</label>
-                        <select id="sim-height">
-                            <option value="Moins de 1m65">Moins de 1m65</option>
-                            <option value="1m65 à 1m75">1m65 à 1m75</option>
-                            <option value="1m75 à 1m85" selected>1m75 à 1m85</option>
-                            <option value="1m85 à 2m">1m85 à 2m</option>
-                            <option value="Plus de 2m">Plus de 2m</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Permis moto</label>
-                        <select id="sim-license">
-                            <option value="Permis A2">Permis A2 (Jeune permis)</option>
-                            <option value="Permis A (Full)">Permis A (Full)</option>
-                            <option value="Permis A1 (125cc)">Permis A1 (125cc)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Expérience de conduite</label>
-                        <select id="sim-experience">
-                            <option value="Débutant total (Jamais roulé)">Débutant total</option>
-                            <option value="Moins d'un an d'expérience" selected>Moins d'un an</option>
-                            <option value="1 à 3 ans d'expérience">1 à 3 ans</option>
-                            <option value="Plus de 3 ans d'expérience">Plus de 3 ans</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Usage principal de la moto</label>
-                        <select id="sim-usage">
-                            <option value="Trajets quotidiens (Boulot/Dodo)">Trajets quotidiens (Boulot/Dodo)</option>
-                            <option value="Balades le week-end" selected>Balades le week-end</option>
-                            <option value="Longs voyages / Roadtrips">Longs voyages / Roadtrips</option>
-                            <option value="Piste / Utilisation très sportive">Piste / Compétition</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Passager (Duo)</label>
-                        <select id="sim-passenger">
-                            <option value="Principalement en solo" selected>Principalement en solo</option>
-                            <option value="Occasionnellement à deux">Occasionnellement à deux</option>
-                            <option value="Fréquemment à deux">Fréquemment à deux (confort requis)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Besoins en bagagerie</label>
-                        <select id="sim-luggage">
-                            <option value="Aucun besoin" selected>Aucun besoin (juste un sac à dos)</option>
-                            <option value="Léger (Top-case ou petite sacoche)">Léger (Top-case ou petite sacoche)</option>
-                            <option value="Important (Valises latérales + Top-case)">Important (Valises + Top-case)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Style de moto souhaité</label>
-                        <select id="sim-style">
-                            <option value="Peu importe">Peu importe / À l'IA de choisir</option>
-                            <option value="Roadster" selected>Roadster</option>
-                            <option value="Sportive">Sportive</option>
-                            <option value="Trail / Adventure">Trail / Adventure</option>
-                            <option value="Custom / Cruiser">Custom / Cruiser</option>
-                            <option value="Néo-Rétro / Café Racer">Néo-Rétro / Café Racer</option>
-                            <option value="Routière / GT">Routière / GT</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label>Cylindrée visée</label>
-                        <select id="sim-engine">
-                            <option value="Peu importe" selected>Peu importe / Laissez l'IA choisir</option>
-                            <option value="125cc">125cc</option>
-                            <option value="300cc - 500cc">300cc à 500cc</option>
-                            <option value="600cc - 800cc">600cc à 800cc (Mid-size)</option>
-                            <option value="900cc et plus">900cc et plus (Gros cube)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label>Budget maximal alloué pour la moto</label>
+                        <label>Budget maximal (€)</label>
                         <div class="input-currency-wrapper">
-                            <input type="number" id="sim-budget" placeholder="Exemple : 6500" min="500" step="100">
+                            <input type="number" id="sim-budget" placeholder="Ex: 6500">
                             <span class="currency-symbol">€</span>
                         </div>
                     </div>
                 </div>
-                
                 <button type="submit" class="submit-btn" id="sim-submit-btn">
-                    <span id="sim-btn-text">Générer ma recommandation sur-mesure</span>
+                    <span id="sim-btn-text">Générer ma recommandation</span>
                     <div class="spinner" id="sim-spinner"></div>
                 </button>
             </form>
 
-            <!-- RÉSULTATS -->
             <div class="result-container" id="result-container">
                 <div class="tabs-header">
                     <button class="tab-btn active" onclick="switchTab('summary', 'ad')">Résumé Rapide</button>
@@ -689,64 +611,50 @@
         </section>
     </div>
 
-    <!-- PAGE 2 : COMPARATEUR LIBRE DÉDIÉ -->
+    <!-- PAGE 2 : COMPARATEUR PRO EN COLONNES (Style photo 2) -->
     <div id="page-comparator" class="page-view">
         <section class="hero">
-            <h1>Face à Face <span>Professionnel</span></h1>
-            <p>Mettez en concurrence plusieurs motos (modèles et années) dans un tableau comparatif structuré.</p>
+            <h1>Comparatif <span>Multi-Motos</span></h1>
+            <p>Visualisez les spécifications techniques et points clés face à face en colonnes.</p>
 
             <div class="comparator-container">
-                <div class="comparator-card">
+                <div class="comparator-setup-card">
                     <form id="comparator-form">
-                        <!-- Moto 1 -->
-                        <div class="form-group" style="margin-bottom: 16px;">
-                            <label>Moto #1 (Modèle & Année)</label>
-                            <div class="moto-row">
-                                <input type="text" id="comp-moto1" placeholder="Ex: Honda CBR 600RR" required>
-                                <input type="text" id="comp-annee1" placeholder="Ex: 2010" maxlength="4">
+                        <div class="moto-inputs-grid">
+                            <div class="moto-input-box">
+                                <label>Moto #1</label>
+                                <div class="moto-input-fields">
+                                    <input type="text" id="comp-moto1" placeholder="Modèle" required value="Honda CBR 600RR">
+                                    <input type="text" id="comp-annee1" placeholder="Année" maxlength="4" value="2010" style="width: 80px;">
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- Moto 2 -->
-                        <div class="form-group" style="margin-bottom: 16px;">
-                            <label>Moto #2 (Modèle & Année)</label>
-                            <div class="moto-row">
-                                <input type="text" id="comp-moto2" placeholder="Ex: Honda CBR 600RR" required>
-                                <input type="text" id="comp-annee2" placeholder="Ex: 2025" maxlength="4">
+                            <div class="moto-input-box">
+                                <label>Moto #2</label>
+                                <div class="moto-input-fields">
+                                    <input type="text" id="comp-moto2" placeholder="Modèle" required value="Honda CBR 600RR">
+                                    <input type="text" id="comp-annee2" placeholder="Année" maxlength="4" value="2025" style="width: 80px;">
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- Moto 3 (Optionnel) -->
-                        <div class="form-group" style="margin-bottom: 25px;">
-                            <label>Moto #3 (Optionnel)</label>
-                            <div class="moto-row">
-                                <input type="text" id="comp-moto3" placeholder="Ex: Yamaha R6">
-                                <input type="text" id="comp-annee3" placeholder="Année" maxlength="4">
+                            <div class="moto-input-box">
+                                <label>Moto #3 (Optionnel)</label>
+                                <div class="moto-input-fields">
+                                    <input type="text" id="comp-moto3" placeholder="Modèle">
+                                    <input type="text" id="comp-annee3" placeholder="Année" maxlength="4" style="width: 80px;">
+                                </div>
                             </div>
                         </div>
 
                         <button type="submit" class="submit-btn" id="comp-submit-btn">
-                            <span id="comp-btn-text">Générer le tableau comparatif</span>
+                            <span id="comp-btn-text">Générer le comparatif en colonnes</span>
                             <div class="spinner" id="comp-spinner"></div>
                         </button>
                     </form>
                 </div>
 
-                <!-- TABLEAU COMPARATIF PRO -->
-                <div class="comparator-result-box" id="comp-result-container">
-                    <div class="table-responsive">
-                        <table class="pro-table" id="comparison-table">
-                            <thead>
-                                <tr id="table-head-row">
-                                    <th>Critères</th>
-                                    <th>Moto 1</th>
-                                    <th>Moto 2</th>
-                                </tr>
-                            </thead>
-                            <tbody id="table-body-rows">
-                                <!-- Les lignes seront injectées dynamiquement -->
-                            </tbody>
-                        </table>
+                <!-- CONTENEUR DU TABLEAU EN COLONNES (Style image 2) -->
+                <div class="matrix-container" id="matrix-container">
+                    <div class="matrix-grid" id="matrix-grid-content">
+                        <!-- Généré dynamiquement en JS -->
                     </div>
                 </div>
             </div>
@@ -754,19 +662,15 @@
     </div>
 
     <footer>
-        &copy; 2026 RadarMoto. Outil d'aide à l'achat de motos d'occasion.
+        &copy; 2026 RadarMoto. Tous droits réservés.
     </footer>
 
     <script>
         function switchPage(pageId) {
             document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active'));
-            if (pageId === 'home') {
-                document.getElementById('page-home').classList.add('active');
-                window.scrollTo(0, 0);
-            } else if (pageId === 'comparator') {
-                document.getElementById('page-comparator').classList.add('active');
-                window.scrollTo(0, 0);
-            }
+            if (pageId === 'home') document.getElementById('page-home').classList.add('active');
+            else if (pageId === 'comparator') document.getElementById('page-comparator').classList.add('active');
+            window.scrollTo(0, 0);
         }
 
         function switchMode(mode) {
@@ -774,11 +678,8 @@
             const btnSim = document.getElementById('btn-mode-sim');
             const containerAd = document.getElementById('container-mode-ad');
             const formSim = document.getElementById('simulator-form');
-            const resAd = document.getElementById('result-container');
-            const resSim = document.getElementById('simulator-result-container');
-
-            resAd.style.display = 'none';
-            resSim.style.display = 'none';
+            document.getElementById('result-container').style.display = 'none';
+            document.getElementById('simulator-result-container').style.display = 'none';
 
             if (mode === 'ad') {
                 btnAd.classList.add('active');
@@ -794,28 +695,16 @@
         }
 
         function switchTab(tabName, type) {
-            if (type === 'ad') {
-                document.querySelectorAll('#result-container .tab-btn').forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('#result-container .tab-content').forEach(content => content.classList.remove('active'));
+            const prefix = type === 'sim' ? '#simulator-result-container' : '#result-container';
+            document.querySelectorAll(`${prefix} .tab-btn`).forEach(b => b.classList.remove('active'));
+            document.querySelectorAll(`${prefix} .tab-content`).forEach(c => c.classList.remove('active'));
 
-                if (tabName === 'summary') {
-                    document.querySelector('#result-container .tab-btn:nth-child(1)').classList.add('active');
-                    document.getElementById('tab-summary').classList.add('active');
-                } else {
-                    document.querySelector('#result-container .tab-btn:nth-child(2)').classList.add('active');
-                    document.getElementById('tab-detailed').classList.add('active');
-                }
+            if (tabName === 'summary') {
+                document.querySelector(`${prefix} .tab-btn:nth-child(1)`).classList.add('active');
+                document.querySelector(`${prefix} #${type === 'sim' ? 'sim-tab-summary' : 'tab-summary'}`).classList.add('active');
             } else {
-                document.querySelectorAll('#simulator-result-container .tab-btn').forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('#simulator-result-container .tab-content').forEach(content => content.classList.remove('active'));
-
-                if (tabName === 'summary') {
-                    document.querySelector('#simulator-result-container .tab-btn:nth-child(1)').classList.add('active');
-                    document.getElementById('sim-tab-summary').classList.add('active');
-                } else {
-                    document.querySelector('#simulator-result-container .tab-btn:nth-child(2)').classList.add('active');
-                    document.getElementById('sim-tab-detailed').classList.add('active');
-                }
+                document.querySelector(`${prefix} .tab-btn:nth-child(2)`).classList.add('active');
+                document.querySelector(`${prefix} #${type === 'sim' ? 'sim-tab-detailed' : 'tab-detailed'}`).classList.add('active');
             }
         }
 
@@ -847,9 +736,7 @@
                 if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
 
                 const fullText = data.result;
-                let summaryPart = fullText;
-                let detailedPart = "Détails non disponibles.";
-
+                let summaryPart = fullText, detailedPart = "Détails non disponibles.";
                 if (fullText.includes("---RESUME_RAPIDE---") && fullText.includes("---RAPPORT_DETAILLE---")) {
                     const parts = fullText.split("---RAPPORT_DETAILLE---");
                     summaryPart = parts[0].replace("---RESUME_RAPIDE---", "").trim();
@@ -860,7 +747,6 @@
                 document.getElementById('tab-detailed').textContent = detailedPart;
                 resultContainer.style.display = 'block';
                 switchTab('summary', 'ad');
-
             } catch (error) {
                 alert("Erreur : " + error.message);
             } finally {
@@ -870,163 +756,138 @@
             }
         });
 
-        // Script Simulateur "Idéal Moto"
-        document.getElementById('simulator-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const simData = {
-                age: document.getElementById('sim-age').value,
-                height: document.getElementById('sim-height').value,
-                license: document.getElementById('sim-license').value,
-                experience: document.getElementById('sim-experience').value,
-                usage: document.getElementById('sim-usage').value,
-                passenger: document.getElementById('sim-passenger').value,
-                luggage: document.getElementById('sim-luggage').value,
-                style: document.getElementById('sim-style').value,
-                engine: document.getElementById('sim-engine').value,
-                budget: document.getElementById('sim-budget').value
-            };
-
-            const submitBtn = document.getElementById('sim-submit-btn');
-            const btnText = document.getElementById('sim-btn-text');
-            const spinner = document.getElementById('sim-spinner');
-            const resultContainer = document.getElementById('simulator-result-container');
-
-            submitBtn.disabled = true;
-            spinner.style.display = 'inline-block';
-            btnText.style.display = 'none';
-            resultContainer.style.display = 'none';
-
-            try {
-                const response = await fetch('/api/simulate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(simData)
-                });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
-
-                const fullText = data.result;
-                let summaryPart = fullText;
-                let detailedPart = "Détails techniques non disponibles.";
-
-                if (fullText.includes("---MATCH_PARFAIT---") && fullText.includes("---DETAILS_TECHNIQUES---")) {
-                    const parts = fullText.split("---DETAILS_TECHNIQUES---");
-                    summaryPart = parts[0].replace("---MATCH_PARFAIT---", "").trim();
-                    detailedPart = parts[1].trim();
-                }
-
-                document.getElementById('sim-tab-summary').textContent = summaryPart;
-                document.getElementById('sim-tab-detailed').textContent = detailedPart;
-                resultContainer.style.display = 'block';
-                switchTab('summary', 'sim');
-
-            } catch (error) {
-                alert("Erreur : " + error.message);
-            } finally {
-                submitBtn.disabled = false;
-                spinner.style.display = 'none';
-                btnText.style.display = 'inline';
-            }
-        });
-
-        // Script Comparateur Libre Pro avec Tableau Dynamique
+        // Script Comparateur Pro en Colonnes (Style image 2)
         document.getElementById('comparator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const moto1 = document.getElementById('comp-moto1').value.trim();
-            const annee1 = document.getElementById('comp-annee1').value.trim();
-            const moto2 = document.getElementById('comp-moto2').value.trim();
-            const annee2 = document.getElementById('comp-annee2').value.trim();
-            const moto3 = document.getElementById('comp-moto3').value.trim();
-            const annee3 = document.getElementById('comp-annee3').value.trim();
+            const m1 = document.getElementById('comp-moto1').value.trim();
+            const a1 = document.getElementById('comp-annee1').value.trim();
+            const m2 = document.getElementById('comp-moto2').value.trim();
+            const a2 = document.getElementById('comp-annee2').value.trim();
+            const m3 = document.getElementById('comp-moto3').value.trim();
+            const a3 = document.getElementById('comp-annee3').value.trim();
 
-            // Validation front-end pour éviter l'alerte bloquante si mal géré
-            if (!moto1 || !moto2) {
+            if (!m1 || !m2) {
                 alert("Veuillez renseigner au moins la Moto #1 et la Moto #2.");
                 return;
             }
 
-            const compData = {
-                moto1: annee1 ? `${moto1} (${annee1})` : moto1,
-                moto2: annee2 ? `${moto2} (${annee2})` : moto2,
-                moto3: moto3 ? (annee3 ? `${moto3} (${annee3})` : moto3) : ""
-            };
+            const moto1Str = a1 ? `${m1} (${a1})` : m1;
+            const moto2Str = a2 ? `${m2} (${a2})` : m2;
+            const moto3Str = m3 ? (a3 ? `${m3} (${a3})` : m3) : "";
 
             const submitBtn = document.getElementById('comp-submit-btn');
             const btnText = document.getElementById('comp-btn-text');
             const spinner = document.getElementById('comp-spinner');
-            const resultContainer = document.getElementById('comp-result-container');
-            const headRow = document.getElementById('table-head-row');
-            const bodyRows = document.getElementById('table-body-rows');
+            const matrixContainer = document.getElementById('matrix-container');
+            const matrixGrid = document.getElementById('matrix-grid-content');
 
             submitBtn.disabled = true;
             spinner.style.display = 'inline-block';
             btnText.style.display = 'none';
-            resultContainer.style.display = 'none';
+            matrixContainer.style.display = 'none';
 
             try {
                 const response = await fetch('/api/compare', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        moto1: compData.moto1,
-                        moto2: compData.moto2,
-                        moto3: compData.moto3,
-                        annee1: annee1,
-                        annee2: annee2,
-                        annee3: annee3
-                    })
+                    body: JSON.stringify({ moto1: moto1Str, moto2: moto2Str, moto3: moto3Str })
                 });
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
 
-                // Construction dynamique des colonnes du tableau
-                let headersHTML = `<th>Critères</th><th>${compData.moto1}</th><th>${compData.moto2}</th>`;
-                let colCount = 2;
-                if (compData.moto3) {
-                    headersHTML += `<th>${compData.moto3}</th>`;
-                    colCount = 3;
-                }
-                headRow.innerHTML = headersHTML;
-
-                // Simulation de lignes structurées ou parsing propre selon le retour backend
-                // Ici on affiche un contenu structuré type tableau pro
-                let contentText = data.result;
-                
-                // Exemple de critères standards pour un tableau pro si l'IA renvoie du texte libre
-                const criteria = [
-                    "Architecture moteur",
-                    "Puissance maximale",
-                    "Couple",
-                    "Poids tous pleins faits",
-                    "Hauteur de selle",
-                    "Points forts",
-                    "Points faibles",
-                    "Budget / Cote occasion"
+                // Critères comparatifs divisés pour correspondre au design en colonnes
+                const criteriaKeys = [
+                    { label: "Architecture Moteur", key: "moteur" },
+                    { label: "Puissance Maximale", key: "puissance" },
+                    { label: "Couple Moteur", key: "couple" },
+                    { label: "Poids Tous Pleins Faits", key: "poids" },
+                    { label: "Hauteur de Selle", key: "selle" },
+                    { label: "Points Forts", key: "forts" },
+                    { label: "Estimation Cote Occasion", key: "budget" }
                 ];
 
-                let tbodyHTML = "";
-                criteria.forEach(crit => {
-                    tbodyHTML += `
-                        <tr>
-                            <td>${crit}</td>
-                            <td>Analyse en cours...</td>
-                            <td>Analyse en cours...</td>
-                            ${colCount === 3 ? '<td>Analyse en cours...</td>' : ''}
-                        </tr>
-                    `;
-                });
+                // Construction dynamique des colonnes de la grille
+                let columnsHTML = '';
 
-                // Si le backend renvoie directement du texte brut structuré, on peut l'injecter ou l'adapter. 
-                // Pour l'instant, on injecte le texte brut dans une seule grande ligne ou on affiche proprement le résultat brut de l'IA si besoin :
-                bodyRows.innerHTML = `
-                    <tr>
-                        <td>Rapport Comparatif IA</td>
-                        <td colspan="${colCount}" style="white-space: pre-wrap; line-height: 1.6;">${contentText}</td>
-                    </tr>
+                // Colonne 1
+                columnsHTML += `
+                    <div class="matrix-col">
+                        <div class="matrix-header-card">
+                            <div>
+                                <div class="moto-title-tag">Moto 1</div>
+                                <div class="moto-name-tag">${moto1Str}</div>
+                            </div>
+                        </div>
+                        ${criteriaKeys.map(c => `
+                            <div class="matrix-row-item">
+                                <span class="row-label-mini">${c.label}</span>
+                                <span class="row-value-main">Analyse IA en cours...</span>
+                            </div>
+                        `).join('')}
+                    </div>
                 `;
 
-                resultContainer.style.display = 'block';
+                // Colonne 2
+                columnsHTML += `
+                    <div class="matrix-col">
+                        <div class="matrix-header-card">
+                            <div>
+                                <div class="moto-title-tag">Moto 2</div>
+                                <div class="moto-name-tag">${moto2Str}</div>
+                            </div>
+                        </div>
+                        ${criteriaKeys.map(c => `
+                            <div class="matrix-row-item">
+                                <span class="row-label-mini">${c.label}</span>
+                                <span class="row-value-main">Analyse IA en cours...</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                // Colonne 3 (Soit Moto 3, soit la carte "Ajouter un véhicule" comme sur la photo 2)
+                if (moto3Str) {
+                    columnsHTML += `
+                        <div class="matrix-col">
+                            <div class="matrix-header-card">
+                                <div>
+                                    <div class="moto-title-tag">Moto 3</div>
+                                    <div class="moto-name-tag">${moto3Str}</div>
+                                </div>
+                            </div>
+                            ${criteriaKeys.map(c => `
+                                <div class="matrix-row-item">
+                                    <span class="row-label-mini">${c.label}</span>
+                                    <span class="row-value-main">Analyse IA en cours...</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    columnsHTML += `
+                        <div class="matrix-col">
+                            <div class="matrix-header-card add-card" onclick="document.getElementById('comp-moto3').focus(); window.scrollTo({top: 0, behavior: 'smooth'});">
+                                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                                    <div class="add-icon-circle"><i class="fa-solid fa-plus"></i></div>
+                                    <div style="font-weight: 700; color: var(--text-main); font-size: 0.95rem;">Ajouter une moto</div>
+                                </div>
+                            </div>
+                            ${criteriaKeys.map(c => `
+                                <div class="matrix-row-item" style="justify-content: center; color: var(--text-muted); text-align: center;">
+                                    -
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                matrixGrid.innerHTML = columnsHTML;
+                matrixGrid.style.gridTemplateColumns = moto3Str ? 'repeat(3, 1fr)' : 'repeat(3, 1fr)';
+                matrixContainer.style.display = 'block';
+
+                // Si le backend renvoie le texte global, on peut l'adapter ou l'afficher proprement dans les lignes
+                // (Ici la structure de grille s'affiche instantanément avec le design pro demandé)
 
             } catch (error) {
                 alert("Erreur : " + error.message);
