@@ -1,382 +1,685 @@
-<style>
-    :root {
-        --bg-dark: #0B0F19;
-        --bg-card: #151C2C;
-        --accent: #FFB300;
-        --accent-hover: #FFA000;
-        --text-main: #FFFFFF;
-        --text-muted: #94A3B8;
-        --border-color: rgba(255, 255, 255, 0.1);
-    }
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RadarMoto | L'expert pour vos achats moto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #0B0F19;
+            --bg-card: #151C2C;
+            --accent: #FFB300;
+            --accent-hover: #FFA000;
+            --text-main: #FFFFFF;
+            --text-muted: #94A3B8;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Poppins', sans-serif;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
 
-    body {
-        background-color: var(--bg-dark);
-        color: var(--text-main);
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-    nav {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px 5%;
-        background: rgba(11, 15, 25, 0.85);
-        backdrop-filter: blur(15px);
-        position: fixed;
-        width: 100%;
-        z-index: 100;
-        border-bottom: 1px solid var(--border-color);
-    }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(15px);
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-    .logo {
-        font-size: 24px;
-        font-weight: 800;
-        letter-spacing: 0.5px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        cursor: pointer;
-    }
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    .logo i { color: var(--accent); }
-    .logo span { color: var(--accent); }
+        .logo i { color: var(--accent); }
+        .logo span { color: var(--accent); }
 
-    .nav-right {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
+        .nav-badge {
+            background: rgba(255, 179, 0, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(255, 179, 0, 0.3);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
 
-    .nav-badge {
-        background: rgba(255, 179, 0, 0.1);
-        color: var(--accent);
-        border: 1px solid rgba(255, 179, 0, 0.3);
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 600;
-    }
+        .hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 130px 5% 60px 5%;
+            background: radial-gradient(circle at 50% 25%, rgba(255, 179, 0, 0.06), transparent 60%);
+        }
 
-    .auth-nav-btn {
-        background: var(--accent);
-        color: var(--bg-dark);
-        border: none;
-        padding: 8px 16px;
-        border-radius: 10px;
-        font-weight: 700;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: background 0.3s;
-    }
-    .auth-nav-btn:hover { background: var(--accent-hover); }
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
 
-    .hero {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 100px 5% 40px 5%;
-        background: radial-gradient(circle at 50% 25%, rgba(255, 179, 0, 0.06), transparent 60%);
-        min-height: calc(100vh - 70px);
-        margin-top: 70px;
-    }
+        .hero h1 span { color: var(--accent); }
 
-    .hero h1 {
-        font-size: 3.2rem;
-        font-weight: 800;
-        margin-bottom: 15px;
-        letter-spacing: -1px;
-        line-height: 1.2;
-    }
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            max-width: 650px;
+        }
 
-    .hero h1 span { color: var(--accent); }
+        .main-modes {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
 
-    .hero p {
-        font-size: 1.15rem;
-        color: var(--text-muted);
-        margin-bottom: 25px;
-        max-width: 650px;
-    }
+        .mode-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    .main-modes {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-bottom: 30px;
-    }
+        .mode-btn.active {
+            background: var(--accent);
+            color: var(--bg-dark);
+            border-color: var(--accent);
+        }
 
-    .mode-btn {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        color: var(--text-muted);
-        padding: 12px 25px;
-        border-radius: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
+        .search-container {
+            width: 100%;
+            max-width: 750px;
+            margin-bottom: 15px;
+        }
 
-    .mode-btn.active {
-        background: var(--accent);
-        color: var(--bg-dark);
-        border-color: var(--accent);
-    }
+        .search-box {
+            display: flex;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(20px);
+            padding: 8px;
+            border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            transition: border-color 0.3s;
+        }
 
-    .search-container, .simulator-form, .auth-container, .dashboard-container {
-        width: 100%;
-        max-width: 750px;
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 14px;
-        padding: 30px;
-        text-align: left;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        margin: 0 auto;
-        display: none;
-    }
+        .search-box:focus-within { border-color: var(--accent); }
 
-    .search-container {
-        background: transparent;
-        border: none;
-        padding: 0;
-        box-shadow: none;
-    }
+        .search-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 15px 20px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
 
-    .search-box {
-        display: flex;
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        backdrop-filter: blur(20px);
-        padding: 8px;
-        border-radius: 14px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-        transition: border-color 0.3s;
-    }
+        .search-box input::placeholder { color: var(--text-muted); }
 
-    .search-box:focus-within { border-color: var(--accent); }
+        .search-box button {
+            background: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            padding: 0 35px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    .search-box input {
-        flex: 1;
-        background: transparent;
-        border: none;
-        padding: 15px 20px;
-        color: white;
-        font-size: 1rem;
-        outline: none;
-    }
+        .search-box button:hover { background: var(--accent-hover); }
 
-    .search-box input::placeholder { color: var(--text-muted); }
+        .simulator-form {
+            display: none;
+            width: 100%;
+            max-width: 750px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 30px;
+            text-align: left;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            margin-bottom: 40px;
+        }
 
-    .search-box button, .auth-submit-btn {
-        background: var(--accent);
-        color: var(--bg-dark);
-        border: none;
-        padding: 0 35px;
-        font-size: 1rem;
-        font-weight: 700;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-    }
+        /* MODIFICATION ICI : Passage en 1 seule colonne 1 par 1 */
+        .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
 
-    .auth-submit-btn { width: 100%; padding: 15px; margin-top: 10px; }
-    .search-box button:hover, .auth-submit-btn:hover { background: var(--accent-hover); }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
 
-    .form-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        margin-bottom: 25px;
-    }
+        .form-group label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
 
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
+        .form-group select, .form-group input[type="number"] {
+            background: rgba(11, 15, 25, 0.8);
+            border: 1px solid var(--border-color);
+            padding: 12px 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            width: 100%;
+        }
 
-    .form-group label {
-        font-size: 0.9rem;
-        color: var(--text-muted);
-        font-weight: 500;
-    }
+        .form-group select:focus, .form-group input[type="number"]:focus { border-color: var(--accent); }
 
-    .form-group select, .form-group input {
-        background: rgba(11, 15, 25, 0.8);
-        border: 1px solid var(--border-color);
-        padding: 12px 15px;
-        border-radius: 10px;
-        color: white;
-        font-size: 0.95rem;
-        outline: none;
-        width: 100%;
-    }
+        .sim-submit-btn {
+            width: 100%;
+            background: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
 
-    .form-group select:focus, .form-group input:focus { border-color: var(--accent); }
+        .sim-submit-btn:hover { background: var(--accent-hover); }
 
-    .sim-submit-btn {
-        width: 100%;
-        background: var(--accent);
-        color: var(--bg-dark);
-        border: none;
-        padding: 15px;
-        font-size: 1rem;
-        font-weight: 700;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.3s;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-    }
+        .sample-hint {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
 
-    .sim-submit-btn:hover { background: var(--accent-hover); }
+        .sample-hint span {
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: underline;
+            font-weight: 500;
+        }
 
-    .sample-hint {
-        font-size: 0.9rem;
-        color: var(--text-muted);
-        margin-top: 15px;
-        text-align: center;
-    }
+        .result-container, .simulator-result {
+            width: 100%;
+            max-width: 750px;
+            display: none;
+            text-align: left;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.4s ease;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
 
-    .sample-hint span {
-        color: var(--accent);
-        cursor: pointer;
-        text-decoration: underline;
-        font-weight: 500;
-    }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    .result-container, .simulator-result {
-        width: 100%;
-        max-width: 750px;
-        display: none;
-        text-align: left;
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 14px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        margin: 0 auto;
-        overflow: hidden;
-    }
+        .tabs-header {
+            display: flex;
+            background: rgba(11, 15, 25, 0.6);
+            border-bottom: 1px solid var(--border-color);
+        }
 
-    .tabs-header {
-        display: flex;
-        background: rgba(11, 15, 25, 0.6);
-        border-bottom: 1px solid var(--border-color);
-    }
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
 
-    .tab-btn {
-        flex: 1;
-        padding: 15px;
-        background: transparent;
-        border: none;
-        color: var(--text-muted);
-        font-weight: 600;
-        font-size: 0.95rem;
-        cursor: pointer;
-        transition: all 0.3s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-    }
+        .tab-btn:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.02); }
+        .tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); background: rgba(255, 179, 0, 0.03); }
 
-    .tab-btn:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.02); }
-    .tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); background: rgba(255, 179, 0, 0.03); }
+        .tab-content {
+            display: none;
+            padding: 25px;
+            color: #E2E8F0;
+            line-height: 1.8;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+        }
 
-    .tab-content {
-        display: none;
-        padding: 25px;
-        color: #E2E8F0;
-        line-height: 1.8;
-        font-size: 0.95rem;
-        white-space: pre-wrap;
-    }
+        .tab-content.active { display: block; }
 
-    .tab-content.active { display: block; }
+        .moto-preview-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-    .moto-preview-img {
-        width: 100%;
-        height: 250px;
-        object-fit: cover;
-        border-bottom: 1px solid var(--border-color);
-    }
+        .error-box { border-color: rgba(239, 68, 68, 0.4) !important; }
 
-    .error-box { border-color: rgba(239, 68, 68, 0.4) !important; }
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(11, 15, 25, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--bg-dark);
+            animation: spin 0.8s linear infinite;
+        }
 
-    .spinner {
-        display: none;
-        width: 18px;
-        height: 18px;
-        border: 3px solid rgba(11, 15, 25, 0.3);
-        border-radius: 50%;
-        border-top-color: var(--bg-dark);
-        animation: spin 0.8s linear infinite;
-    }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            background: rgba(11, 15, 25, 0.5);
+        }
 
-    .auth-switch {
-        text-align: center;
-        margin-top: 15px;
-        font-size: 0.9rem;
-        color: var(--text-muted);
-    }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .search-box { flex-direction: column; background: transparent; border: none; box-shadow: none; }
+            .search-box input { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; padding: 15px; }
+            .search-box button { width: 100%; padding: 15px; justify-content: center; }
+            .main-modes { flex-direction: column; width: 100%; }
+        }
+    </style>
+</head>
+<body>
 
-    .auth-switch span {
-        color: var(--accent);
-        cursor: pointer;
-        font-weight: 600;
-        text-decoration: underline;
-    }
+    <nav>
+        <div class="logo">
+            <i class="fa-solid fa-motorcycle"></i> Radar<span>Moto</span>
+        </div>
+        <div class="nav-badge">christo.r7 le best</div>
+    </nav>
 
-    .history-item {
-        background: rgba(11, 15, 25, 0.6);
-        border: 1px solid var(--border-color);
-        padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        transition: border-color 0.3s;
-    }
-    .history-item:hover { border-color: var(--accent); }
+    <section class="hero">
+        <h1>Votre expert moto <span>intelligent</span></h1>
+        <p>Analysez une annonce Leboncoin ou trouvez la moto idéale adaptée à votre profil.</p>
 
-    footer {
-        text-align: center;
-        padding: 20px;
-        color: var(--text-muted);
-        font-size: 0.85rem;
-        border-top: 1px solid var(--border-color);
-        background: rgba(11, 15, 25, 0.5);
-    }
+        <div class="main-modes">
+            <button class="mode-btn active" id="btn-mode-ad" onclick="switchMode('ad')">
+                <i class="fa-solid fa-magnifying-glass-dollar"></i> Analyseur d'Annonce
+            </button>
+            <button class="mode-btn" id="btn-mode-sim" onclick="switchMode('simulator')">
+                <i class="fa-solid fa-user-gear"></i> Simulateur "Idéal Moto"
+            </button>
+        </div>
 
-    @media (max-width: 768px) {
-        .hero h1 { font-size: 2.2rem; }
-        .search-box { flex-direction: column; background: transparent; border: none; box-shadow: none; }
-        .search-box input { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; padding: 15px; }
-        .search-box button { width: 100%; padding: 15px; justify-content: center; }
-        .main-modes { flex-direction: column; width: 100%; }
-    }
-</style>
+        <!-- MODE 1 : ANNONCE -->
+        <div class="search-container" id="container-mode-ad">
+            <form id="analyze-form" class="search-box">
+                <input type="text" id="prompt" placeholder="Collez votre message ou lien LeBonCoin ici..." required>
+                <button type="submit" id="submit-btn">
+                    <span id="btn-text">Lancer l'audit</span>
+                    <div class="spinner" id="spinner"></div>
+                </button>
+            </form>
+            <div class="sample-hint">
+                Besoin d'un test rapide ? <span id="fill-sample">Cliquez ici pour insérer un lien exemple</span>
+            </div>
+        </div>
+
+        <!-- MODE 2 : SIMULATEUR PROFIL -->
+        <form id="simulator-form" class="simulator-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label><i class="fa-solid fa-cake-candles"></i> Tranche d'âge</label>
+                    <select id="sim-age">
+                        <option value="18-24 ans">18-24 ans</option>
+                        <option value="25-35 ans" selected>25-35 ans</option>
+                        <option value="36-50 ans">36-50 ans</option>
+                        <option value="50 ans et plus">50 ans et plus</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-ruler-vertical"></i> Taille du pilote</label>
+                    <select id="sim-height">
+                        <option value="Moins de 1m65">Moins de 1m65</option>
+                        <option value="1m65 à 1m75">1m65 à 1m75</option>
+                        <option value="1m75 à 1m85">1m75 à 1m85</option>
+                        <option value="1m85 à 2m" selected>1m85 à 2m (Grand gabarit)</option>
+                        <option value="Plus de 2m">Plus de 2m (Très grand gabarit)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-id-card"></i> Permis moto</label>
+                    <select id="sim-license">
+                        <option value="Permis A2">Permis A2</option>
+                        <option value="Permis A (Full)">Permis A (Full)</option>
+                        <option value="Permis A1 (125cc)">Permis A1 (125cc)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-clock-rotate-left"></i> Expérience / Pratique</label>
+                    <select id="sim-experience">
+                        <option value="Débutant total (Jamais roulé)">Débutant total</option>
+                        <option value="Moins d'un an d'expérience" selected>Moins d'un an</option>
+                        <option value="1 à 3 ans d'expérience">1 à 3 ans</option>
+                        <option value="Plus de 3 ans d'expérience">Plus de 3 ans</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-motorcycle"></i> Style de moto</label>
+                    <select id="sim-style">
+                        <option value="Roadster">Roadster</option>
+                        <option value="Sportive">Sportive</option>
+                        <option value="Trail / Adventure">Trail / Adventure</option>
+                        <option value="Routière / GT">Routière / GT</option>
+                        <option value="Custom / Café Racer">Custom / Café Racer</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-gauge-high"></i> Gamme de cylindrée</label>
+                    <select id="sim-displacement">
+                        <option value="Peu importe">Peu importe / Laisser l'IA juger</option>
+                        <option value="125cc">125cc</option>
+                        <option value="A2 (300cc - 500cc)">A2 intermédiaire (300cc - 500cc)</option>
+                        <option value="Moyenne cylindrée (600cc - 900cc)">Moyenne cylindrée (600cc - 900cc)</option>
+                        <option value="Grosse cylindrée (1000cc et +)">Grosse cylindrée (1000cc et +)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-wallet"></i> Budget maximum (€)</label>
+                    <input type="number" id="sim-budget" placeholder="Ex: 6500" min="500" step="100" value="6500" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="sim-submit-btn" id="sim-submit-btn">
+                <span>Trouver ma moto idéale</span>
+                <div class="spinner" id="sim-spinner"></div>
+            </button>
+        </form>
+
+        <!-- RÉSULTAT ANNONCE (Onglets) -->
+        <div class="result-container" id="result-container">
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab('summary', 'ad')">
+                    <i class="fa-solid fa-bolt"></i> Résumé Rapide
+                </button>
+                <button class="tab-btn" onclick="switchTab('detailed', 'ad')">
+                    <i class="fa-solid fa-file-lines"></i> Rapport Technique Détaillé
+                </button>
+            </div>
+            <div id="tab-summary" class="tab-content active"></div>
+            <div id="tab-detailed" class="tab-content"></div>
+        </div>
+
+        <!-- RÉSULTAT SIMULATEUR (Onglets + Image) -->
+        <div class="simulator-result" id="simulator-result-container">
+            <img id="moto-img" class="moto-preview-img" src="" alt="Moto recommandée">
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab('summary', 'sim')">
+                    <i class="fa-solid fa-bolt"></i> Résumé Idéal
+                </button>
+                <button class="tab-btn" onclick="switchTab('detailed', 'sim')">
+                    <i class="fa-solid fa-file-lines"></i> Rapport Détaillé
+                </button>
+            </div>
+            <div id="sim-tab-summary" class="tab-content active"></div>
+            <div id="sim-tab-detailed" class="tab-content"></div>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2026 RadarMoto. Outil d'aide à l'achat de motos d'occasion.
+    </footer>
+
+    <script>
+        function switchMode(mode) {
+            const btnAd = document.getElementById('btn-mode-ad');
+            const btnSim = document.getElementById('btn-mode-sim');
+            const containerAd = document.getElementById('container-mode-ad');
+            const formSim = document.getElementById('simulator-form');
+            const resAd = document.getElementById('result-container');
+            const resSim = document.getElementById('simulator-result-container');
+
+            resAd.style.display = 'none';
+            resSim.style.display = 'none';
+
+            if (mode === 'ad') {
+                btnAd.classList.add('active');
+                btnSim.classList.remove('active');
+                containerAd.style.display = 'block';
+                formSim.style.display = 'none';
+            } else {
+                btnSim.classList.add('active');
+                btnAd.classList.remove('active');
+                containerAd.style.display = 'none';
+                formSim.style.display = 'block';
+            }
+        }
+
+        function switchTab(tabName, type) {
+            if (type === 'ad') {
+                document.querySelectorAll('#result-container .tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('#result-container .tab-content').forEach(content => content.classList.remove('active'));
+
+                if (tabName === 'summary') {
+                    document.querySelector('#result-container .tab-btn:nth-child(1)').classList.add('active');
+                    document.getElementById('tab-summary').classList.add('active');
+                } else {
+                    document.querySelector('#result-container .tab-btn:nth-child(2)').classList.add('active');
+                    document.getElementById('tab-detailed').classList.add('active');
+                }
+            } else {
+                document.querySelectorAll('#simulator-result-container .tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('#simulator-result-container .tab-content').forEach(content => content.classList.remove('active'));
+
+                if (tabName === 'summary') {
+                    document.querySelector('#simulator-result-container .tab-btn:nth-child(1)').classList.add('active');
+                    document.getElementById('sim-tab-summary').classList.add('active');
+                } else {
+                    document.querySelector('#simulator-result-container .tab-btn:nth-child(2)').classList.add('active');
+                    document.getElementById('sim-tab-detailed').classList.add('active');
+                }
+            }
+        }
+
+        document.getElementById('fill-sample').addEventListener('click', function() {
+            document.getElementById('prompt').value = "Voici une annonce intéressante https://www.leboncoin.fr/ad/motos/3229286512";
+        });
+
+        // Script Analyse d'annonce
+        document.getElementById('analyze-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const promptInput = document.getElementById('prompt').value;
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            const spinner = document.getElementById('spinner');
+            const resultContainer = document.getElementById('result-container');
+            const summaryBox = document.getElementById('tab-summary');
+            const detailedBox = document.getElementById('tab-detailed');
+
+            submitBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            resultContainer.style.display = 'none';
+            resultContainer.classList.remove('error-box');
+
+            const steps = ["Connexion à l'annonce...", "Extraction des données...", "Génération des rapports..."];
+            let stepIdx = 0;
+            btnText.textContent = steps[0];
+            
+            const interval = setInterval(() => {
+                stepIdx++;
+                if (stepIdx < steps.length) btnText.textContent = steps[stepIdx];
+            }, 1200);
+
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: promptInput })
+                });
+
+                clearInterval(interval);
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
+
+                const fullText = data.result;
+                let summaryPart = fullText;
+                let detailedPart = "Rapport détaillé non disponible.";
+
+                if (fullText.includes("---RESUME_RAPIDE---") && fullText.includes("---RAPPORT_DETAILLE---")) {
+                    const parts = fullText.split("---RAPPORT_DETAILLE---");
+                    summaryPart = parts[0].replace("---RESUME_RAPIDE---", "").trim();
+                    detailedPart = parts[1].trim();
+                }
+
+                summaryBox.textContent = summaryPart;
+                detailedBox.textContent = detailedPart;
+                resultContainer.style.display = 'block';
+                switchTab('summary', 'ad');
+
+            } catch (error) {
+                clearInterval(interval);
+                resultContainer.classList.add('error-box');
+                summaryBox.textContent = "Erreur : " + error.message;
+                detailedBox.textContent = "Impossible de charger le rapport détaillé.";
+                resultContainer.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                btnText.textContent = "Lancer l'audit";
+                spinner.style.display = 'none';
+            }
+        });
+
+        // Script Simulateur Profil
+        document.getElementById('simulator-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const profile = {
+                ageRange: document.getElementById('sim-age').value,
+                height: document.getElementById('sim-height').value,
+                license: document.getElementById('sim-license').value,
+                experience: document.getElementById('sim-experience').value,
+                style: document.getElementById('sim-style').value,
+                displacement: document.getElementById('sim-displacement').value,
+                budget: document.getElementById('sim-budget').value + " €"
+            };
+
+            const simSubmitBtn = document.getElementById('sim-submit-btn');
+            const simSpinner = document.getElementById('sim-spinner');
+            const simResultContainer = document.getElementById('simulator-result-container');
+            const simSummaryBox = document.getElementById('sim-tab-summary');
+            const simDetailedBox = document.getElementById('sim-tab-detailed');
+            const motoImg = document.getElementById('moto-img');
+
+            simSubmitBtn.disabled = true;
+            simSpinner.style.display = 'inline-block';
+            simResultContainer.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/simulate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ profile: profile })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
+
+                const fullText = (data.result || "").replace(/PHOTO_QUERY:.*/g, '').trim();
+                let summaryPart = fullText;
+                let detailedPart = "Rapport détaillé non disponible.";
+
+                if (fullText.includes("---RESUME_IDEAL---") && fullText.includes("---RAPPORT_DETAILLE---")) {
+                    const parts = fullText.split("---RAPPORT_DETAILLE---");
+                    summaryPart = parts[0].replace("---RESUME_IDEAL---", "").trim();
+                    detailedPart = parts[1].trim();
+                } else if (fullText.includes("---RESUME_RAPIDE---") && fullText.includes("---RAPPORT_DETAILLE---")) {
+                    const parts = fullText.split("---RAPPORT_DETAILLE---");
+                    summaryPart = parts[0].replace("---RESUME_RAPIDE---", "").trim();
+                    detailedPart = parts[1].trim();
+                }
+
+                simSummaryBox.textContent = summaryPart || "Aucun résumé généré.";
+                simDetailedBox.textContent = detailedPart;
+                
+                if (data.imageUrl) {
+                    motoImg.src = data.imageUrl;
+                    motoImg.style.display = 'block';
+                } else {
+                    motoImg.style.display = 'none';
+                }
+                
+                simResultContainer.style.display = 'block';
+                switchTab('summary', 'sim');
+
+            } catch (error) {
+                simSummaryBox.textContent = "Erreur : " + error.message;
+                simDetailedBox.textContent = "Impossible de charger les détails.";
+                simResultContainer.style.display = 'block';
+            } finally {
+                simSubmitBtn.disabled = false;
+                simSpinner.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
