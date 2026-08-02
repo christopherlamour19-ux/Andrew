@@ -179,7 +179,6 @@
         /* --- SIMULATEUR --- */
         .simulator-form { display: none; padding: 35px; text-align: left; margin-bottom: 40px; }
         
-        /* MODIFICATION ICI : Remplacement de la grille par une colonne */
         .form-grid { 
             display: flex; 
             flex-direction: column; 
@@ -423,6 +422,17 @@
                         <option value="Grosse cylindrée (1000cc et +)">Grosse cylindrée (1000cc et +)</option>
                     </select>
                 </div>
+                <!-- NOUVELLE OPTION : TYPE DE MOTEUR -->
+                <div class="form-group">
+                    <label><i class="fa-solid fa-gears"></i> Type de moteur</label>
+                    <select id="sim-engine">
+                        <option value="Peu importe">Peu importe / Laisser l'IA juger</option>
+                        <option value="Monocylindre">Monocylindre</option>
+                        <option value="Bicylindre">Bicylindre (Twin)</option>
+                        <option value="3 cylindres">3 cylindres (Tri-cylindre)</option>
+                        <option value="4 cylindres">4 cylindres (Tetracylindre)</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <label><i class="fa-solid fa-wallet"></i> Budget maximum (€)</label>
                     <input type="number" id="sim-budget" placeholder="Ex: 6500" min="500" step="100" value="6500" required>
@@ -631,9 +641,13 @@
         document.getElementById('simulator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const profile = {
-                ageRange: document.getElementById('sim-age').value, height: document.getElementById('sim-height').value,
-                license: document.getElementById('sim-license').value, experience: document.getElementById('sim-experience').value,
-                style: document.getElementById('sim-style').value, displacement: document.getElementById('sim-displacement').value,
+                ageRange: document.getElementById('sim-age').value, 
+                height: document.getElementById('sim-height').value,
+                license: document.getElementById('sim-license').value, 
+                experience: document.getElementById('sim-experience').value,
+                style: document.getElementById('sim-style').value, 
+                displacement: document.getElementById('sim-displacement').value,
+                engineType: document.getElementById('sim-engine').value,
                 budget: document.getElementById('sim-budget').value + " €"
             };
             const simSubmitBtn = document.getElementById('sim-submit-btn');
