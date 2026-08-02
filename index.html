@@ -311,7 +311,38 @@
             </button>
         </div>
     </nav>
+<!-- Dans tes boutons de mode -->
+<button class="mode-btn" id="btn-mode-compare" onclick="switchMode('compare')">
+    <i class="fa-solid fa-code-compare"></i> Duel de Modèles
+</button>
 
+<!-- Container pour le comparateur -->
+<div class="simulator-form glass-panel" id="container-mode-compare" style="display: none;">
+    <h3 style="margin-bottom: 20px; color: var(--accent);">Comparatif / Duel IA</h3>
+    <div class="form-grid">
+        <div class="form-group">
+            <label><i class="fa-solid fa-motorcycle"></i> Moto A (ex: Yamaha MT-07)</label>
+            <input type="text" id="compare-moto-a" placeholder="Ex: Kawasaki Z650">
+        </div>
+        <div class="form-group">
+            <label><i class="fa-solid fa-motorcycle"></i> Moto B (ex: Honda CB750 Hornet)</label>
+            <input type="text" id="compare-moto-b" placeholder="Ex: Honda CB750 Hornet">
+        </div>
+    </div>
+    <button type="button" class="sim-submit-btn" id="compare-submit-btn" onclick="lancerDuel()">
+        <span>Lancer le Duel IA</span>
+        <div class="spinner" id="compare-spinner"></div>
+    </button>
+</div>
+
+<!-- Résultat du Duel -->
+<div class="simulator-result glass-panel" id="compare-result-container" style="display: none;">
+    <div class="tabs-header">
+        <button class="tab-btn active"><i class="fa-solid fa-trophy"></i> Résultat du Duel</button>
+    </div>
+    <div id="compare-tab-content" class="tab-content active" style="white-space: pre-wrap;"></div>
+</div>
+    
     <!-- Modal Authentification -->
     <div class="modal-overlay" id="auth-modal">
         <div class="modal-content">
