@@ -16,7 +16,6 @@ export default async function handler(req, res) {
     const { ageRange, height, style, license, budget } = profile || {};
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    // Utilisation de gemini-1.5-flash pour garantir la stabilité et éviter les erreurs de modèle
     const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 
     const simPrompt = `Tu es un conseiller expert en choix de moto. Un utilisateur recherche sa moto idéale selon son profil précis :
