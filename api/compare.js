@@ -14,7 +14,7 @@ export default async function handler(req, res) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 
     const duelPrompt = `Tu es RadarMoto, un expert essayeur et comparateur moto intransigeant. 
     Un utilisateur hésite entre deux modèles et te demande un duel comparatif direct.
