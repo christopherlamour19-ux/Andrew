@@ -13,39 +13,26 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { ageRange, height, style, license, budget, displacement, experience, engineType } = profile || {};
-
-    // Contrainte absolue pour bloquer l'IA si un type de moteur spécifique est demandé
-    const engineConstraint = engineType && engineType !== "Peu importe" 
-      ? `\n- ⚠️ CONTRAINTE ARCHITECTURE MOTEUR ABSOLUE : La moto recherchée DOIT IMPÉRATIVEMENT avoir un moteur de type "${engineType}". Interdit de proposer une autre architecture moteur (pas de bicylindre si monocylindre demandé, etc.).` 
-      : "";
+    const { ageRange, height, style, license, budget } = profile || {};
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    // Utilisation d'un modèle flash valide (ex: gemini-2.5-flash ou gemini-1.5-flash)
+    // Utilisation de gemini-1.5-flash pour garantir la stabilité et éviter les erreurs de modèle
     const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 
-    const simPrompt = `Tu es un conseiller expert en choix de moto intransigeant. Un utilisateur recherche sa moto idéale selon son profil précis :
+    const simPrompt = `Tu es un conseiller expert en choix de moto. Un utilisateur recherche sa moto idéale selon son profil précis :
     - Tranche d'âge : ${ageRange}
     - Taille : ${height}
     - Style de moto recherché : ${style}
     - Permis : ${license}
-    - Expérience : ${experience}
-    - Cylindrée souhaitée : ${displacement}
-    - Type de moteur souhaité : ${engineType}
     - Budget maximum : ${budget}
 
-    ${engineConstraint}
-
     Fournis une recommandation claire et structurée ainsi :
-    ---RESUME_IDEAL---
+    ---MOTO_IDEALE---
     - 🏍️ Modèle conseillé : (Nom exact de la moto, année, cylindrée)
-    - 💡 Pourquoi ce choix : (Explique en quelques lignes pourquoi elle correspond à son style ${style}, sa taille, son type de moteur ${engineType}, son permis ${license} et son budget)
+    - 💡 Pourquoi ce choix : (Explique en quelques lignes pourquoi elle correspond à son style ${style}, sa taille, son permis ${license} et son budget)
     - 🛡️ Assurance & Conso : (Analyse rapide de l'assurance pour son profil et la consommation réelle)
     - ⚠️ Points de vigilance : (Les pièges ou défauts connus de ce modèle à surveiller)
-    ---RAPPORT_DETAILLE---
-    [Développe ici une analyse technique complète : comportement moteur, position de conduite, points forts et points faibles par rapport au profil, assurance, etc.]
-    
-    PHOTO_QUERY: [Donne un terme de recherche précis en anglais pour trouver une belle photo de cette moto (ex: "Yamaha MT-07 2022 studio shot")]`;
+    - 🔍 Recherche photo : Donne un terme de recherche précis en anglais pour trouver une belle photo de cette moto (ex: "Yamaha MT-07 2022 studio shot") sur une ligne commençant par PHOTO_QUERY: [ton terme ici].`;
 
     const result = await model.generateContent(simPrompt);
     const text = result.response.text();
