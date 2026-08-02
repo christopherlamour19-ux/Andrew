@@ -184,7 +184,6 @@
             margin-bottom: 40px;
         }
 
-        /* MODIFICATION ICI : Passage en 1 seule colonne 1 par 1 */
         .form-grid {
             display: flex;
             flex-direction: column;
@@ -303,13 +302,6 @@
         }
 
         .tab-content.active { display: block; }
-
-        .moto-preview-img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            border-bottom: 1px solid var(--border-color);
-        }
 
         .error-box { border-color: rgba(239, 68, 68, 0.4) !important; }
 
@@ -470,9 +462,8 @@
             <div id="tab-detailed" class="tab-content"></div>
         </div>
 
-        <!-- RÉSULTAT SIMULATEUR (Onglets + Image) -->
+        <!-- RÉSULTAT SIMULATEUR (Onglets sans image) -->
         <div class="simulator-result" id="simulator-result-container">
-            <img id="moto-img" class="moto-preview-img" src="" alt="Moto recommandée">
             <div class="tabs-header">
                 <button class="tab-btn active" onclick="switchTab('summary', 'sim')">
                     <i class="fa-solid fa-bolt"></i> Résumé Idéal
@@ -628,7 +619,6 @@
             const simResultContainer = document.getElementById('simulator-result-container');
             const simSummaryBox = document.getElementById('sim-tab-summary');
             const simDetailedBox = document.getElementById('sim-tab-detailed');
-            const motoImg = document.getElementById('moto-img');
 
             simSubmitBtn.disabled = true;
             simSpinner.style.display = 'inline-block';
@@ -660,13 +650,6 @@
 
                 simSummaryBox.textContent = summaryPart || "Aucun résumé généré.";
                 simDetailedBox.textContent = detailedPart;
-                
-                if (data.imageUrl) {
-                    motoImg.src = data.imageUrl;
-                    motoImg.style.display = 'block';
-                } else {
-                    motoImg.style.display = 'none';
-                }
                 
                 simResultContainer.style.display = 'block';
                 switchTab('summary', 'sim');
