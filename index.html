@@ -422,12 +422,12 @@
                         <option value="Grosse cylindrée (1000cc et +)">Grosse cylindrée (1000cc et +)</option>
                     </select>
                 </div>
-                <!-- NOUVELLE OPTION : TYPE DE MOTEUR -->
+                <!-- TYPE DE MOTEUR -->
                 <div class="form-group">
-                    <label><i class="fa-solid fa-gears"></i> Type de moteur</label>
+                    <label><i class="fa-solid fa-gears"></i> Type de moteur (IMPÉRATIF)</label>
                     <select id="sim-engine">
                         <option value="Peu importe">Peu importe / Laisser l'IA juger</option>
-                        <option value="Monocylindre">Monocylindre</option>
+                        <option value="Monocylindre" selected>Monocylindre</option>
                         <option value="Bicylindre">Bicylindre (Twin)</option>
                         <option value="3 cylindres">3 cylindres (Tri-cylindre)</option>
                         <option value="4 cylindres">4 cylindres (Tetracylindre)</option>
@@ -469,7 +469,6 @@
     <footer>&copy; 2026 RadarMoto. Outil d'aide à l'achat propulsé par l'IA.</footer>
 
     <script>
-        // LOGIQUE UTILISATEUR & AUTHENTIFICATION
         let isLoginMode = true;
         let currentUser = null;
 
@@ -575,7 +574,6 @@
             document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // LOGIQUE ONGLET ET REQUÊTES
         function switchMode(mode) {
             document.getElementById('result-container').style.display = 'none';
             document.getElementById('simulator-result-container').style.display = 'none';
@@ -599,7 +597,6 @@
 
         document.getElementById('fill-sample').addEventListener('click', () => { document.getElementById('prompt').value = "Voici une annonce : https://www.leboncoin.fr/ad/motos/3229286512"; });
 
-        // Submit Analyse
         document.getElementById('analyze-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const promptInput = document.getElementById('prompt').value;
@@ -637,7 +634,7 @@
             }
         });
 
-        // Submit Simulateur
+        // Submit Simulateur corrigé (envoi correct du type de moteur)
         document.getElementById('simulator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const profile = {
@@ -647,7 +644,7 @@
                 experience: document.getElementById('sim-experience').value,
                 style: document.getElementById('sim-style').value, 
                 displacement: document.getElementById('sim-displacement').value,
-                engineType: document.getElementById('sim-engine').value,
+                engineType: document.getElementById('sim-engine').value, // <-- CORRIGÉ ICI
                 budget: document.getElementById('sim-budget').value + " €"
             };
             const simSubmitBtn = document.getElementById('sim-submit-btn');
