@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
         const genAI = new GoogleGenerativeAI(apiKey);
         // Utilisation d'un modèle Gemini valide (ex: gemini-2.5-flash ou gemini-1.5-pro selon ta config)
-        const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         const prompt = `
         Agis en tant qu'expert motard chevronné. 
