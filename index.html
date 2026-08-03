@@ -207,7 +207,26 @@
         .sim-submit-btn { width: 100%; padding: 18px; font-size: 1.05rem; margin-top: 10px; }
 
         /* --- RÉSULTATS --- */
-        .result-container, .simulator-result, .duel-result { display: none; text-align: left; margin-bottom: 40px; overflow: hidden; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+        .result-container, .simulator-result { display: none; text-align: left; margin-bottom: 40px; overflow: hidden; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); width: 100%; max-width: 750px; }
+        
+        /* Conteneur global pour les duels en colonnes côte à côte */
+        .duel-results-wrapper {
+            display: none;
+            width: 100%;
+            max-width: 1100px;
+            gap: 20px;
+            margin-bottom: 40px;
+            animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .duel-result {
+            flex: 1;
+            min-width: 300px;
+            text-align: left;
+            overflow: hidden;
+        }
         
         @keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
 
@@ -269,7 +288,9 @@
         footer { text-align: center; padding: 25px; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--border-color); background: rgba(7, 10, 19, 0.8); backdrop-filter: blur(10px); margin-top: auto; z-index: 10; }
 
         /* --- RESPONSIVE --- */
-        @media (min-width: 769px) { .nav-badge { display: inline-block; } }
+        @media (min-width: 769px) { 
+            .nav-badge { display: inline-block; } 
+        }
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.4rem; }
             .hero { padding: 120px 5% 40px 5%; }
@@ -280,6 +301,11 @@
             .mode-btn { background: var(--bg-card); border: 1px solid var(--border-color); justify-content: center; }
             .nav-btn { padding: 8px 14px; font-size: 0.85rem; }
             .user-greeting { display: none !important; }
+            
+            /* Sur mobile, les résultats du duel passent l'un sous l'autre */
+            .duel-results-wrapper {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -491,20 +517,23 @@
             <div id="sim-tab-detailed" class="tab-content"></div>
         </div>
 
-        <!-- RÉSULTAT DUEL : MOTO 1 -->
-        <div class="duel-result glass-panel" id="duel-result-1" style="margin-bottom: 20px;">
-            <div class="tabs-header" style="background: rgba(255, 179, 0, 0.1);">
-                <span class="tab-btn active" style="cursor: default;"><i class="fa-solid fa-1"></i> Analyse Moto A</span>
+        <!-- CONTENEUR DUEL : MOTO A & MOTO B CÔTE À CÔTE -->
+        <div class="duel-results-wrapper" id="duel-results-wrapper">
+            <!-- RÉSULTAT DUEL : MOTO 1 -->
+            <div class="duel-result glass-panel" id="duel-result-1">
+                <div class="tabs-header" style="background: rgba(255, 179, 0, 0.1);">
+                    <span class="tab-btn active" style="cursor: default;"><i class="fa-solid fa-1"></i> Analyse Moto A</span>
+                </div>
+                <div id="duel-content-1" class="tab-content active"></div>
             </div>
-            <div id="duel-content-1" class="tab-content active"></div>
-        </div>
 
-        <!-- RÉSULTAT DUEL : MOTO 2 -->
-        <div class="duel-result glass-panel" id="duel-result-2">
-            <div class="tabs-header" style="background: rgba(0, 110, 255, 0.1);">
-                <span class="tab-btn active" style="cursor: default;"><i class="fa-solid fa-2"></i> Analyse Moto B</span>
+            <!-- RÉSULTAT DUEL : MOTO 2 -->
+            <div class="duel-result glass-panel" id="duel-result-2">
+                <div class="tabs-header" style="background: rgba(0, 110, 255, 0.1);">
+                    <span class="tab-btn active" style="cursor: default;"><i class="fa-solid fa-2"></i> Analyse Moto B</span>
+                </div>
+                <div id="duel-content-2" class="tab-content active"></div>
             </div>
-            <div id="duel-content-2" class="tab-content active"></div>
         </div>
     </section>
 
@@ -621,8 +650,7 @@
         function switchMode(mode) {
             document.getElementById('result-container').style.display = 'none';
             document.getElementById('simulator-result-container').style.display = 'none';
-            document.getElementById('duel-result-1').style.display = 'none';
-            document.getElementById('duel-result-2').style.display = 'none';
+            document.getElementById('duel-results-wrapper').style.display = 'none';
 
             document.getElementById('btn-mode-ad').classList.remove('active');
             document.getElementById('btn-mode-sim').classList.remove('active');
@@ -740,7 +768,7 @@
             }
         });
 
-        // Submit Duel
+        // Submit Duel (Ciblant /api/duel)
         document.getElementById('duel-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const moto1 = document.getElementById('duel-moto-1').value;
@@ -749,13 +777,11 @@
             
             const btn = document.getElementById('duel-submit-btn');
             const spinner = document.getElementById('duel-spinner');
-            const res1 = document.getElementById('duel-result-1');
-            const res2 = document.getElementById('duel-result-2');
+            const duelWrapper = document.getElementById('duel-results-wrapper');
 
             btn.disabled = true;
             spinner.style.display = 'inline-block';
-            res1.style.display = 'none';
-            res2.style.display = 'none';
+            duelWrapper.style.display = 'none';
             btn.querySelector('span').textContent = "Duel en cours...";
 
             try {
@@ -764,15 +790,20 @@
                     headers: { 'Content-Type': 'application/json' }, 
                     body: JSON.stringify({ moto1, moto2, profile }) 
                 });
-                const data = await response.json();
+                
+                const textResponse = await response.text();
+                if (textResponse.trim().startsWith('<')) {
+                    throw new Error("Erreur de routage ou plantage serveur (Vérifiez les logs de votre serveur).");
+                }
+                
+                const data = JSON.parse(textResponse);
                 if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
 
                 document.getElementById('duel-content-1').textContent = data.resultMoto1 || "Analyse indisponible pour la Moto A.";
                 document.getElementById('duel-content-2').textContent = data.resultMoto2 || "Analyse indisponible pour la Moto B.";
 
-                res1.style.display = 'block';
-                res2.style.display = 'block';
-                res1.scrollIntoView({ behavior: 'smooth' });
+                duelWrapper.style.display = 'flex';
+                duelWrapper.scrollIntoView({ behavior: 'smooth' });
 
             } catch (error) {
                 alert("Erreur : " + error.message);
