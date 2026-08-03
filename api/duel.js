@@ -17,7 +17,7 @@ export default async function handler(req, res) {
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
-        // Utilisation d'un modèle Gemini stable
+        // Utilisation d'un modèle stable disponible
         const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
         const prompt = `
