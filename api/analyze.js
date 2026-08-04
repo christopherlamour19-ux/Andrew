@@ -6,10 +6,12 @@ export default async function handler(req, res) {
   }
 
   const { prompt } = req.body;
-  const apiKey = process.env.GEMINI_API_KEY;
+  
+  // Ta vraie clé API Google Cloud
+  const apiKey = "AQ.Ab8RN6Je5vxdnbO1sB69HgQXt-9YYm8VD7posrUsIDhMj1rEUw";
 
   if (!apiKey) {
-    return res.status(500).json({ error: 'Clé API non configurée sur Vercel.' });
+    return res.status(500).json({ error: 'Clé API manquante.' });
   }
 
   try {
@@ -31,7 +33,7 @@ export default async function handler(req, res) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     const systemInstructions = `Tu es un expert mécanicien et acheteur de motos d'occasion.
 Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce format pour séparer les onglets :
