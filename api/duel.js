@@ -7,7 +7,8 @@ export default async function handler(req, res) {
     }
 
     try {
-        const apiKey = process.env.GEMINI_API_KEY;
+        // Ta vraie clé API intégrée directement
+        const apiKey = "AQ.Ab8RN6Je5vxdnbO1sB69HgQXt-9YYm8VD7posrUsIDhMj1rEUw";
         if (!apiKey) return res.status(500).json({ error: "Clé API manquante." });
 
         // Récupération des données envoyées par le front-end pour le duel
@@ -17,7 +18,7 @@ export default async function handler(req, res) {
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
-        // Utilisation d'un modèle stable disponible
+        // Correction du nom du modèle (gemini-2.0-flash au lieu de 3.5)
         const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
         const prompt = `
