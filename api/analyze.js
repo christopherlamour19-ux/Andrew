@@ -31,7 +31,7 @@ export default async function handler(req, res) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'Gemini 3.1 Flash Lite' });
 
     const systemInstructions = `Tu es un expert mécanicien et acheteur de motos d'occasion.
 Analyse l'annonce suivante et réponds obligatoirement et strictement selon ce format pour séparer les onglets :
