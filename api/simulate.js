@@ -6,10 +6,12 @@ export default async function handler(req, res) {
   }
 
   const { profile } = req.body;
-  const apiKey = process.env.GEMINI_API_KEY;
+  
+  // Ta vraie clé API intégrée directement
+  const apiKey = "AQ.Ab8RN6Je5vxdnbO1sB69HgQXt-9YYm8VD7posrUsIDhMj1rEUw";
 
   if (!apiKey) {
-    return res.status(500).json({ error: 'Clé API non configurée sur Vercel.' });
+    return res.status(500).json({ error: 'Clé API manquante.' });
   }
 
   try {
@@ -17,6 +19,7 @@ export default async function handler(req, res) {
     const { ageRange, height, style, license, displacement, engineType, budget } = profile || {};
 
     const genAI = new GoogleGenerativeAI(apiKey);
+    // Correction du nom du modèle (gemini-2.0-flash au lieu de 3.5)
     const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 
     const simPrompt = `Tu es un conseiller expert en choix de moto. Un utilisateur recherche sa moto idéale selon son profil précis :
