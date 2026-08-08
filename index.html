@@ -6,8 +6,11 @@
     <title>RadarMoto | L'expert pour vos achats moto</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Script Google AdSense intégré proprement dans le <head> -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6331620701717414"
      crossorigin="anonymous"></script>
+
     <style>
         :root {
             --bg-dark: #070a13;
@@ -210,7 +213,6 @@
         /* --- RÉSULTATS --- */
         .result-container, .simulator-result { display: none; text-align: left; margin-bottom: 40px; overflow: hidden; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); width: 100%; max-width: 750px; }
         
-        /* Conteneur global pour les duels en colonnes côte à côte */
         .duel-results-wrapper {
             display: none;
             width: 100%;
@@ -303,7 +305,6 @@
             .nav-btn { padding: 8px 14px; font-size: 0.85rem; }
             .user-greeting { display: none !important; }
             
-            /* Sur mobile, les résultats du duel passent l'un sous l'autre */
             .duel-results-wrapper {
                 flex-direction: column;
             }
@@ -520,7 +521,6 @@
 
         <!-- CONTENEUR DUEL : MOTO A & MOTO B CÔTE À CÔTE -->
         <div class="duel-results-wrapper" id="duel-results-wrapper">
-            <!-- RÉSULTAT DUEL : MOTO 1 -->
             <div class="duel-result glass-panel" id="duel-result-1">
                 <div class="tabs-header" style="background: rgba(255, 179, 0, 0.1);">
                     <span class="tab-btn active" style="cursor: default;"><i class="fa-solid fa-1"></i> Analyse Moto A</span>
@@ -528,7 +528,6 @@
                 <div id="duel-content-1" class="tab-content active"></div>
             </div>
 
-            <!-- RÉSULTAT DUEL : MOTO 2 -->
             <div class="duel-result glass-panel" id="duel-result-2">
                 <div class="tabs-header" style="background: rgba(0, 110, 255, 0.1);">
                     <span class="tab-btn active" style="cursor: default;"><i class="fa-solid fa-2"></i> Analyse Moto B</span>
@@ -541,7 +540,6 @@
     <footer>&copy; 2026 RadarMoto. Outil d'aide à l'achat propulsé par l'IA.</footer>
 
     <script>
-        // LOGIQUE UTILISATEUR & AUTHENTIFICATION
         let isLoginMode = true;
         let currentUser = null;
 
@@ -647,7 +645,6 @@
             document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // LOGIQUE ONGLET ET REQUÊTES
         function switchMode(mode) {
             document.getElementById('result-container').style.display = 'none';
             document.getElementById('simulator-result-container').style.display = 'none';
@@ -684,7 +681,6 @@
 
         document.getElementById('fill-sample').addEventListener('click', () => { document.getElementById('prompt').value = "Voici une annonce : https://www.leboncoin.fr/ad/motos/3229286512"; });
 
-        // Submit Analyse
         document.getElementById('analyze-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const promptInput = document.getElementById('prompt').value;
@@ -722,7 +718,6 @@
             }
         });
 
-        // Submit Simulateur
         document.getElementById('simulator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const profile = {
@@ -769,7 +764,6 @@
             }
         });
 
-        // Submit Duel (Ciblant /api/duel)
         document.getElementById('duel-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const moto1 = document.getElementById('duel-moto-1').value;
