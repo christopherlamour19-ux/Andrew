@@ -16,7 +16,7 @@ export default async function handler(req, res) {
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
-        const modelAI = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
+        const modelAI = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
 
         const prompt = `
         Agis en tant qu'expert en cotation de motos d'occasion sur le marché français (style LeBonCoin / La Centrale).
