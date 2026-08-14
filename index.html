@@ -7,10 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Script Google AdSense intégré proprement dans le <head> -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6331620701717414"
-     crossorigin="anonymous"></script>
-
     <style>
         :root {
             --bg-dark: #070a13;
@@ -23,32 +19,10 @@
             --border-color: rgba(255, 255, 255, 0.08);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* --- ARRIÈRE-PLAN DYNAMIQUE --- */
-        .bg-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(120px);
-            z-index: -1;
-            opacity: 0.6;
-            animation: float 12s infinite ease-in-out alternate;
-        }
+        .bg-orb { position: fixed; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.6; animation: float 12s infinite ease-in-out alternate; }
         .orb-1 { top: -10%; left: -10%; width: 500px; height: 500px; background: rgba(255, 179, 0, 0.15); }
         .orb-2 { bottom: -10%; right: -5%; width: 600px; height: 600px; background: rgba(0, 110, 255, 0.12); animation-delay: -5s; }
         .orb-3 { top: 40%; left: 40%; width: 400px; height: 400px; background: rgba(255, 0, 102, 0.08); animation-duration: 15s; }
@@ -58,758 +32,314 @@
             100% { transform: translate(40px, 60px) scale(1.1); }
         }
 
-        /* --- NAVIGATION --- */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 5%;
-            background: rgba(7, 10, 19, 0.7);
-            backdrop-filter: blur(20px);
-            position: fixed;
-            width: 100%;
-            z-index: 100;
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: rgba(7, 10, 19, 0.7); backdrop-filter: blur(20px); position: fixed; width: 100%; z-index: 100; border-bottom: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .logo-container { display: flex; align-items: center; gap: 20px; }
-        .logo { font-size: 24px; font-weight: 800; letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: transform 0.3s; }
-        .logo:hover { transform: scale(1.02); }
+        .logo { font-size: 24px; font-weight: 800; display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .logo i { color: var(--accent); filter: drop-shadow(0 0 8px var(--accent-glow)); }
         .logo span { background: linear-gradient(135deg, #FFB300, #ff6a00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        .nav-badge {
-            background: rgba(255, 179, 0, 0.1);
-            color: var(--accent);
-            border: 1px solid rgba(255, 179, 0, 0.3);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: none;
-            box-shadow: 0 0 10px rgba(255, 179, 0, 0.1);
-        }
-
+        .nav-badge { background: rgba(255, 179, 0, 0.1); color: var(--accent); border: 1px solid rgba(255, 179, 0, 0.3); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: none; }
         .auth-nav { display: flex; align-items: center; gap: 15px; }
 
-        .nav-btn {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 179, 0, 0.5);
-            color: var(--accent);
-            padding: 8px 18px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 0.9rem;
-            backdrop-filter: blur(10px);
-        }
-
-        .nav-btn:hover {
-            background: var(--accent);
-            color: #000;
-            box-shadow: 0 0 15px var(--accent-glow);
-            transform: translateY(-2px);
-        }
+        .nav-btn { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 179, 0, 0.5); color: var(--accent); padding: 8px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 0.9rem; }
+        .nav-btn:hover { background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-2px); }
         
         .user-greeting { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); display: none; }
         .user-greeting span { color: var(--text-main); }
 
-        /* --- HERO SECTION --- */
         .hero { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 140px 5% 60px 5%; z-index: 10; }
-        
-        .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 20px; letter-spacing: -1px; line-height: 1.2; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .hero h1 span { 
-            background: linear-gradient(135deg, #FFB300, #ff5e00);
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            position: relative;
-        }
-
+        .hero h1 { font-size: 3.2rem; font-weight: 800; margin-bottom: 20px; letter-spacing: -1px; line-height: 1.2; }
+        .hero h1 span { background: linear-gradient(135deg, #FFB300, #ff5e00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hero p { font-size: 1.15rem; color: var(--text-muted); margin-bottom: 35px; max-width: 650px; line-height: 1.6; }
 
-        /* --- SÉLECTEUR DE MODE --- */
-        .main-modes { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 16px; border: 1px solid var(--border-color); backdrop-filter: blur(10px); }
-        
-        .mode-btn { background: transparent; border: none; color: var(--text-muted); padding: 12px 25px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.4s ease; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        /* SÉLECTEUR DE MODES */
+        .main-modes { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 40px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 16px; border: 1px solid var(--border-color); backdrop-filter: blur(10px); }
+        .mode-btn { background: transparent; border: none; color: var(--text-muted); padding: 10px 18px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
         .mode-btn:hover { color: white; }
         .mode-btn.active { background: var(--accent); color: #000; box-shadow: 0 5px 15px var(--accent-glow); transform: scale(1.02); }
 
-        /* --- COMPOSANTS DE VERRE --- */
-        .glass-panel {
-            background: var(--bg-card);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            width: 100%;
-            max-width: 750px;
-        }
+        .glass-panel { background: var(--bg-card); backdrop-filter: blur(16px); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); width: 100%; max-width: 750px; }
 
-        /* --- ANALYSEUR --- */
         .search-container { width: 100%; max-width: 750px; margin-bottom: 15px; }
-        .search-box { display: flex; padding: 10px; transition: transform 0.3s, border-color 0.3s; }
-        .search-box:focus-within { border-color: rgba(255, 179, 0, 0.5); transform: translateY(-2px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 179, 0, 0.15); }
-        
+        .search-box { display: flex; padding: 10px; }
         .search-box input { flex: 1; background: transparent; border: none; padding: 15px 20px; color: white; font-size: 1rem; outline: none; }
         .search-box input::placeholder { color: var(--text-muted); }
         
         .search-box button, .sim-submit-btn, .submit-btn {
             background: linear-gradient(135deg, #FFB300, #F59E0B);
-            color: #000;
-            border: none;
-            padding: 0 35px;
-            font-size: 1rem;
-            font-weight: 700;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            color: #000; border: none; padding: 0 30px; font-size: 1rem; font-weight: 700;
+            border-radius: 10px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px;
             box-shadow: 0 4px 15px var(--accent-glow);
         }
-
-        .search-box button:hover, .sim-submit-btn:hover, .submit-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 25px var(--accent-glow); }
-        .search-box button:active, .sim-submit-btn:active { transform: translateY(1px); }
+        .search-box button:hover, .sim-submit-btn:hover, .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); }
 
         .sample-hint { font-size: 0.9rem; color: var(--text-muted); margin-top: 15px; margin-bottom: 40px; }
-        .sample-hint span { color: var(--accent); cursor: pointer; text-decoration: none; font-weight: 500; border-bottom: 1px dashed var(--accent); transition: 0.3s; }
-        .sample-hint span:hover { color: #fff; border-color: #fff; }
+        .sample-hint span { color: var(--accent); cursor: pointer; font-weight: 500; border-bottom: 1px dashed var(--accent); }
 
-        /* --- SIMULATEUR & DUEL --- */
         .simulator-form { display: none; padding: 35px; text-align: left; margin-bottom: 40px; }
-        
-        .form-grid { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 20px; 
-            margin-bottom: 30px; 
-        }
-        
+        .form-grid { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; }
         .form-group { display: flex; flex-direction: column; gap: 8px; }
         .form-group label { font-size: 0.9rem; color: #cbd5e1; font-weight: 500; display: flex; align-items: center; gap: 8px; }
-        .form-group label i { color: var(--accent); opacity: 0.8; }
+        .form-group label i { color: var(--accent); }
         
-        .form-group select, .form-group input[type="number"], .form-group input[type="text"] {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
-            padding: 14px 15px;
-            border-radius: 10px;
-            color: white;
-            font-size: 0.95rem;
-            outline: none;
-            width: 100%;
-            transition: all 0.3s;
-            backdrop-filter: blur(5px);
+        .form-group select, .form-group input {
+            background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color); padding: 14px 15px;
+            border-radius: 10px; color: white; font-size: 0.95rem; outline: none; width: 100%; transition: 0.3s;
         }
-        .form-group select:focus, .form-group input[type="number"]:focus, .form-group input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(255, 179, 0, 0.2); background: rgba(0, 0, 0, 0.5); }
-        
-        .sim-submit-btn { width: 100%; padding: 18px; font-size: 1.05rem; margin-top: 10px; }
+        .form-group select:focus, .form-group input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(255, 179, 0, 0.2); }
+        .sim-submit-btn { width: 100%; padding: 18px; font-size: 1.05rem; }
 
-        /* --- RÉSULTATS --- */
-        .result-container, .simulator-result { display: none; text-align: left; margin-bottom: 40px; overflow: hidden; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); width: 100%; max-width: 750px; }
-        
-        .duel-results-wrapper {
-            display: none;
-            width: 100%;
-            max-width: 1100px;
-            gap: 20px;
-            margin-bottom: 40px;
-            animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .duel-result {
-            flex: 1;
-            min-width: 300px;
-            text-align: left;
-            overflow: hidden;
-        }
-        
+        .result-container, .simulator-result, .duel-results-wrapper, .argus-result { display: none; text-align: left; margin-bottom: 40px; animation: slideUpFade 0.5s ease forwards; opacity: 0; transform: translateY(20px); width: 100%; max-width: 750px; }
         @keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
 
         .tabs-header { display: flex; background: rgba(0, 0, 0, 0.2); border-bottom: 1px solid var(--border-color); }
-        .tab-btn { flex: 1; padding: 18px; background: transparent; border: none; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; }
-        .tab-btn::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 2px; background: var(--accent); transform: scaleX(0); transition: transform 0.3s ease; }
-        .tab-btn:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.02); }
+        .tab-btn { flex: 1; padding: 18px; background: transparent; border: none; color: var(--text-muted); font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .tab-btn.active { color: var(--accent); background: linear-gradient(to top, rgba(255, 179, 0, 0.05), transparent); }
-        .tab-btn.active::after { transform: scaleX(1); }
-
         .tab-content { display: none; padding: 30px; color: #E2E8F0; line-height: 1.8; font-size: 1rem; white-space: pre-wrap; }
-        .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .duel-results-wrapper { max-width: 1100px; gap: 20px; }
+        .duel-result { flex: 1; min-width: 300px; }
 
-        /* --- MODALES --- */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; opacity: 0; animation: fadeInModal 0.3s forwards; }
-        @keyframes fadeInModal { to { opacity: 1; } }
-
-        .modal-content {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            padding: 40px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 420px;
-            border: 1px solid rgba(255,255,255,0.1);
-            position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-            transform: scale(0.95) translateY(20px);
-            animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes modalPop { to { transform: scale(1) translateY(0); } }
-
-        .close-modal { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.05); border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
-        .close-modal:hover { background: rgba(239, 68, 68, 0.2); color: #ef4444; transform: rotate(90deg); }
-
-        .modal-content h2 { margin-bottom: 30px; font-size: 1.6rem; text-align: center; background: linear-gradient(135deg, #fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .modal-content input { width: 100%; margin-bottom: 20px; padding: 15px; border-radius: 12px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-color); color: white; font-size: 1rem; transition: 0.3s; }
-        .modal-content input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(255, 179, 0, 0.15); }
-        .modal-content .submit-btn { width: 100%; padding: 15px; margin-bottom: 20px; }
-        .toggle-auth { color: var(--accent); cursor: pointer; font-size: 0.95rem; text-align: center; display: block; opacity: 0.9; transition: 0.3s; }
-        .toggle-auth:hover { opacity: 1; text-shadow: 0 0 8px var(--accent-glow); }
-
-        .history-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 5px; }
-        .history-list::-webkit-scrollbar { width: 6px; }
-        .history-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-        
-        .history-item { background: rgba(0, 0, 0, 0.3); padding: 18px; border-radius: 12px; cursor: pointer; border: 1px solid transparent; transition: all 0.3s; display: flex; flex-direction: column; gap: 6px; }
-        .history-item:hover { border-color: var(--accent); background: rgba(255, 179, 0, 0.05); transform: translateX(5px); }
-        .history-item-date { font-size: 0.8rem; color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 6px; }
-        .history-item-title { font-weight: 500; font-size: 0.95rem; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        /* --- SPINNER --- */
         .spinner { display: none; width: 20px; height: 20px; border: 3px solid rgba(0, 0, 0, 0.2); border-radius: 50%; border-top-color: #000; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
-        footer { text-align: center; padding: 25px; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--border-color); background: rgba(7, 10, 19, 0.8); backdrop-filter: blur(10px); margin-top: auto; z-index: 10; }
 
-        /* --- RESPONSIVE --- */
-        @media (min-width: 769px) { 
-            .nav-badge { display: inline-block; } 
-        }
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.4rem; }
-            .hero { padding: 120px 5% 40px 5%; }
-            .search-box { flex-direction: column; background: transparent; border: none; box-shadow: none; padding: 0; }
-            .search-box input { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 12px; padding: 16px; backdrop-filter: blur(10px); }
-            .search-box button { width: 100%; padding: 18px; }
-            .main-modes { flex-direction: column; width: 100%; background: transparent; border: none; padding: 0; gap: 10px; }
-            .mode-btn { background: var(--bg-card); border: 1px solid var(--border-color); justify-content: center; }
-            .nav-btn { padding: 8px 14px; font-size: 0.85rem; }
-            .user-greeting { display: none !important; }
-            
-            .duel-results-wrapper {
-                flex-direction: column;
-            }
-        }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--bg-card); padding: 40px; border-radius: 20px; width: 90%; max-width: 420px; border: 1px solid rgba(255,255,255,0.1); position: relative; }
+        .close-modal { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.05); border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        footer { text-align: center; padding: 25px; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--border-color); background: rgba(7, 10, 19, 0.8); margin-top: auto; z-index: 10; }
     </style>
 </head>
 <body>
 
-    <!-- Arrière-plan dynamique -->
     <div class="bg-orb orb-1"></div>
     <div class="bg-orb orb-2"></div>
     <div class="bg-orb orb-3"></div>
 
     <nav>
         <div class="logo-container">
-            <div class="logo">
-                <i class="fa-solid fa-motorcycle"></i> Radar<span>Moto</span>
-            </div>
+            <div class="logo"><i class="fa-solid fa-motorcycle"></i> Radar<span>Moto</span></div>
             <div class="nav-badge">christo.r7 le best</div>
         </div>
-        
         <div class="auth-nav" id="auth-nav">
-            <button class="nav-btn" id="btn-login-modal" onclick="openModal('auth-modal')">
-                <i class="fa-solid fa-user"></i> Connexion
-            </button>
+            <button class="nav-btn" id="btn-login-modal" onclick="openModal('auth-modal')"><i class="fa-solid fa-user"></i> Connexion</button>
             <div class="user-greeting" id="user-greeting">Salut, <span id="display-username"></span></div>
-            <button class="nav-btn" id="btn-history" style="display: none;" onclick="openHistoryModal()">
-                <i class="fa-solid fa-clock-rotate-left"></i> Historique
-            </button>
-            <button class="nav-btn" id="btn-logout" style="display: none;" onclick="logout()" style="border-color: rgba(239, 68, 68, 0.5); color: #ef4444;">
-                <i class="fa-solid fa-power-off"></i>
-            </button>
+            <button class="nav-btn" id="btn-logout" style="display: none;" onclick="logout()"><i class="fa-solid fa-power-off"></i></button>
         </div>
     </nav>
 
-    <!-- Modal Authentification -->
     <div class="modal-overlay" id="auth-modal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal('auth-modal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2 id="auth-title">Connexion</h2>
+            <h2 id="auth-title" style="margin-bottom: 20px;">Connexion</h2>
             <form id="auth-form">
-                <input type="text" id="auth-username" placeholder="Nom d'utilisateur" required autocomplete="username">
-                <input type="password" id="auth-password" placeholder="Mot de passe" required autocomplete="current-password">
-                <p id="auth-error" style="color: #ef4444; font-size: 0.85rem; margin-bottom: 15px; text-align: center; display: none;"></p>
-                <button type="submit" class="submit-btn" id="auth-submit">Se connecter</button>
+                <input type="text" id="auth-username" placeholder="Nom d'utilisateur" required style="width:150%; margin-bottom:15px; padding:12px; background:rgba(0,0,0,0.3); border:1px solid #333; color:#fff; border-radius:8px;">
+                <input type="password" id="auth-password" placeholder="Mot de passe" required style="width:100%; margin-bottom:15px; padding:12px; background:rgba(0,0,0,0.3); border:1px solid #333; color:#fff; border-radius:8px;">
+                <button type="submit" class="submit-btn" style="width:100%; padding:12px;">Se connecter</button>
             </form>
-            <span class="toggle-auth" onclick="toggleAuthMode()" id="auth-toggle-text">Pas de compte ? S'inscrire</span>
-        </div>
-    </div>
-
-    <!-- Modal Historique -->
-    <div class="modal-overlay" id="history-modal">
-        <div class="modal-content" style="max-width: 600px;">
-            <button class="close-modal" onclick="closeModal('history-modal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2>Mes Analyses Précédentes</h2>
-            <div class="history-list" id="history-list"></div>
         </div>
     </div>
 
     <section class="hero">
         <h1>Votre expert moto <span>intelligent</span></h1>
-        <p>Analysez une annonce Leboncoin pour éviter les arnaques ou laissez l'IA trouver la moto parfaitement adaptée à votre profil.</p>
+        <p>Analysez, simulez, comparez ou estimez la valeur de vente de votre moto sur LeBonCoin en quelques secondes.</p>
 
+        <!-- NAVIGATION DES MODES -->
         <div class="main-modes">
-            <button class="mode-btn active" id="btn-mode-ad" onclick="switchMode('ad')">
-                <i class="fa-solid fa-magnifying-glass-dollar"></i> Analyseur d'Annonce
-            </button>
-            <button class="mode-btn" id="btn-mode-sim" onclick="switchMode('simulator')">
-                <i class="fa-solid fa-user-gear"></i> Simulateur "Idéal Moto"
-            </button>
-            <button class="mode-btn" id="btn-mode-duel" onclick="switchMode('duel')">
-                <i class="fa-solid fa-scale-balanced"></i> Duel IA (Comparateur)
-            </button>
+            <button class="mode-btn active" id="btn-mode-ad" onclick="switchMode('ad')"><i class="fa-solid fa-magnifying-glass-dollar"></i> Analyseur</button>
+            <button class="mode-btn" id="btn-mode-sim" onclick="switchMode('simulator')"><i class="fa-solid fa-user-gear"></i> Simulateur</button>
+            <button class="mode-btn" id="btn-mode-duel" onclick="switchMode('duel')"><i class="fa-solid fa-scale-balanced"></i> Duel IA</button>
+            <button class="mode-btn" id="btn-mode-argus" onclick="switchMode('argus')"><i class="fa-solid fa-tags"></i> Argus LeBonCoin</button>
         </div>
 
-        <!-- MODE 1 : ANNONCE -->
+        <!-- 1. MODE ANNONCE -->
         <div class="search-container" id="container-mode-ad">
             <form id="analyze-form" class="search-box glass-panel">
                 <input type="text" id="prompt" placeholder="Collez votre lien ou description LeBonCoin ici..." required>
-                <button type="submit" id="submit-btn">
-                    <span id="btn-text">Lancer l'audit</span>
-                    <div class="spinner" id="spinner"></div>
-                </button>
+                <button type="submit" id="submit-btn"><span>Lancer l'audit</span><div class="spinner" id="spinner"></div></button>
             </form>
-            <div class="sample-hint">
-                Besoin d'un test rapide ? <span id="fill-sample">Insérer une annonce exemple</span>
-            </div>
         </div>
 
-        <!-- MODE 2 : SIMULATEUR -->
+        <!-- 2. MODE SIMULATEUR -->
         <form id="simulator-form" class="simulator-form glass-panel">
             <div class="form-grid">
-                <div class="form-group">
-                    <label><i class="fa-solid fa-cake-candles"></i> Tranche d'âge</label>
-                    <select id="sim-age">
-                        <option value="18-24 ans">18-24 ans</option>
-                        <option value="25-35 ans" selected>25-35 ans</option>
-                        <option value="36-50 ans">36-50 ans</option>
-                        <option value="50 ans et plus">50 ans et plus</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label><i class="fa-solid fa-ruler-vertical"></i> Taille du pilote</label>
-                    <select id="sim-height">
-                        <option value="Moins de 1m65">Moins de 1m65</option>
-                        <option value="1m65 à 1m75">1m65 à 1m75</option>
-                        <option value="1m75 à 1m85">1m75 à 1m85</option>
-                        <option value="1m85 à 2m" selected>1m85 à 2m (Grand gabarit)</option>
-                        <option value="Plus de 2m">Plus de 2m (Très grand gabarit)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label><i class="fa-solid fa-id-card"></i> Permis moto</label>
-                    <select id="sim-license">
-                        <option value="Permis A2">Permis A2</option>
-                        <option value="Permis A (Full)">Permis A (Full)</option>
-                        <option value="Permis A1 (125cc)">Permis A1 (125cc)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label><i class="fa-solid fa-clock-rotate-left"></i> Expérience / Pratique</label>
-                    <select id="sim-experience">
-                        <option value="Débutant total (Jamais roulé)">Débutant total</option>
-                        <option value="Moins d'un an d'expérience" selected>Moins d'un an</option>
-                        <option value="1 à 3 ans d'expérience">1 à 3 ans</option>
-                        <option value="Plus de 3 ans d'expérience">Plus de 3 ans</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label><i class="fa-solid fa-motorcycle"></i> Style de moto</label>
-                    <select id="sim-style">
-                        <option value="Roadster">Roadster</option>
-                        <option value="Sportive">Sportive</option>
-                        <option value="Trail / Adventure">Trail / Adventure</option>
-                        <option value="Routière / GT">Routière / GT</option>
-                        <option value="Custom / Café Racer">Custom / Café Racer</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label><i class="fa-solid fa-gauge-high"></i> Gamme de cylindrée</label>
-                    <select id="sim-displacement">
-                        <option value="Peu importe">Peu importe / Laisser l'IA juger</option>
-                        <option value="125cc">125cc</option>
-                        <option value="A2 (300cc - 500cc)">A2 intermédiaire (300cc - 500cc)</option>
-                        <option value="Moyenne cylindrée (600cc - 900cc)">Moyenne cylindrée (600cc - 900cc)</option>
-                        <option value="Grosse cylindrée (1000cc et +)">Grosse cylindrée (1000cc et +)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label><i class="fa-solid fa-gears"></i> Type de moteur / Architecture</label>
-                    <select id="sim-engine-type">
-                        <option value="Peu importe">Peu importe / Laisser l'IA juger</option>
-                        <option value="Monocylindre">Monocylindre (Coupleux, léger)</option>
-                        <option value="Bicylindre en ligne (Parallel-Twin)">Bicylindre en ligne (Polyvalent, expressif)</option>
-                        <option value="Bicylindre en V (V-Twin / L-Twin)">Bicylindre en V (Caractère fort, sonorité)</option>
-                        <option value="3 cylindres (Tri-cylinder)">3 cylindres (Le meilleur des deux mondes)</option>
-                        <option value="4 cylindres (Inline-4)">4 cylindres (Souple, rageur dans les tours)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label><i class="fa-solid fa-wallet"></i> Budget maximum (€)</label>
-                    <input type="number" id="sim-budget" placeholder="Ex: 6500" min="500" step="100" value="6500" required>
-                </div>
+                <div class="form-group"><label><i class="fa-solid fa-cake-candles"></i> Tranche d'âge</label><select id="sim-age"><option value="25-35 ans">25-35 ans</option></select></div>
+                <div class="form-group"><label><i class="fa-solid fa-wallet"></i> Budget maximum (€)</label><input type="number" id="sim-budget" value="6500" required></div>
             </div>
-            
-            <button type="submit" class="sim-submit-btn" id="sim-submit-btn">
-                <span>Trouver ma moto idéale</span>
-                <div class="spinner" id="sim-spinner"></div>
-            </button>
+            <button type="submit" class="sim-submit-btn" id="sim-submit-btn"><span>Trouver ma moto idéale</span><div class="spinner" id="sim-spinner"></div></button>
         </form>
 
-        <!-- MODE 3 : DUEL DE MODÈLES -->
+        <!-- 3. MODE DUEL -->
         <form id="duel-form" class="simulator-form glass-panel">
             <div class="form-grid">
+                <div class="form-group"><label><i class="fa-solid fa-motorcycle"></i> Moto A</label><input type="text" id="duel-moto-1" placeholder="Ex: Yamaha MT-07" required></div>
+                <div class="form-group"><label><i class="fa-solid fa-motorcycle"></i> Moto B</label><input type="text" id="duel-moto-2" placeholder="Ex: Kawasaki Z650" required></div>
+                <div class="form-group"><label><i class="fa-solid fa-user-check"></i> Votre profil</label><input type="text" id="duel-profile" placeholder="Ex: Permis A2" required></div>
+            </div>
+            <button type="submit" class="sim-submit-btn" id="duel-submit-btn"><span>Lancer le Duel IA</span><div class="spinner" id="duel-spinner"></div></button>
+        </form>
+
+        <!-- 4. NOUVEAU MODE : ARGUS / ESTIMATION LEBONCOIN -->
+        <form id="argus-form" class="simulator-form glass-panel">
+            <div class="form-grid">
                 <div class="form-group">
-                    <label><i class="fa-solid fa-motorcycle"></i> Moto A (Première candidate)</label>
-                    <input type="text" id="duel-moto-1" placeholder="Ex: Yamaha MT-07 2022" required>
+                    <label><i class="fa-solid fa-industry"></i> Marque</label>
+                    <input type="text" id="argus-brand" placeholder="Ex: Yamaha, Honda, Kawasaki..." required>
                 </div>
                 <div class="form-group">
-                    <label><i class="fa-solid fa-motorcycle"></i> Moto B (Seconde candidate)</label>
-                    <input type="text" id="duel-moto-2" placeholder="Ex: Kawasaki Z650 2022" required>
+                    <label><i class="fa-solid fa-motorcycle"></i> Modèle</label>
+                    <input type="text" id="argus-model" placeholder="Ex: MT-07, CB650R, Z900..." required>
                 </div>
                 <div class="form-group">
-                    <label><i class="fa-solid fa-user-check"></i> Votre profil / Utilisation</label>
-                    <input type="text" id="duel-profile" placeholder="Ex: Permis A2, trajets quotidiens + balade weekend" required>
+                    <label><i class="fa-solid fa-calendar-days"></i> Année de mise en circulation</label>
+                    <input type="number" id="argus-year" placeholder="Ex: 2021" min="1950" max="2026" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fa-solid fa-road"></i> Nombre de kilomètres</label>
+                    <input type="number" id="argus-km" placeholder="Ex: 15400" min="0" step="100" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fa-solid fa-file-invoice-dollar"></i> Historique d'entretien / Factures</label>
+                    <select id="argus-invoice">
+                        <option value="Factures complètes et carnet d'entretien à jour (Réseau constructeur)">Factures complètes & carnet à jour (Garage)</option>
+                        <option value="Factures partielles / Entretien fait soi-même avec factures consommables">Factures partielles / Suivi sérieux</option>
+                        <option value="Aucune facture / Pas de carnet d'entretien disponible">Aucune facture / Pas de carnet d'entretien</option>
+                    </select>
                 </div>
             </div>
-            
-            <button type="submit" class="sim-submit-btn" id="duel-submit-btn">
-                <span>Lancer le Duel IA</span>
-                <div class="spinner" id="duel-spinner"></div>
+            <button type="submit" class="sim-submit-btn" id="argus-submit-btn">
+                <span>Estimer le prix de vente</span>
+                <div class="spinner" id="argus-spinner"></div>
             </button>
         </form>
 
-        <!-- RÉSULTAT ANNONCE -->
+        <!-- CONTENEURS DE RÉSULTATS -->
         <div class="result-container glass-panel" id="result-container">
-            <div class="tabs-header">
-                <button class="tab-btn active" onclick="switchTab('summary', 'ad')"><i class="fa-solid fa-bolt"></i> Résumé Rapide</button>
-                <button class="tab-btn" onclick="switchTab('detailed', 'ad')"><i class="fa-solid fa-file-lines"></i> Rapport Technique</button>
-            </div>
+            <div class="tabs-header"><button class="tab-btn active">Résumé Rapide</button></div>
             <div id="tab-summary" class="tab-content active"></div>
-            <div id="tab-detailed" class="tab-content"></div>
         </div>
 
-        <!-- RÉSULTAT SIMULATEUR -->
         <div class="simulator-result glass-panel" id="simulator-result-container">
-            <div class="tabs-header">
-                <button class="tab-btn active" onclick="switchTab('summary', 'sim')"><i class="fa-solid fa-bullseye"></i> Moto Idéale</button>
-                <button class="tab-btn" onclick="switchTab('detailed', 'sim')"><i class="fa-solid fa-list-check"></i> Pourquoi ce choix ?</button>
-            </div>
+            <div class="tabs-header"><button class="tab-btn active">Moto Idéale</button></div>
             <div id="sim-tab-summary" class="tab-content active"></div>
-            <div id="sim-tab-detailed" class="tab-content"></div>
         </div>
 
-        <!-- CONTENEUR DUEL : MOTO A & MOTO B CÔTE À CÔTE -->
         <div class="duel-results-wrapper" id="duel-results-wrapper">
-            <div class="duel-result glass-panel" id="duel-result-1">
-                <div class="tabs-header" style="background: rgba(255, 179, 0, 0.1);">
-                    <span class="tab-btn active" style="cursor: default;"><i class="fa-solid fa-1"></i> Analyse Moto A</span>
-                </div>
-                <div id="duel-content-1" class="tab-content active"></div>
-            </div>
+            <div class="duel-result glass-panel"><div class="tabs-header"><span class="tab-btn active">Moto A</span></div><div id="duel-content-1" class="tab-content active"></div></div>
+            <div class="duel-result glass-panel"><div class="tabs-header"><span class="tab-btn active">Moto B</span></div><div id="duel-content-2" class="tab-content active"></div></div>
+        </div>
 
-            <div class="duel-result glass-panel" id="duel-result-2">
-                <div class="tabs-header" style="background: rgba(0, 110, 255, 0.1);">
-                    <span class="tab-btn active" style="cursor: default;"><i class="fa-solid fa-2"></i> Analyse Moto B</span>
-                </div>
-                <div id="duel-content-2" class="tab-content active"></div>
+        <!-- RÉSULTAT ARGUS -->
+        <div class="argus-result glass-panel" id="argus-result-container">
+            <div class="tabs-header" style="background: rgba(255, 179, 0, 0.1);">
+                <span class="tab-btn active" style="cursor: default;"><i class="fa-solid fa-chart-line"></i> Estimation du prix sur LeBonCoin</span>
             </div>
+            <div id="argus-content" class="tab-content active"></div>
         </div>
     </section>
 
     <footer>&copy; 2026 RadarMoto. Outil d'aide à l'achat propulsé par l'IA.</footer>
 
     <script>
-        let isLoginMode = true;
-        let currentUser = null;
-
-        function initAuth() { currentUser = localStorage.getItem('currentUser'); updateNav(); }
-
-        function updateNav() {
-            const btnLogin = document.getElementById('btn-login-modal');
-            const btnHistory = document.getElementById('btn-history');
-            const btnLogout = document.getElementById('btn-logout');
-            const greeting = document.getElementById('user-greeting');
-            const displayUser = document.getElementById('display-username');
-
-            if (currentUser) {
-                btnLogin.style.display = 'none';
-                btnHistory.style.display = 'inline-block';
-                btnLogout.style.display = 'inline-block';
-                greeting.style.display = 'inline-block';
-                displayUser.textContent = currentUser;
-            } else {
-                btnLogin.style.display = 'inline-block';
-                btnHistory.style.display = 'none';
-                btnLogout.style.display = 'none';
-                greeting.style.display = 'none';
-            }
-        }
-
+        let currentUser = localStorage.getItem('currentUser');
+        if(currentUser) { document.getElementById('btn-login-modal').style.display='none'; document.getElementById('user-greeting').style.display='inline-block'; document.getElementById('display-username').textContent=currentUser; document.getElementById('btn-logout').style.display='inline-block'; }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; if(id === 'auth-modal') document.getElementById('auth-error').style.display = 'none'; }
-
-        function toggleAuthMode() {
-            isLoginMode = !isLoginMode;
-            document.getElementById('auth-title').textContent = isLoginMode ? 'Connexion' : 'Inscription';
-            document.getElementById('auth-submit').textContent = isLoginMode ? 'Se connecter' : 'Créer un compte';
-            document.getElementById('auth-toggle-text').textContent = isLoginMode ? 'Pas de compte ? S\'inscrire' : 'Déjà un compte ? Se connecter';
-            document.getElementById('auth-error').style.display = 'none';
-        }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function logout() { localStorage.removeItem('currentUser'); location.reload(); }
 
         document.getElementById('auth-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const user = document.getElementById('auth-username').value.trim();
-            const pass = document.getElementById('auth-password').value.trim();
-            const errorEl = document.getElementById('auth-error');
-            if (!user || !pass) return;
-            let users = JSON.parse(localStorage.getItem('users')) || {};
-
-            if (isLoginMode) {
-                if (users[user] && users[user].password === pass) {
-                    currentUser = user; localStorage.setItem('currentUser', user);
-                    closeModal('auth-modal'); updateNav(); this.reset();
-                } else { errorEl.textContent = "Identifiants incorrects."; errorEl.style.display = 'block'; }
-            } else {
-                if (users[user]) { errorEl.textContent = "Ce nom d'utilisateur existe déjà."; errorEl.style.display = 'block'; } 
-                else {
-                    users[user] = { password: pass, history: [] };
-                    localStorage.setItem('users', JSON.stringify(users));
-                    currentUser = user; localStorage.setItem('currentUser', user);
-                    closeModal('auth-modal'); updateNav(); this.reset();
-                }
-            }
+            if(user) { localStorage.setItem('currentUser', user); location.reload(); }
         });
-
-        function logout() { currentUser = null; localStorage.removeItem('currentUser'); updateNav(); }
-
-        function saveToHistory(prompt, summary, detailed) {
-            if (!currentUser) return;
-            let users = JSON.parse(localStorage.getItem('users')) || {};
-            if (!users[currentUser]) return;
-            users[currentUser].history.unshift({
-                id: Date.now(),
-                date: new Date().toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit' }),
-                prompt: prompt, summary: summary, detailed: detailed
-            }); 
-            localStorage.setItem('users', JSON.stringify(users));
-        }
-
-        function openHistoryModal() {
-            const listEl = document.getElementById('history-list');
-            listEl.innerHTML = '';
-            let users = JSON.parse(localStorage.getItem('users')) || {};
-            let history = users[currentUser]?.history || [];
-
-            if (history.length === 0) {
-                listEl.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Aucune analyse enregistrée.</p>';
-            } else {
-                history.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'history-item';
-                    div.innerHTML = `<div class="history-item-date"><i class="fa-regular fa-clock"></i> ${item.date}</div><div class="history-item-title">${item.prompt}</div>`;
-                    div.onclick = () => loadHistoryItem(item);
-                    listEl.appendChild(div);
-                });
-            }
-            openModal('history-modal');
-        }
-
-        function loadHistoryItem(item) {
-            closeModal('history-modal'); switchMode('ad'); 
-            document.getElementById('prompt').value = item.prompt;
-            document.getElementById('tab-summary').textContent = item.summary;
-            document.getElementById('tab-detailed').textContent = item.detailed;
-            document.getElementById('result-container').style.display = 'block';
-            switchTab('summary', 'ad');
-            document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' });
-        }
 
         function switchMode(mode) {
-            document.getElementById('result-container').style.display = 'none';
-            document.getElementById('simulator-result-container').style.display = 'none';
-            document.getElementById('duel-results-wrapper').style.display = 'none';
+            ['container-mode-ad', 'simulator-form', 'duel-form', 'argus-form'].forEach(id => document.getElementById(id).style.display = 'none');
+            ['result-container', 'simulator-result-container', 'duel-results-wrapper', 'argus-result-container'].forEach(id => document.getElementById(id).style.display = 'none');
+            ['btn-mode-ad', 'btn-mode-sim', 'btn-mode-duel', 'btn-mode-argus'].forEach(id => document.getElementById(id).classList.remove('active'));
 
-            document.getElementById('btn-mode-ad').classList.remove('active');
-            document.getElementById('btn-mode-sim').classList.remove('active');
-            document.getElementById('btn-mode-duel').classList.remove('active');
-
-            document.getElementById('container-mode-ad').style.display = 'none';
-            document.getElementById('simulator-form').style.display = 'none';
-            document.getElementById('duel-form').style.display = 'none';
-
-            if (mode === 'ad') {
-                document.getElementById('btn-mode-ad').classList.add('active');
-                document.getElementById('container-mode-ad').style.display = 'block';
-            } else if (mode === 'simulator') {
-                document.getElementById('btn-mode-sim').classList.add('active');
-                document.getElementById('simulator-form').style.display = 'block';
-            } else if (mode === 'duel') {
-                document.getElementById('btn-mode-duel').classList.add('active');
-                document.getElementById('duel-form').style.display = 'block';
-            }
+            if (mode === 'ad') { document.getElementById('btn-mode-ad').classList.add('active'); document.getElementById('container-mode-ad').style.display = 'block'; }
+            else if (mode === 'simulator') { document.getElementById('btn-mode-sim').classList.add('active'); document.getElementById('simulator-form').style.display = 'block'; }
+            else if (mode === 'duel') { document.getElementById('btn-mode-duel').classList.add('active'); document.getElementById('duel-form').style.display = 'block'; }
+            else if (mode === 'argus') { document.getElementById('btn-mode-argus').classList.add('active'); document.getElementById('argus-form').style.display = 'block'; }
         }
 
-        function switchTab(tabName, type) {
-            const containerId = type === 'ad' ? 'result-container' : 'simulator-result-container';
-            const prefix = type === 'ad' ? 'tab' : 'sim-tab';
-            document.querySelectorAll(`#${containerId} .tab-btn`).forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll(`#${containerId} .tab-content`).forEach(content => content.classList.remove('active'));
-            document.querySelector(`#${containerId} .tab-btn:nth-child(${tabName === 'summary' ? 1 : 2})`).classList.add('active');
-            document.getElementById(`${prefix}-${tabName}`).classList.add('active');
-        }
-
-        document.getElementById('fill-sample').addEventListener('click', () => { document.getElementById('prompt').value = "Voici une annonce : https://www.leboncoin.fr/ad/motos/3229286512"; });
-
-        document.getElementById('analyze-form').addEventListener('submit', async function(e) {
+        // Script Formulaire Argus
+        document.getElementById('argus-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const promptInput = document.getElementById('prompt').value;
-            const submitBtn = document.getElementById('submit-btn');
-            const btnText = document.getElementById('btn-text');
-            const spinner = document.getElementById('spinner');
-            const resultContainer = document.getElementById('result-container');
-            
-            submitBtn.disabled = true; spinner.style.display = 'inline-block';
-            resultContainer.style.display = 'none';
-            btnText.textContent = "Analyse IA en cours...";
-            
-            try {
-                const response = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: promptInput }) });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
-                
-                let summaryPart = data.result, detailedPart = "Détails non disponibles.";
-                if (data.result.includes("---RESUME_RAPIDE---") && data.result.includes("---RAPPORT_DETAILLE---")) {
-                    const parts = data.result.split("---RAPPORT_DETAILLE---");
-                    summaryPart = parts[0].replace("---RESUME_RAPIDE---", "").trim(); detailedPart = parts[1].trim();
-                }
-                
-                document.getElementById('tab-summary').textContent = summaryPart;
-                document.getElementById('tab-detailed').textContent = detailedPart;
-                resultContainer.style.display = 'block';
-                switchTab('summary', 'ad');
-                saveToHistory(promptInput, summaryPart, detailedPart);
-            } catch (error) {
-                document.getElementById('tab-summary').textContent = "Erreur : " + error.message;
-                document.getElementById('tab-detailed').textContent = "Échec de l'analyse.";
-                resultContainer.style.display = 'block';
-            } finally {
-                submitBtn.disabled = false; btnText.textContent = "Lancer l'audit"; spinner.style.display = 'none';
-            }
-        });
+            const brand = document.getElementById('argus-brand').value;
+            const model = document.getElementById('argus-model').value;
+            const year = document.getElementById('argus-year').value;
+            const km = document.getElementById('argus-km').value;
+            const invoice = document.getElementById('argus-invoice').value;
 
-        document.getElementById('simulator-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const profile = {
-                ageRange: document.getElementById('sim-age').value, 
-                height: document.getElementById('sim-height').value,
-                license: document.getElementById('sim-license').value, 
-                experience: document.getElementById('sim-experience').value,
-                style: document.getElementById('sim-style').value, 
-                displacement: document.getElementById('sim-displacement').value,
-                engineType: document.getElementById('sim-engine-type').value,
-                budget: document.getElementById('sim-budget').value + " €"
-            };
-            const simSubmitBtn = document.getElementById('sim-submit-btn');
-            const simSpinner = document.getElementById('sim-spinner');
-            const simResultContainer = document.getElementById('simulator-result-container');
+            const btn = document.getElementById('argus-submit-btn');
+            const spinner = document.getElementById('argus-spinner');
+            const resultBox = document.getElementById('argus-result-container');
 
-            simSubmitBtn.disabled = true; simSpinner.style.display = 'inline-block'; simResultContainer.style.display = 'none';
-            simSubmitBtn.querySelector('span').textContent = "Recherche en cours...";
+            btn.disabled = true; spinner.style.display = 'inline-block'; resultBox.style.display = 'none';
+            btn.querySelector('span').textContent = "Calcul de l'argus en cours...";
 
             try {
-                const response = await fetch('/api/simulate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ profile: profile }) });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
-
-                const fullText = (data.result || "").replace(/PHOTO_QUERY:.*/g, '').trim();
-                let summaryPart = fullText, detailedPart = "Rapport non disponible.";
-
-                if (fullText.includes("---RESUME_IDEAL---") && fullText.includes("---RAPPORT_DETAILLE---")) {
-                    const parts = fullText.split("---RAPPORT_DETAILLE---");
-                    summaryPart = parts[0].replace("---RESUME_IDEAL---", "").trim(); detailedPart = parts[1].trim();
-                }
-
-                document.getElementById('sim-tab-summary').textContent = summaryPart || "Aucun résumé.";
-                document.getElementById('sim-tab-detailed').textContent = detailedPart;
-                simResultContainer.style.display = 'block';
-                switchTab('summary', 'sim');
-            } catch (error) {
-                document.getElementById('sim-tab-summary').textContent = "Erreur : " + error.message;
-                simResultContainer.style.display = 'block';
-            } finally {
-                simSubmitBtn.disabled = false; 
-                simSubmitBtn.querySelector('span').textContent = "Trouver ma moto idéale"; 
-                simSpinner.style.display = 'none';
-            }
-        });
-
-        document.getElementById('duel-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const moto1 = document.getElementById('duel-moto-1').value;
-            const moto2 = document.getElementById('duel-moto-2').value;
-            const profile = document.getElementById('duel-profile').value;
-            
-            const btn = document.getElementById('duel-submit-btn');
-            const spinner = document.getElementById('duel-spinner');
-            const duelWrapper = document.getElementById('duel-results-wrapper');
-
-            btn.disabled = true;
-            spinner.style.display = 'inline-block';
-            duelWrapper.style.display = 'none';
-            btn.querySelector('span').textContent = "Duel en cours...";
-
-            try {
-                const response = await fetch('/api/duel', { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ moto1, moto2, profile }) 
+                const response = await fetch('/api/argus', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ brand, model, year, km, invoice })
                 });
-                
-                const textResponse = await response.text();
-                if (textResponse.trim().startsWith('<')) {
-                    throw new Error("Erreur de routage ou plantage serveur (Vérifiez les logs de votre serveur).");
-                }
-                
-                const data = JSON.parse(textResponse);
+                const data = await response.json();
                 if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
 
-                document.getElementById('duel-content-1').textContent = data.resultMoto1 || "Analyse indisponible pour la Moto A.";
-                document.getElementById('duel-content-2').textContent = data.resultMoto2 || "Analyse indisponible pour la Moto B.";
-
-                duelWrapper.style.display = 'flex';
-                duelWrapper.scrollIntoView({ behavior: 'smooth' });
-
+                document.getElementById('argus-content').textContent = data.result || "Estimation indisponible.";
+                resultBox.style.display = 'block';
+                resultBox.scrollIntoView({ behavior: 'smooth' });
             } catch (error) {
                 alert("Erreur : " + error.message);
             } finally {
-                btn.disabled = false;
-                btn.querySelector('span').textContent = "Lancer le Duel IA";
-                spinner.style.display = 'none';
+                btn.disabled = false; btn.querySelector('span').textContent = "Estimer le prix de vente"; spinner.style.display = 'none';
             }
         });
 
-        window.addEventListener('DOMContentLoaded', initAuth);
+        // Script Analyze simple (Gabarit)
+        document.getElementById('analyze-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const prompt = document.getElementById('prompt').value;
+            const btn = document.getElementById('submit-btn'); const spinner = document.getElementById('spinner');
+            btn.disabled = true; spinner.style.display = 'inline-block';
+            try {
+                const res = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
+                const data = await res.json();
+                document.getElementById('tab-summary').textContent = data.result;
+                document.getElementById('result-container').style.display = 'block';
+            } catch(err) { alert(err); } finally { btn.disabled = false; spinner.style.display = 'none'; }
+        });
+
+        // Script Simulateur
+        document.getElementById('simulator-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('sim-submit-btn'); const spinner = document.getElementById('sim-spinner');
+            btn.disabled = true; spinner.style.display = 'inline-block';
+            try {
+                const res = await fetch('/api/simulate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ profile: { budget: document.getElementById('sim-budget').value } }) });
+                const data = await res.json();
+                document.getElementById('sim-tab-summary').textContent = data.result;
+                document.getElementById('simulator-result-container').style.display = 'block';
+            } catch(err) { alert(err); } finally { btn.disabled = false; spinner.style.display = 'none'; }
+        });
+
+        // Script Duel
+        document.getElementById('duel-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('duel-submit-btn'); const spinner = document.getElementById('duel-spinner');
+            btn.disabled = true; spinner.style.display = 'inline-block';
+            try {
+                const res = await fetch('/api/duel', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ moto1: document.getElementById('duel-moto-1').value, moto2: document.getElementById('duel-moto-2').value, profile: document.getElementById('duel-profile').value }) });
+                const data = await res.json();
+                document.getElementById('duel-content-1').textContent = data.resultMoto1;
+                document.getElementById('duel-content-2').textContent = data.resultMoto2;
+                document.getElementById('duel-results-wrapper').style.display = 'flex';
+            } catch(err) { alert(err); } finally { btn.disabled = false; spinner.style.display = 'none'; }
+        });
     </script>
 </body>
 </html>
