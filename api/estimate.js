@@ -1,37 +1,56 @@
-app.post('/api/estimate', async (req, res) => {
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+export default async function handler(req, res) {
+    // 1. Accepter uniquement les requêtes POST
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Méthode non autorisée' });
+    }
+
     try {
         const { bikeData } = req.body;
-        
-        const prompt = `Tu es un expert en négociation d'occasion et cotation de motos sur LeBonCoin en France.
-Un particulier souhaite vendre sa moto sur LeBonCoin et te demande d'estimer son juste prix de vente.
 
-Voici les informations de sa moto :
+        if (!bikeData) {
+            return res.status(400).json({ error: 'Données de la moto manquantes' });
+        }
+
+        // 2. Initialisation de Gemini avec la clé d'environnement
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
+
+        // 3. Prompt structuré pour l'estimation de vente LeBonCoin
+        const prompt = `Tu es un expert en cotation de motos d'occasion et en vente sur LeBonCoin en France.
+Un particulier veut vendre sa moto et te demande d'estimer son prix de vente optimal.
+
+Voici les caractéristiques de sa moto :
 - Modèle : ${bikeData.model} (${bikeData.year})
 - Kilométrage : ${bikeData.mileage}
-- Entretien / Historique : ${bikeData.history}
+- Entretien / Suivi : ${bikeData.history}
 - État esthétique : ${bikeData.condition}
 - Consommables : ${bikeData.wear}
 - Options / Équipements : ${bikeData.options}
 - Défauts / Frais à prévoir : ${bikeData.defects}
 
-Rédige une analyse claire pour le vendeur structurée ainsi :
+Rédige une réponse claire et structurée EXACTEMENT avec ces deux balises :
 
 ---PRIX_VENTE_CONSEILLE---
-💶 PRIX D'AFFICHAGE RECOMMANDÉ (LeBonCoin) : [Donne un montant exact, ex: 5 800 €]
-🛡️ PRIX PLANCHER DE NÉGOCIATION : [Donne le montant minimal en dessous duquel ne pas céder, ex: 5 400 €]
-📊 FOURCHETTE DU MARCHÉ : [Moyenne constatée sur Leboncoin]
-⚡ ATTRACTIVITÉ DE LA VENTE : [Élevée / Moyenne / Faible] et délai estimé pour vendre.
+💶 PRIX D'AFFICHAGE RECOMMANDÉ (LeBonCoin) : [Indique le prix de départ idéal]
+🛡️ PRIX PLANCHER DE NÉGOCIATION : [Le prix minimal net vendeur]
+📊 FOURCHETTE DU MARCHÉ : [Fourchette constatée sur Leboncoin pour ce modèle/année/km]
+⚡ ATTRACTIVITÉ DE LA VENTE : [Élevée / Moyenne / Faible] + Délai de vente estimé.
 
 ---CONSEILS_VENTE_LEBONCOIN---
-📝 POINTS FORTS À METTRE EN AVANT : (Ce qui justifie le prix dans l'annonce)
-⚠️ ÉLÉMENT(S) DE NÉGOCIATION DES ACHETEURS : (Ce que les acheteurs vont utiliser pour baisser le prix)
-💡 ASTUCES POUR UNE VENTE RAPIDE : (Photos, mots-clés, timing)`;
+📝 POINTS FORTS À VALORISER : (Les atouts qui justifient le prix)
+⚠️ ARGUMENTS DE NÉGOCIATION DES ACHETEURS : (Ce que les acheteurs vont attaquer pour baisser le prix)
+💡 ASTUCES D'ANNONCE : (Titre, photos clés, mots-clés à inclure dans le texte)`;
 
-        // Remplace 'callGeminiAI' par le nom de ta fonction d'appel à Gemini
-        const responseText = await callGeminiAI(prompt);
-        res.json({ result: responseText });
+        // 4. Génération de la réponse
+        const result = await model.generateContent(prompt);
+        const responseText = result.response.text();
+
+        return res.status(200).json({ result: responseText });
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("Erreur Gemini API:", error);
+        return res.status(500).json({ error: error.message || "Erreur lors de l'estimation par l'IA" });
     }
-});
+}
