@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RadarMoto | L'expert pour vos achats moto</title>
+    <title>RadarMoto | L'expert pour vos achats et ventes moto</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Script Google AdSense intégré proprement dans le <head> -->
+    <!-- Script Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6331620701717414"
      crossorigin="anonymous"></script>
 
@@ -130,9 +130,9 @@
         .hero p { font-size: 1.15rem; color: var(--text-muted); margin-bottom: 35px; max-width: 650px; line-height: 1.6; }
 
         /* --- SÉLECTEUR DE MODE --- */
-        .main-modes { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 16px; border: 1px solid var(--border-color); backdrop-filter: blur(10px); }
+        .main-modes { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-bottom: 40px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 16px; border: 1px solid var(--border-color); backdrop-filter: blur(10px); }
         
-        .mode-btn { background: transparent; border: none; color: var(--text-muted); padding: 12px 25px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.4s ease; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .mode-btn { background: transparent; border: none; color: var(--text-muted); padding: 12px 20px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.4s ease; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
         .mode-btn:hover { color: white; }
         .mode-btn.active { background: var(--accent); color: #000; box-shadow: 0 5px 15px var(--accent-glow); transform: scale(1.02); }
 
@@ -180,7 +180,7 @@
         .sample-hint span { color: var(--accent); cursor: pointer; text-decoration: none; font-weight: 500; border-bottom: 1px dashed var(--accent); transition: 0.3s; }
         .sample-hint span:hover { color: #fff; border-color: #fff; }
 
-        /* --- SIMULATEUR & DUEL --- */
+        /* --- FORMULAIRES --- */
         .simulator-form { display: none; padding: 35px; text-align: left; margin-bottom: 40px; }
         
         .form-grid { 
@@ -366,8 +366,9 @@
 
     <section class="hero">
         <h1>Votre expert moto <span>intelligent</span></h1>
-        <p>Analysez une annonce Leboncoin pour éviter les arnaques ou laissez l'IA trouver la moto parfaitement adaptée à votre profil.</p>
+        <p>Analysez une annonce Leboncoin, simulez votre moto idéale, comparez deux modèles ou estimez la valeur de votre moto pour la vendre.</p>
 
+        <!-- LES 4 ONGLETS (3 d'origine + 1 Nouveau) -->
         <div class="main-modes">
             <button class="mode-btn active" id="btn-mode-ad" onclick="switchMode('ad')">
                 <i class="fa-solid fa-magnifying-glass-dollar"></i> Analyseur d'Annonce
@@ -378,9 +379,12 @@
             <button class="mode-btn" id="btn-mode-duel" onclick="switchMode('duel')">
                 <i class="fa-solid fa-scale-balanced"></i> Duel IA (Comparateur)
             </button>
+            <button class="mode-btn" id="btn-mode-est" onclick="switchMode('estimate')">
+                <i class="fa-solid fa-tags"></i> Estimer ma moto (Vente)
+            </button>
         </div>
 
-        <!-- MODE 1 : ANNONCE -->
+        <!-- MODE 1 : ANALYSEUR D'ANNONCE (NON TOUCHÉ) -->
         <div class="search-container" id="container-mode-ad">
             <form id="analyze-form" class="search-box glass-panel">
                 <input type="text" id="prompt" placeholder="Collez votre lien ou description LeBonCoin ici..." required>
@@ -394,7 +398,7 @@
             </div>
         </div>
 
-        <!-- MODE 2 : SIMULATEUR -->
+        <!-- MODE 2 : SIMULATEUR MOTO IDÉALE (NON TOUCHÉ) -->
         <form id="simulator-form" class="simulator-form glass-panel">
             <div class="form-grid">
                 <div class="form-group">
@@ -476,7 +480,7 @@
             </button>
         </form>
 
-        <!-- MODE 3 : DUEL DE MODÈLES -->
+        <!-- MODE 3 : DUEL IA (NON TOUCHÉ) -->
         <form id="duel-form" class="simulator-form glass-panel">
             <div class="form-grid">
                 <div class="form-group">
@@ -499,7 +503,64 @@
             </button>
         </form>
 
-        <!-- RÉSULTAT ANNONCE -->
+        <!-- MODE 4 : ESTIMATEUR PRIX DE VENTE LEBONCOIN (NOUVEAU) -->
+        <form id="estimate-form" class="simulator-form glass-panel">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label><i class="fa-solid fa-motorcycle"></i> Marque & Modèle précis</label>
+                    <input type="text" id="est-model" placeholder="Ex: Honda CB650R, MT-07, Z900..." required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fa-solid fa-calendar-days"></i> Année de mise en circulation</label>
+                    <input type="number" id="est-year" placeholder="Ex: 2021" min="1970" max="2026" value="2021" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fa-solid fa-gauge"></i> Kilométrage total</label>
+                    <input type="number" id="est-km" placeholder="Ex: 14500" min="0" step="500" value="15000" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fa-solid fa-wrench"></i> Entretien & Suivi mécanique</label>
+                    <select id="est-history">
+                        <option value="Carnet complet en concession + toutes factures" selected>Carnet complet + Factures concession</option>
+                        <option value="Factures d'entretien garage indépendant">Factures garage indépendant</option>
+                        <option value="Entretien fait soi-même (Vidanges, filtres)">Fait soi-même (Pas de facture)</option>
+                        <option value="Entretien partiel ou dossier incomplet">Incomplet / Carnet manquant</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fa-solid fa-shield-halved"></i> État cosmétique (Rayures, chutes...)</label>
+                    <select id="est-condition">
+                        <option value="État concours / Irréprochable (Dort en garage)" selected>Parfait état / Irréprochable</option>
+                        <option value="Bon état général (Micro-rayures d'usage)">Bon état (Usure normale)</option>
+                        <option value="Traces de frottement ou petite chute à l'arrêt">Rayures légères / Chute à l'arrêt</option>
+                        <option value="Chute marquée ou carénage abîmé">Carénages abîmés / À restaurer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fa-solid fa-circle-dot"></i> État des consommables (Pneus, freins, chaîne)</label>
+                    <select id="est-wear">
+                        <option value="Consommables récents ou neufs (<20% d'usure)" selected>Consommables neufs ou très récents</option>
+                        <option value="Usure moyenne (50%, rien à prévoir de suite)">Usure moyenne (~50%)</option>
+                        <option value="Consommables bientôt à changer (Prévoir frais)">En fin de vie (Pneus/Freins à prévoir)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fa-solid fa-star"></i> Équipements & Options ajoutés</label>
+                    <input type="text" id="est-options" placeholder="Ex: Échappement Akrapovic, Shifter, Top Case, Support de plaque court...">
+                </div>
+                <div class="form-group">
+                    <label><i class="fa-solid fa-triangle-exclamation"></i> Défauts ou révision à prévoir</label>
+                    <input type="text" id="est-defects" placeholder="Ex: Révision des 20 000 km à prévoir, légère griffe sur pot...">
+                </div>
+            </div>
+            
+            <button type="submit" class="sim-submit-btn" id="est-submit-btn">
+                <span>Estimer mon prix de vente LeBonCoin</span>
+                <div class="spinner" id="est-spinner"></div>
+            </button>
+        </form>
+
+        <!-- RÉSULTAT ANNONCE (NON TOUCHÉ) -->
         <div class="result-container glass-panel" id="result-container">
             <div class="tabs-header">
                 <button class="tab-btn active" onclick="switchTab('summary', 'ad')"><i class="fa-solid fa-bolt"></i> Résumé Rapide</button>
@@ -509,7 +570,7 @@
             <div id="tab-detailed" class="tab-content"></div>
         </div>
 
-        <!-- RÉSULTAT SIMULATEUR -->
+        <!-- RÉSULTAT SIMULATEUR (NON TOUCHÉ) -->
         <div class="simulator-result glass-panel" id="simulator-result-container">
             <div class="tabs-header">
                 <button class="tab-btn active" onclick="switchTab('summary', 'sim')"><i class="fa-solid fa-bullseye"></i> Moto Idéale</button>
@@ -519,7 +580,17 @@
             <div id="sim-tab-detailed" class="tab-content"></div>
         </div>
 
-        <!-- CONTENEUR DUEL : MOTO A & MOTO B CÔTE À CÔTE -->
+        <!-- RÉSULTAT ESTIMATION DE VENTE (NOUVEAU) -->
+        <div class="simulator-result glass-panel" id="estimate-result-container">
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab('summary', 'est')"><i class="fa-solid fa-euro-sign"></i> Prix de Vente Conseillé</button>
+                <button class="tab-btn" onclick="switchTab('detailed', 'est')"><i class="fa-solid fa-lightbulb"></i> Stratégie d'Annonce Leboncoin</button>
+            </div>
+            <div id="est-tab-summary" class="tab-content active"></div>
+            <div id="est-tab-detailed" class="tab-content"></div>
+        </div>
+
+        <!-- CONTENEUR DUEL (NON TOUCHÉ) -->
         <div class="duel-results-wrapper" id="duel-results-wrapper">
             <div class="duel-result glass-panel" id="duel-result-1">
                 <div class="tabs-header" style="background: rgba(255, 179, 0, 0.1);">
@@ -537,7 +608,7 @@
         </div>
     </section>
 
-    <footer>&copy; 2026 RadarMoto. Outil d'aide à l'achat propulsé par l'IA.</footer>
+    <footer>&copy; 2026 RadarMoto. Outil d'aide à l'achat et à la vente propulsé par l'IA.</footer>
 
     <script>
         let isLoginMode = true;
@@ -645,18 +716,22 @@
             document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' });
         }
 
+        /* --- GESTION DE LA NAVIGATION PAR ONGLETS --- */
         function switchMode(mode) {
             document.getElementById('result-container').style.display = 'none';
             document.getElementById('simulator-result-container').style.display = 'none';
             document.getElementById('duel-results-wrapper').style.display = 'none';
+            document.getElementById('estimate-result-container').style.display = 'none';
 
             document.getElementById('btn-mode-ad').classList.remove('active');
             document.getElementById('btn-mode-sim').classList.remove('active');
             document.getElementById('btn-mode-duel').classList.remove('active');
+            document.getElementById('btn-mode-est').classList.remove('active');
 
             document.getElementById('container-mode-ad').style.display = 'none';
             document.getElementById('simulator-form').style.display = 'none';
             document.getElementById('duel-form').style.display = 'none';
+            document.getElementById('estimate-form').style.display = 'none';
 
             if (mode === 'ad') {
                 document.getElementById('btn-mode-ad').classList.add('active');
@@ -667,12 +742,24 @@
             } else if (mode === 'duel') {
                 document.getElementById('btn-mode-duel').classList.add('active');
                 document.getElementById('duel-form').style.display = 'block';
+            } else if (mode === 'estimate') {
+                document.getElementById('btn-mode-est').classList.add('active');
+                document.getElementById('estimate-form').style.display = 'block';
             }
         }
 
         function switchTab(tabName, type) {
-            const containerId = type === 'ad' ? 'result-container' : 'simulator-result-container';
-            const prefix = type === 'ad' ? 'tab' : 'sim-tab';
+            let containerId = 'result-container';
+            let prefix = 'tab';
+            
+            if (type === 'ad') {
+                containerId = 'result-container'; prefix = 'tab';
+            } else if (type === 'sim') {
+                containerId = 'simulator-result-container'; prefix = 'sim-tab';
+            } else if (type === 'est') {
+                containerId = 'estimate-result-container'; prefix = 'est-tab';
+            }
+
             document.querySelectorAll(`#${containerId} .tab-btn`).forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll(`#${containerId} .tab-content`).forEach(content => content.classList.remove('active'));
             document.querySelector(`#${containerId} .tab-btn:nth-child(${tabName === 'summary' ? 1 : 2})`).classList.add('active');
@@ -681,6 +768,7 @@
 
         document.getElementById('fill-sample').addEventListener('click', () => { document.getElementById('prompt').value = "Voici une annonce : https://www.leboncoin.fr/ad/motos/3229286512"; });
 
+        /* 1. ANALYSEUR (Code d'origine conservé) */
         document.getElementById('analyze-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const promptInput = document.getElementById('prompt').value;
@@ -718,6 +806,7 @@
             }
         });
 
+        /* 2. SIMULATEUR (Code d'origine conservé) */
         document.getElementById('simulator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const profile = {
@@ -764,6 +853,7 @@
             }
         });
 
+        /* 3. DUEL IA (Code d'origine conservé) */
         document.getElementById('duel-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const moto1 = document.getElementById('duel-moto-1').value;
@@ -788,7 +878,7 @@
                 
                 const textResponse = await response.text();
                 if (textResponse.trim().startsWith('<')) {
-                    throw new Error("Erreur de routage ou plantage serveur (Vérifiez les logs de votre serveur).");
+                    throw new Error("Erreur de routage ou plantage serveur.");
                 }
                 
                 const data = JSON.parse(textResponse);
@@ -805,6 +895,63 @@
             } finally {
                 btn.disabled = false;
                 btn.querySelector('span').textContent = "Lancer le Duel IA";
+                spinner.style.display = 'none';
+            }
+        });
+
+        /* 4. ESTIMATION PRIX DE VENTE (NOUVEAU) */
+        document.getElementById('estimate-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const bikeData = {
+                model: document.getElementById('est-model').value,
+                year: document.getElementById('est-year').value,
+                mileage: document.getElementById('est-km').value + " km",
+                history: document.getElementById('est-history').value,
+                condition: document.getElementById('est-condition').value,
+                wear: document.getElementById('est-wear').value,
+                options: document.getElementById('est-options').value || "Aucune option spécifique",
+                defects: document.getElementById('est-defects').value || "Aucun défaut majeur"
+            };
+
+            const btn = document.getElementById('est-submit-btn');
+            const spinner = document.getElementById('est-spinner');
+            const resultContainer = document.getElementById('estimate-result-container');
+
+            btn.disabled = true;
+            spinner.style.display = 'inline-block';
+            resultContainer.style.display = 'none';
+            btn.querySelector('span').textContent = "Estimation du prix en cours...";
+
+            try {
+                const response = await fetch('/api/estimate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ bikeData })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
+
+                let summaryPart = data.result || "Estimation non disponible.", detailedPart = "Conseils non disponibles.";
+                
+                if (data.result && data.result.includes("---PRIX_VENTE_CONSEILLE---") && data.result.includes("---CONSEILS_VENTE_LEBONCOIN---")) {
+                    const parts = data.result.split("---CONSEILS_VENTE_LEBONCOIN---");
+                    summaryPart = parts[0].replace("---PRIX_VENTE_CONSEILLE---", "").trim();
+                    detailedPart = parts[1].trim();
+                }
+
+                document.getElementById('est-tab-summary').textContent = summaryPart;
+                document.getElementById('est-tab-detailed').textContent = detailedPart;
+                resultContainer.style.display = 'block';
+                switchTab('summary', 'est');
+                resultContainer.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                document.getElementById('est-tab-summary').textContent = "Erreur : " + error.message;
+                resultContainer.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.querySelector('span').textContent = "Estimer mon prix de vente LeBonCoin";
                 spinner.style.display = 'none';
             }
         });
