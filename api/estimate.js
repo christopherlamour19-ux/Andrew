@@ -1,68 +1,58 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-module.exports = async function handler(req, res) {
-    // 1. Accepter uniquement les requêtes POST
+export default async function handler(req, res) {
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Méthode non autorisée' });
+        res.setHeader('Allow', ['POST']);
+        return res.status(405).json({ error: `Méthode ${req.method} non autorisée` });
     }
 
     try {
-        const { bikeData } = req.body || {};
+        // Ta clé API
+        const apiKey = "AQ.Ab8RN6Je5vxdnbO1sB69HgQXt-9YYm8VD7posrUsIDhMj1rEUw";
 
-        if (!bikeData) {
-            return res.status(400).json({ error: 'Données de la moto manquantes.' });
-        }
+        // Récupération sécurisée du body (évite le crash si body est vide)
+        const body = req.body || {};
+        
+        // Supporte à la fois { bikeData: { ... } } et { model: "...", year: "..." }
+        const bike = body.bikeData || body;
 
-        // 2. Vérification de la clé API Gemini
-        if (!process.env.GEMINI_API_KEY) {
-            return res.status(500).json({ error: 'La clé GEMINI_API_KEY est introuvable sur le serveur.' });
-        }
+        const bikeModel = bike.model || "Modèle non renseigné";
+        const year = bike.year || "Non précisée";
+        const mileage = bike.mileage || "Non précisé";
+        const history = bike.history || "Non précisé";
+        const condition = bike.condition || "Non précisé";
+        const wear = bike.wear || "Non précisé";
+        const options = bike.options || "Aucune";
+        const defects = bike.defects || "Aucun";
 
-        // 3. Initialisation du SDK Google Gen AI
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
-        // 4. Prompt calibré pour correspondre aux balises de ton index.html
-        const prompt = `Tu es un expert reconnu en cotation et estimation de prix de vente de motos d'occasion sur Leboncoin en France.
+        const prompt = `
+        Agis en tant qu'expert de la cote moto d'occasion en France (Leboncoin, La Centrale).
+        Analyse les données suivantes pour estimer le prix de vente d'une moto d'occasion :
 
-Analyse précisément la moto suivante :
-- Modèle : ${bikeData.model} (${bikeData.year})
-- Kilométrage : ${bikeData.mileage}
-- Entretien / Suivi : ${bikeData.history}
-- État esthétique : ${bikeData.condition}
-- État des consommables : ${bikeData.wear}
-- Équipements / Options : ${bikeData.options}
-- Défauts / Frais à prévoir : ${bikeData.defects}
+        - Modèle : ${bikeModel}
+        - Année : ${year}
+        - Kilométrage : ${mileage}
+        - Historique / Entretien : ${history}
+        - État carrosserie : ${condition}
+        - Consommables : ${wear}
+        - Options : ${options}
+        - Défauts : ${defects}
 
-Rédige une réponse structurée en utilisant EXACTEMENT les deux balises ci-dessous pour séparer les parties :
+        Structure ta réponse clairement :
+        1. Donne la fourchette de prix idéale et le prix conseillé pour une vente rapide.
+        2. Donne 3 à 4 conseils clés pour l'annonce Leboncoin pour valoriser la moto.
+        `;
 
----PRIX_VENTE_CONSEILLE---
-💶 PRIX D'AFFICHAGE RECOMMANDÉ (Leboncoin) : [Indique le prix de départ idéal]
-🛡️ PRIX PLANCHER DE NÉGOCIATION : [Le prix minimal net vendeur]
-📊 FOURCHETTE DU MARCHÉ : [Prix bas - Prix haut constatés sur Leboncoin pour ce modèle/année/km]
-⚡ ATTRACTIVITÉ DE LA VENTE : [Élevée / Moyenne / Faible] + Délai de vente estimé.
-
----CONSEILS_VENTE_LEBONCOIN---
-📝 POINTS FORTS À VALORISER DANS L'ANNONCE :
-- Atout 1
-- Atout 2
-
-⚠️ ARGUMENTS DE NÉGOCIATION DES ACHETEURS (Points faibles) :
-- Argument 1
-- Argument 2
-
-💡 ASTUCES D'ANNONCE (Titre, photos clés, conseils de rédaction) :
-- Astuce 1
-- Astuce 2`;
-
-        // 5. Génération et renvoi du résultat
         const result = await model.generateContent(prompt);
-        const responseText = result.response.text();
+        const text = await result.response.text();
 
-        return res.status(200).json({ result: responseText });
+        return res.status(200).json({ result: text });
 
     } catch (error) {
-        console.error("Erreur serveur estimate.js :", error);
-        return res.status(500).json({ error: error.message || "Erreur lors de la génération d'estimation." });
+        console.error("Erreur Estimation:", error);
+        return res.status(500).json({ error: error.message || 'Erreur serveur lors de l\'estimation.' });
     }
-};
+}
