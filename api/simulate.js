@@ -6,18 +6,20 @@ export default async function handler(req, res) {
   }
 
   const { profile } = req.body;
-  const apiKey = process.env.GEMINI_API_KEY;
+  
+  // Ta clé API intégrée directement
+  const apiKey = "AQ.Ab8RN6Je5vxdnbO1sB69HgQXt-9YYm8VD7posrUsIDhMj1rEUw";
 
   if (!apiKey) {
-    return res.status(500).json({ error: 'Clé API non configurée sur Vercel.' });
+    return res.status(500).json({ error: 'Clé API non configurée.' });
   }
 
   try {
-    // Récupération de tous les paramètres du profil, y compris le type de moteur
+    // Récupération de tous les paramètres du profil
     const { ageRange, height, style, license, displacement, engineType, budget } = profile || {};
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 
     const simPrompt = `Tu es un conseiller expert en choix de moto. Un utilisateur recherche sa moto idéale selon son profil précis :
     - Tranche d'âge : ${ageRange}
@@ -28,10 +30,13 @@ export default async function handler(req, res) {
     - Type de moteur souhaité : ${engineType || 'Peu importe'}
     - Budget maximum : ${budget} €
 
-    Fournis une recommandation claire et structurée ainsi :
-    ---MOTO_IDEALE---
+    Fournis une recommandation claire et structurée en utilisant exactement ces balises de séparation pour les onglets du site :
+
+    ---RESUME_IDEAL---
     - 🏍️ Modèle conseillé : (Nom exact de la moto, année, cylindrée)
     - 💡 Pourquoi ce choix : (Explique en quelques lignes pourquoi elle correspond à son style ${style}, son architecture moteur ${engineType || 'demandée'}, sa taille, son permis ${license} et son budget)
+
+    ---RAPPORT_DETAILLE---
     - 🛡️ Assurance & Conso : (Analyse rapide de l'assurance pour son profil et la consommation réelle)
     - ⚠️ Points de vigilance : (Les pièges ou défauts connus de ce modèle à surveiller)
     - 🔍 Recherche photo : Donne un terme de recherche précis en anglais pour trouver une belle photo de cette moto (ex: "Yamaha MT-07 2022 studio shot") sur une ligne commençant par PHOTO_QUERY: [ton terme ici].`;
