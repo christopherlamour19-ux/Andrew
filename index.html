@@ -368,7 +368,7 @@
         <h1>Votre expert moto <span>intelligent</span></h1>
         <p>Analysez une annonce Leboncoin, simulez votre moto idéale, comparez deux modèles ou estimez la valeur de votre moto pour la vendre.</p>
 
-        <!-- LES 4 ONGLETS (3 d'origine + 1 Nouveau) -->
+        <!-- LES 4 ONGLETS -->
         <div class="main-modes">
             <button class="mode-btn active" id="btn-mode-ad" onclick="switchMode('ad')">
                 <i class="fa-solid fa-magnifying-glass-dollar"></i> Analyseur d'Annonce
@@ -384,7 +384,7 @@
             </button>
         </div>
 
-        <!-- MODE 1 : ANALYSEUR D'ANNONCE (NON TOUCHÉ) -->
+        <!-- MODE 1 : ANALYSEUR D'ANNONCE -->
         <div class="search-container" id="container-mode-ad">
             <form id="analyze-form" class="search-box glass-panel">
                 <input type="text" id="prompt" placeholder="Collez votre lien ou description LeBonCoin ici..." required>
@@ -398,7 +398,7 @@
             </div>
         </div>
 
-        <!-- MODE 2 : SIMULATEUR MOTO IDÉALE (NON TOUCHÉ) -->
+        <!-- MODE 2 : SIMULATEUR MOTO IDÉALE -->
         <form id="simulator-form" class="simulator-form glass-panel">
             <div class="form-grid">
                 <div class="form-group">
@@ -480,7 +480,7 @@
             </button>
         </form>
 
-        <!-- MODE 3 : DUEL IA (NON TOUCHÉ) -->
+        <!-- MODE 3 : DUEL IA -->
         <form id="duel-form" class="simulator-form glass-panel">
             <div class="form-grid">
                 <div class="form-group">
@@ -503,7 +503,7 @@
             </button>
         </form>
 
-        <!-- MODE 4 : ESTIMATEUR PRIX DE VENTE LEBONCOIN (NOUVEAU) -->
+        <!-- MODE 4 : ESTIMATEUR PRIX DE VENTE LEBONCOIN -->
         <form id="estimate-form" class="simulator-form glass-panel">
             <div class="form-grid">
                 <div class="form-group">
@@ -560,7 +560,7 @@
             </button>
         </form>
 
-        <!-- RÉSULTAT ANNONCE (NON TOUCHÉ) -->
+        <!-- RÉSULTAT ANNONCE -->
         <div class="result-container glass-panel" id="result-container">
             <div class="tabs-header">
                 <button class="tab-btn active" onclick="switchTab('summary', 'ad')"><i class="fa-solid fa-bolt"></i> Résumé Rapide</button>
@@ -570,7 +570,7 @@
             <div id="tab-detailed" class="tab-content"></div>
         </div>
 
-        <!-- RÉSULTAT SIMULATEUR (NON TOUCHÉ) -->
+        <!-- RÉSULTAT SIMULATEUR -->
         <div class="simulator-result glass-panel" id="simulator-result-container">
             <div class="tabs-header">
                 <button class="tab-btn active" onclick="switchTab('summary', 'sim')"><i class="fa-solid fa-bullseye"></i> Moto Idéale</button>
@@ -580,7 +580,7 @@
             <div id="sim-tab-detailed" class="tab-content"></div>
         </div>
 
-        <!-- RÉSULTAT ESTIMATION DE VENTE (NOUVEAU) -->
+        <!-- RÉSULTAT ESTIMATION DE VENTE -->
         <div class="simulator-result glass-panel" id="estimate-result-container">
             <div class="tabs-header">
                 <button class="tab-btn active" onclick="switchTab('summary', 'est')"><i class="fa-solid fa-euro-sign"></i> Prix de Vente Conseillé</button>
@@ -590,7 +590,7 @@
             <div id="est-tab-detailed" class="tab-content"></div>
         </div>
 
-        <!-- CONTENEUR DUEL (NON TOUCHÉ) -->
+        <!-- CONTENEUR DUEL -->
         <div class="duel-results-wrapper" id="duel-results-wrapper">
             <div class="duel-result glass-panel" id="duel-result-1">
                 <div class="tabs-header" style="background: rgba(255, 179, 0, 0.1);">
@@ -768,7 +768,7 @@
 
         document.getElementById('fill-sample').addEventListener('click', () => { document.getElementById('prompt').value = "Voici une annonce : https://www.leboncoin.fr/ad/motos/3229286512"; });
 
-        /* 1. ANALYSEUR (Code d'origine conservé) */
+        /* 1. ANALYSEUR */
         document.getElementById('analyze-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const promptInput = document.getElementById('prompt').value;
@@ -783,11 +783,13 @@
             
             try {
                 const response = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: promptInput }) });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
+                const rawText = await response.text();
+                
+                if (!response.ok) throw new Error(rawText || 'Erreur serveur.');
+                const data = JSON.parse(rawText);
                 
                 let summaryPart = data.result, detailedPart = "Détails non disponibles.";
-                if (data.result.includes("---RESUME_RAPIDE---") && data.result.includes("---RAPPORT_DETAILLE---")) {
+                if (data.result && data.result.includes("---RESUME_RAPIDE---") && data.result.includes("---RAPPORT_DETAILLE---")) {
                     const parts = data.result.split("---RAPPORT_DETAILLE---");
                     summaryPart = parts[0].replace("---RESUME_RAPIDE---", "").trim(); detailedPart = parts[1].trim();
                 }
@@ -806,7 +808,7 @@
             }
         });
 
-        /* 2. SIMULATEUR (Code d'origine conservé) */
+        /* 2. SIMULATEUR */
         document.getElementById('simulator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const profile = {
@@ -828,8 +830,10 @@
 
             try {
                 const response = await fetch('/api/simulate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ profile: profile }) });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
+                const rawText = await response.text();
+
+                if (!response.ok) throw new Error(rawText || 'Erreur serveur.');
+                const data = JSON.parse(rawText);
 
                 const fullText = (data.result || "").replace(/PHOTO_QUERY:.*/g, '').trim();
                 let summaryPart = fullText, detailedPart = "Rapport non disponible.";
@@ -853,7 +857,7 @@
             }
         });
 
-        /* 3. DUEL IA (Code d'origine conservé) */
+        /* 3. DUEL IA */
         document.getElementById('duel-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const moto1 = document.getElementById('duel-moto-1').value;
@@ -877,13 +881,9 @@
                 });
                 
                 const textResponse = await response.text();
-                if (textResponse.trim().startsWith('<')) {
-                    throw new Error("Erreur de routage ou plantage serveur.");
-                }
+                if (!response.ok) throw new Error(textResponse || "Erreur lors du duel.");
                 
                 const data = JSON.parse(textResponse);
-                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
-
                 document.getElementById('duel-content-1').textContent = data.resultMoto1 || "Analyse indisponible pour la Moto A.";
                 document.getElementById('duel-content-2').textContent = data.resultMoto2 || "Analyse indisponible pour la Moto B.";
 
@@ -899,7 +899,7 @@
             }
         });
 
-        /* 4. ESTIMATION PRIX DE VENTE (NOUVEAU) */
+        /* 4. ESTIMATION PRIX DE VENTE (SÉCURISÉE) */
         document.getElementById('estimate-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const bikeData = {
@@ -929,8 +929,14 @@
                     body: JSON.stringify({ bikeData })
                 });
 
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.error || 'Erreur serveur.');
+                // On lit le texte brut avant d'essayer de parser le JSON
+                const responseText = await response.text();
+
+                if (!response.ok) {
+                    throw new Error(`Erreur serveur (${response.status}) : ${responseText}`);
+                }
+
+                const data = JSON.parse(responseText);
 
                 let summaryPart = data.result || "Estimation non disponible.", detailedPart = "Conseils non disponibles.";
                 
@@ -948,6 +954,7 @@
 
             } catch (error) {
                 document.getElementById('est-tab-summary').textContent = "Erreur : " + error.message;
+                document.getElementById('est-tab-detailed').textContent = "Consultez les logs Vercel si l'erreur persiste.";
                 resultContainer.style.display = 'block';
             } finally {
                 btn.disabled = false;
